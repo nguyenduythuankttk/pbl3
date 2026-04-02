@@ -33,6 +33,7 @@ namespace Backend.Models{
 
         public DateTime DateReceive { get; set; }
         public GoodReceiptStatus Status { get; set; }
+        public bool IsDeleted{get; set;} = false;
 
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();

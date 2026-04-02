@@ -4,11 +4,16 @@ using System.Text.Json.Serialization;
 
 namespace Backend.Models{
 
-    public enum PayMentMethods
+    public enum PaymentMethods
     {
         Cash,
         Card,
         QR
+    }
+    public enum PaymentStatus{
+        Success,
+        Pending,
+        Fail
     }
 
     public class Bill
@@ -27,9 +32,11 @@ namespace Backend.Models{
         public virtual Store Store { get; set; } = null!;
 
         public decimal VAT { get; set; }
-        public PayMentMethods PaymentMethods { get; set; }
+        public PayMentmethods PaymentMethods { get; set; }
+        public PaymentStatus PaymentStatus {get; set;}
         public DateTime TimeCreated { get; set; }
         public decimal Total { get; set; }
+        public bool IsDeleted {get; set; } =false;
 
         [JsonIgnore]
         public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();

@@ -10,10 +10,10 @@ namespace Backend.Models{
         [ForeignKey(nameof(BillID))]
         public virtual Bill Bill { get; set; } = null!;
 
-        public int ProductID { get; set; }
+        public int ProductVarientID { get; set; }
 
-        [ForeignKey(nameof(ProductID))]
-        public virtual Product Product { get; set; } = null!;
+        [ForeignKey(nameof(ProductVarientID))]
+        public virtual ProductVarient ProductVarient { get; set; } = null!;
 
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }

@@ -32,7 +32,7 @@ namespace Backend.Models{
 
         [Required]
         public DateTime ReceivedDate { get; set; }
-
+        public bool IsDeleted {get; set;} = false;
         [JsonIgnore]
         public ICollection<PODetail> PODetails { get; set; } = new List<PODetail>();
 

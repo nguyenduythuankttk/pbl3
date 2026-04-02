@@ -1,8 +1,8 @@
-using BackEnd.Data;
-using BackEnd.Models;
-using BackEnd.Services.Interface;
+using Backend.Data;
+using Backend.Models;
+using Backend.Services.Interface;
 using Microsoft.EntityFrameWorkCore;
-namespace BackEnd.Services.Implementations{
+namespace Backend.Services.Implementations{
     public class AddressService : IAddressService{
         private readonly AppDbContext _dbContext;
 
@@ -29,7 +29,7 @@ namespace BackEnd.Services.Implementations{
                 _dbContext.Address.Add(address); 
                 await _dbContext.SaveChangesAsync();
             } catch (Exception ex){
-                throw;
+                Console.WriteLine(ex.Message);
             }    
         }
         public async Task DeleteUserAddress(Address address,User user){
@@ -40,12 +40,31 @@ namespace BackEnd.Services.Implementations{
                     _dbContext.UserAddress.Remove(userAddress);
                     await _dbContext.SaveChangesAsync();
                 }
-            }catch
+            }catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
             }
         }
-        
+        public async Task SetDefault(Address address, User user){
+            try{
+                var newDefault = await _dbContext.UserAddress
+                                    .FirstOrDefaultAsync(ua => ua.User.UserID == user.UserID && ua.User.AddressID == address.AddressID);
+                var oldDefault = await _dbContext.UserAddress
+                                    .FirstOrDefaultAsync(ua => ua.User.UserID == user.UserID && ua.IsDefault == true);
+                if (newDefault != null){
+                    newDefault.IsDefault = true;
+                    _dbContext.UserAddress.Update(newDefault);
+                    await _dbContext.SaveChangesAsync();
+                }
+                if (oldDefault != null){
+                    oldDefault.IsDefault = false;
+                    _dbContext.UserAddress.Update(oldDefault);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }catch(Exception ex){
+                Console.WriteLine(ex.Message);
+            }
+        }
         
     }
 } 

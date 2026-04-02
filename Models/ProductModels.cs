@@ -18,8 +18,8 @@ namespace Backend.Models{
         public string ProductName { get; set; } = null!;
         public ProductType ProductType { get; set; }
         public DateTime ProductionTime { get; set; }
-        public decimal Price { get; set; }
         public string? Image { get; set; }
+        public bool IsActive {get; set;}
 
         [JsonIgnore]
         public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
