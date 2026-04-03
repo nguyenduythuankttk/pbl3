@@ -11,7 +11,6 @@ namespace Backend.Data {
         public DbSet<User> User {get; set;}
         public DbSet<BillDetail> BillDetail {get; set;}
         public DbSet<Bill> Bill {get; set;}
-        public DbSet<BillModify> BillModify  {get; set;}
         public DbSet<Employee> Employee  {get; set;}
         public DbSet<GoodsReceipt> GoodsReceipt  {get; set;}
         public DbSet<Ingredient> Ingredient {get; set;}
@@ -27,6 +26,9 @@ namespace Backend.Data {
         public DbSet<StockMovement>  StockMovement {get; set;}
         public DbSet<Store> Store {get; set;}
         public DbSet<Supplier> Supplier {get; set;}
+        public DbSet<Combo> Combo {get; set;}
+        public DbSet<ComboProduct> ComboProduct {get; set;}
+        public DbSet<ProductVarient> ProductVarient {get; set;}
 
         public DbSet<Ticket> Ticket  {get; set;}
         public DbSet<UserAddress> UserAddress {get; set;}
@@ -54,6 +56,8 @@ namespace Backend.Data {
             .HasKey(ma => new {ma.StoreID,ma.UtilityID});
             modelBuilder.Entity<UserAddress>()
             .HasKey(ma => new {ma.UserID,ma.AddressID});
+            modelBuilder.Entity<ComboProduct>()
+            .HasKey (ma => new{ma.ComboID,ma.ProductVarientID});
 
             // one to one
             modelBuilder.Entity<Store>()
@@ -115,6 +119,11 @@ namespace Backend.Data {
             .Property(b => b.ReferenceType)
             .HasConversion<string>()
             .HasMaxLength(20)
+            .IsRequired();
+            modelBuilder.Entity<ProductVarient>()
+            .Property(b => b.ProductSize)
+            .HasConversion<string>()
+            .HasMaxLength(10)
             .IsRequired();
 
         }

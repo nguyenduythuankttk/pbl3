@@ -10,6 +10,7 @@ namespace Backend.Services.Interface{
         Task AddBill();
         Task RemoveBill(string? note);
         Task <Bill?> FindBill();
-
+        Task RemoveBill();
+        Task DeleteBill(BillDeleteRequest b);
     }
 }
