@@ -18,13 +18,13 @@ namespace Backend.Models{
 
     public class Bill
     {
-        [Key]
+        [Key] //khóa chính
         public Guid BillID { get; set; }
 
         public Guid UserID { get; set; }
 
-        [ForeignKey(nameof(UserID))]
-        public virtual User User { get; set; } = null!;
+        [ForeignKey(nameof(UserID))] //khóa phụ đến bảng user 
+        public virtual User User { get; set; } = null!; // Mối quan hệ 1 - n giữa bill và user 
 
         public int StoreID { get; set; }
 
@@ -32,7 +32,7 @@ namespace Backend.Models{
         public virtual Store Store { get; set; } = null!;
 
         public decimal VAT { get; set; }
-        public PayMentmethods PaymentMethods { get; set; }
+        public PaymentMethods PaymentMethods { get; set; }
         public PaymentStatus PaymentStatus {get; set;}
         public DateTime TimeCreated { get; set; }
         public decimal Total { get; set; }

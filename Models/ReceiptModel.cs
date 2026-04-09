@@ -4,17 +4,17 @@ using System.Text.Json.Serialization;
 
 namespace Backend.Models{
 
-    public enum GoodReceiptStatus
+    public enum ReceiptStatus
     {
         Preparing,
         Delivering,
         Received
     }
 
-    public class GoodsReceipt
+    public class Receipt
     {
         [Key]
-        public Guid GoodsReceiptID { get; set; }
+        public Guid ReceiptID { get; set; }
 
         public Guid EmployeeID { get; set; }
 
@@ -32,7 +32,7 @@ namespace Backend.Models{
         public virtual Supplier Supplier { get; set; } = null!;
 
         public DateTime DateReceive { get; set; }
-        public GoodReceiptStatus Status { get; set; }
+        public ReceiptStatus Status { get; set; }
         public bool IsDeleted{get; set;} = false;
 
         [JsonIgnore]
