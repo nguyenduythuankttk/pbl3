@@ -1,5 +1,5 @@
 namespace Backend.Models.DTOs.Request{
-    public class BillRequest{
-        
+    public class BillDeleteRequest{
+        public bool IsDeleted {get; set;}
     }
 }
