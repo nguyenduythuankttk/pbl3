@@ -22,5 +22,11 @@ namespace Backend.Services.Implementations
                 .Include(r => r.Store)
                 .Include(r => r.Supplier)
                 .ToListAsync();
+        
+        //GET BY ID
+        public async Task<ReceiptItem?>  GetReceiptbyID(Guid ReceiptID)
+
+                
     }
+
 }

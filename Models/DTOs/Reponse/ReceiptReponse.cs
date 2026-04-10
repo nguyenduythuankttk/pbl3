@@ -15,4 +15,13 @@ namespace Backend.Models.DTOs
         public DateTime DateReceive { get; set; }
         public ReceiptStatus Status { get; set; }
     }
+
+    public class ReceipDetail
+    {
+        public Guid GoodsReceiptID {get; set;}
+        public int IngredientID {get; set;}
+        public decimal Quantity {get; set;}
+        public decimal UnitPrice {get; set;}
+
+    }
 }

@@ -1,7 +1,7 @@
 using Backend.Data;
 using Backend.Models;
 using Backend.Services.Interface;
-using Microsoft.EntityFrameWorkCore;
+using Microsoft.EntityFrameworkCore
 namespace Backend.Services.Implementations{
     public class BillService : IBillService{
         private readonly AppDbContext _dbContext;
@@ -11,7 +11,7 @@ namespace Backend.Services.Implementations{
         }
         public async Task<List<Bill>> GetAllBillIn(DateOnly dayStart, DateOnly dateEnd) =>
             await _dbContext.Bill
-                .Include(a =>a.BillDetail)
+                .Include(a => a.BillDetail)
                 .Include(a => a.ProductVarient)
                 .Where (a => a.TimeCreated > dayStart.ToDateTime(TimeOnly.MinValue) && a.TimeCreated < dayEnd.ToDateTime(TimeOnly.MaxValue)) 
                 .ToListAsync();

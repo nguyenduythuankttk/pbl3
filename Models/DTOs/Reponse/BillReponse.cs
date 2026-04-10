@@ -5,7 +5,7 @@ namespace Backend.Models.DTOs.Reponse{
         public decimal TotalPrice {get; set;}
     }
     public class BillDetailReponse{
-        public sting ProductName{get; set;}
+        public string ProductName{get; set;}
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
         public decimal InlineTotal { get; set; }
