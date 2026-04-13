@@ -12,7 +12,7 @@ namespace Backend.Models{
     }
     public class Bill
     {
-        [Key]
+        [Key] //khóa chính
         public Guid BillID { get; set; }
 
         public Guid UserID { get; set; }

@@ -4,17 +4,22 @@ using System.Text.Json.Serialization;
 
 namespace Backend.Models{
 
-    public enum GoodReceiptStatus
+    public enum ReceiptStatus
     {
         Preparing,
         Delivering,
         Received
     }
 
-    public class GoodsReceipt
+    public class Receipt
     {
         [Key]
+<<<<<<< HEAD:Models/GoodsReceiptModel.cs
         public Guid GoodsReceiptID { get; set; }
+=======
+        public Guid ReceiptID { get; set; }
+
+>>>>>>> 3f996c8133d0c3e2b659425e1aa1cdd644fb15df:Models/ReceiptModel.cs
         public Guid EmployeeID { get; set; }
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
@@ -32,11 +37,18 @@ namespace Backend.Models{
         public virtual PurchaseOrder PurchaseOrder { get; set; }
 
         public DateTime DateReceive { get; set; }
+<<<<<<< HEAD:Models/GoodsReceiptModel.cs
         public GoodReceiptStatus Status { get; set; }
         public bool IsDeleted { get; set; } = false;
         public Guid DeletedBy { get; set; }
         [ForeignKey("DeletedBy")]
         public virtual Employee Deleted { get; set; } = null!;
+=======
+        public DateTime DateUpdate {get; set; } = null;
+        public ReceiptStatus Status { get; set; }
+        public bool IsDeleted{get; set;} = false;
+
+>>>>>>> 3f996c8133d0c3e2b659425e1aa1cdd644fb15df:Models/ReceiptModel.cs
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
     }

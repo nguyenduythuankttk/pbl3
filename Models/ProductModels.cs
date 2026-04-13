@@ -31,5 +31,8 @@ namespace Backend.Models{
 
         [JsonIgnore]
         public virtual ICollection<Receipe> Recipes { get; set; } = new List<Receipe>();
+
+        [JsonIgnore]
+        public virtual ICollection<ProductVarient> ProductVarient {get; set; } = new List<ProductVarient>();
     }
 }

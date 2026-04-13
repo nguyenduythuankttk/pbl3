@@ -25,8 +25,12 @@ namespace Backend.Models{
 
         [Required, MaxLength(200)]
         public string Country { get; set; } = "Viet Nam";
-
+        public int StoreID{get; set;}
+        [ForeignKey("StoreID")]
         public virtual Store? Store { get; set; }
+
+        public int SupplierID{get; set; }
+        [ForeignKey("SupplierID")]
         public virtual Supplier? Supplier { get; set; }
 
         [JsonIgnore]

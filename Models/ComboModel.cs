@@ -6,7 +6,7 @@ namespace Backend.Models{
     public class Combo{
         [Key]
         public int ComboID {get; set;}
-        public string ComboName {get; set;}
+        public string ComboName {get; set;} = null!;
         public decimal FixedPrice {get; set;}
         public bool IsActive{get; set;}
         [JsonIgnore]

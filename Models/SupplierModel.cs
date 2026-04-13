@@ -6,8 +6,6 @@ namespace Backend.Models {
         [Key]
         public Guid SupplierID{get; set;}
         public string SupplierName{get; set;}
-        public Guid AddressID {get;set;}
-        [ForeignKey("AddressID")]
         public virtual Address Address {get; set;} = null!;
         public string Phone{get; set;}
         public string Email{get; set;}
