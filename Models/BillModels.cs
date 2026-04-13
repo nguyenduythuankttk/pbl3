@@ -10,11 +10,6 @@ namespace Backend.Models{
         Card,
         QR
     }
-    public enum PaymentStatus{
-        Success,
-        Pending,
-        Fail
-    }
 
     public class Bill
     {
@@ -23,8 +18,8 @@ namespace Backend.Models{
 
         public Guid UserID { get; set; }
 
-        [ForeignKey(nameof(UserID))] //khóa phụ đến bảng user 
-        public virtual User User { get; set; } = null!; // Mối quan hệ 1 - n giữa bill và user 
+        [ForeignKey(nameof(UserID))] 
+        public virtual User User { get; set; } = null!; 
 
         public int StoreID { get; set; }
 
@@ -33,10 +28,8 @@ namespace Backend.Models{
 
         public decimal VAT { get; set; }
         public PaymentMethods PaymentMethods { get; set; }
-        public PaymentStatus PaymentStatus {get; set;}
         public DateTime TimeCreated { get; set; }
         public decimal Total { get; set; }
-        public bool IsDeleted {get; set; } =false;
 
         [JsonIgnore]
         public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();

@@ -14,10 +14,6 @@ namespace Backend.Models{
         public int TotalReviews { get; set; }
         public int TotalPoints { get; set; }
         public int SeatingCapacity { get; set; }
-
-        public Guid AddressID { get; set; }
-
-        [ForeignKey(nameof(AddressID))]
         public virtual Address Address { get; set; } = null!;
 
         [JsonIgnore]

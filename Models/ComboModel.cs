@@ -6,10 +6,10 @@ namespace Backend.Models{
     public class Combo{
         [Key]
         public int ComboID {get; set;}
-        public string ComboName {get; set;}
+        public string ComboName {get; set;} = null!;
         public decimal FixedPrice {get; set;}
         public bool IsActive{get; set;}
         [JsonIgnore]
-        public virtual ICollection<ComboProduct> ComboProduct = new List<ComboProduct>();
+        public virtual ICollection<ComboProduct> ComboProduct {get; set; } = new List<ComboProduct>();
     }
 }

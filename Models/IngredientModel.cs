@@ -17,7 +17,7 @@ namespace Backend.Models{
         [Key]
         public int IngredientID { get; set; }
 
-        public string Name { get; set; } = null!;
+        public string IngredientName { get; set; } = null!;
         public IngredientUnit IngredientUnit { get; set; }
         public decimal CostPerUnit { get; set; }
 

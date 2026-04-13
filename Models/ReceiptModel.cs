@@ -32,6 +32,7 @@ namespace Backend.Models{
         public virtual Supplier Supplier { get; set; } = null!;
 
         public DateTime DateReceive { get; set; }
+        public DateTime DateUpdate {get; set; } = null;
         public ReceiptStatus Status { get; set; }
         public bool IsDeleted{get; set;} = false;
 

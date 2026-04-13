@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-namespace Backend.Models{
 
+namespace Backend.Models
+{
     public class BillDetail
     {
         public Guid BillID { get; set; }

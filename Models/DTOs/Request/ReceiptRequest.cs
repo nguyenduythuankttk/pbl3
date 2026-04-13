@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Backend.Models.DTOs
+namespace Backend.Models.DTOs.Request
 {
     public class GoodsReceiptCreateRequest
     {
@@ -18,5 +18,10 @@ namespace Backend.Models.DTOs
         public Guid SupplierID { get; set; }
         //public DateTime DateReceive { get; set; } -> Tương tự với employeeID
         public ReceiptStatus Status { get; set; }
+    }
+
+    public class ReceiptDetailCreateRequest
+    {
+        public 
     }
 }
