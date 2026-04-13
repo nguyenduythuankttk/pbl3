@@ -12,7 +12,7 @@ namespace Backend.Data {
         public DbSet<BillDetail> BillDetail {get; set;}
         public DbSet<Bill> Bill {get; set;}
         public DbSet<Employee> Employee  {get; set;}
-        public DbSet<GoodsReceipt> GoodsReceipt  {get; set;}
+        public DbSet<Receipt> Receipt  {get; set;}
         public DbSet<Ingredient> Ingredient {get; set;}
         public DbSet<PurchaseOrder> PurchaseOrder  {get; set;}
         public DbSet<POApproval> POApproval {get; set;}
@@ -41,7 +41,7 @@ namespace Backend.Data {
 
             // many to many
             modelBuilder.Entity<BillDetail>()
-            .HasKey(ma => new {ma.BillID,ma.ProductID});
+            .HasKey(ma => new {ma.BillID,ma.ProductVarientID});
             modelBuilder.Entity<PODetail>()
             .HasKey (ma => new {ma.POID,ma.IngredientID});
             modelBuilder.Entity<POApproval>()
@@ -80,7 +80,7 @@ namespace Backend.Data {
             .HasConversion<string>()
             .HasMaxLength(20)
             .IsRequired();
-            modelBuilder.Entity<GoodsReceipt>()
+            modelBuilder.Entity<Receipt>()
             .Property(b => b.Status)
             .HasConversion<string>()
             .HasMaxLength(20)

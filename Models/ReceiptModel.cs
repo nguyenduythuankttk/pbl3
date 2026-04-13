@@ -31,8 +31,8 @@ namespace Backend.Models{
         [ForeignKey(nameof(SupplierID))]
         public virtual Supplier Supplier { get; set; } = null!;
 
-        public DateTime DateReceive { get; set; }
-        public DateTime DateUpdate {get; set; } = null;
+        public DateTime? DateReceive { get; set; } = null;
+        public DateTime? DateUpdate {get; set; }
         public ReceiptStatus Status { get; set; }
         public bool IsDeleted{get; set;} = false;
 

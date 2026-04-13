@@ -26,7 +26,7 @@ namespace Backend.Models{
         public virtual ICollection<POApproval> POApprovals { get; set; } = new List<POApproval>();
 
         [JsonIgnore]
-        public virtual ICollection<Receipt> GoodsReceipts { get; set; } = new List<GoodsReceipt>();
+        public virtual ICollection<Receipt> GoodsReceipts { get; set; } = new List<Receipt>();
 
         public decimal BasicSalary { get; set; }
     }

@@ -20,8 +20,8 @@ namespace Backend.Models.DTOs.Request
         public ReceiptStatus Status { get; set; }
     }
 
-    public class ReceiptDetailCreateRequest
-    {
-        public 
-    }
+    // public class ReceiptDetailCreateRequest
+    // {
+    //     public 
+    // }
 }
