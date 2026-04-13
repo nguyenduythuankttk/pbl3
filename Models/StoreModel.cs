@@ -17,16 +17,16 @@ namespace Backend.Models{
 
         public Guid AddressID { get; set; }
 
-        [ForeignKey(nameof(AddressID))]
+        [ForeignKey("AddressID")]
         public virtual Address Address { get; set; } = null!;
 
         [JsonIgnore]
         public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
         [JsonIgnore]
-        public virtual ICollection<StoreUtility> StoreUtilities { get; set; } = new List<StoreUtility>();
+        public virtual ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
 
         [JsonIgnore]
-        public virtual ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
+        public virtual ICollection<DiningTable> DiningTables { get; set; } = new List<DiningTable>();
     }
 }

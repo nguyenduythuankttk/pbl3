@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Wang\\pbl3\\BackEnd.csproj": {}
+    "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj": {}
   },
   "projects": {
-    "D:\\Wang\\pbl3\\BackEnd.csproj": {
+    "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Wang\\pbl3\\BackEnd.csproj",
+        "projectUniqueName": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj",
         "projectName": "BackEnd",
-        "projectPath": "D:\\Wang\\pbl3\\BackEnd.csproj",
-        "packagesPath": "C:\\Users\\QUANG\\.nuget\\packages\\",
-        "outputPath": "D:\\Wang\\pbl3\\obj\\",
+        "projectPath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj",
+        "packagesPath": "/Users/nguyenduythuan/.nuget/packages/",
+        "outputPath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\QUANG\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
+          "/Users/nguyenduythuan/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -86,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

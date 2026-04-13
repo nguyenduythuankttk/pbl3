@@ -1,3 +1,5 @@
+using Backend.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Backend.Models.DTOs.Reponse{
     public class StoreReponse {
         public string Phone { get; set; } = null!;

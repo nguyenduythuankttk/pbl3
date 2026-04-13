@@ -1,7 +1,9 @@
 using Backend.Data;
 using Backend.Models;
+using Backend.Models.DTOs.Request;
+using Backend.Models.DTOs.Reponse;
 using Backend.Services.Interface;
-using Microsoft.EntityFrameWorkCore;
+using Microsoft.EntityFrameworkCore;
 namespace Backend.Services.Implementations{
     public class AddressService : IAddressService{
         private readonly AppDbContext _dbContext;
@@ -9,12 +11,13 @@ namespace Backend.Services.Implementations{
         public AddressService(AppDbContext dbContext){
             _dbContext = dbContext;
         }
-        public async Task<List<Address>> GetStoreAddress() =>
+        public async Task<Address?> GetAddressByID (Guid addressID) => await _dbContext.Address.FirstOrDefaultAsync(a => a.AddressID == addressID);
+        public async Task<List<Address>?> GetStoreAddress() =>
             await _dbContext.Address
             .Include(a => a.Store)
             .Where(a => a.Store != null)
             .ToListAsync();
-        public async Task<List<Address>> GetSupplierAddress() => 
+        public async Task<List<Address>?> GetSupplierAddress() => 
             await _dbContext.Address
             .Include(a => a.Supplier)
             .Where (a => a.Supplier != null)
@@ -32,10 +35,10 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(ex.Message);
             }    
         }
-        public async Task DeleteUserAddress(Address address,User user){
+        public async Task DeleteUserAddress(Guid address,Guid user){
             try{
                 var userAddress = await _dbContext.UserAddress
-                        .FirstOrDefaultAsync(ua => ua.User.UserID ==user.UserID &&  ua.Address.AddressID == address.AddressID);
+                        .FirstOrDefaultAsync(ua => ua.User.UserID ==user&&  ua.Address.AddressID == address);
                 if (userAddress != null){
                     _dbContext.UserAddress.Remove(userAddress);
                     await _dbContext.SaveChangesAsync();
@@ -45,12 +48,12 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(ex.Message);
             }
         }
-        public async Task SetDefault(Address address, User user){
+        public async Task SetDefault(Guid address, Guid user){
             try{
                 var newDefault = await _dbContext.UserAddress
-                                    .FirstOrDefaultAsync(ua => ua.User.UserID == user.UserID && ua.User.AddressID == address.AddressID);
+                                    .FirstOrDefaultAsync(ua => ua.User.UserID == user && ua.Address.AddressID == address);
                 var oldDefault = await _dbContext.UserAddress
-                                    .FirstOrDefaultAsync(ua => ua.User.UserID == user.UserID && ua.IsDefault == true);
+                                    .FirstOrDefaultAsync(ua => ua.User.UserID == user && ua.IsDefault == true);
                 if (newDefault != null){
                     newDefault.IsDefault = true;
                     _dbContext.UserAddress.Update(newDefault);
@@ -65,7 +68,9 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(ex.Message);
             }
         }
-        
+
+
+
     }
 } 
 // bất đồng bộ và đồng bộ

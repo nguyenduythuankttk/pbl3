@@ -6,12 +6,12 @@ namespace Backend.Models{
     {
         public Guid UserID { get; set; }
 
-        [ForeignKey(nameof(UserID))]
+        [ForeignKey("UserID")]
         public virtual User User { get; set; } = null!;
 
         public Guid AddressID { get; set; }
 
-        [ForeignKey(nameof(AddressID))]
+        [ForeignKey("AddressID")]
         public virtual Address Address { get; set; } = null!;
 
         public bool IsDefault { get; set; }

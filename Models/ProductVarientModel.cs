@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;namespace Backend.Models;
+using System.Text.Json.Serialization;
 namespace Backend.Models{
     public enum ProductSize {
         Default, S, M, L, XL
@@ -14,6 +14,6 @@ namespace Backend.Models{
         public ProductSize Size {get; set;} = ProductSize.Default;
         public decimal Price {get; set;}
         [JsonIgnore]
-        public virtual ICollection<ComboProduct> ComboProduct = new List<ComboProduct>();
+        public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();
     }
 }

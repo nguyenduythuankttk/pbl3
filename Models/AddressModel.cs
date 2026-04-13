@@ -31,5 +31,8 @@ namespace Backend.Models{
 
         [JsonIgnore]
         public virtual ICollection<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
+
+        [JsonIgnore]
+        public virtual ICollection<DeliveryInfo> DeliveryInfos { get; set; } = new List<DeliveryInfo>();
     }
 }

@@ -10,7 +10,7 @@ namespace Backend.Models{
 
         public int StoreID { get; set; }
 
-        [ForeignKey(nameof(StoreID))]
+        [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
 
         public int Capacity { get; set; }

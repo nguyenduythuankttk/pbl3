@@ -17,10 +17,8 @@ namespace Backend.Models{
     {
         [Key]
         public Guid BatchID { get; set; }
-
         public int WarehouseID { get; set; }
-
-        [ForeignKey(nameof(WarehouseID))]
+        [ForeignKey("WarehouseID")]
         public virtual Warehouse Warehouse { get; set; } = null!;
 
         public DateTime ImportDate { get; set; }
@@ -33,16 +31,12 @@ namespace Backend.Models{
         public DateTime? UpdatedAt { get; set; }
         public string? BatchCode { get; set; }
         public string? Note { get; set; }
-
         public int IngredientID { get; set; }
-
-        [ForeignKey(nameof(IngredientID))]
+        [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient { get; set; } = null!;
-
         public Guid GoodsReceiptID { get; set; }
         public virtual ReceiptDetail ReceiptDetail { get; set; } = null!;
-
         [JsonIgnore]
-        public virtual ICollection<StockAuditDetail> StockAuditDetails { get; set; } = new List<StockAuditDetail>();
+        public virtual ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
     }
 }

@@ -119,3 +119,4 @@
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.pdb
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.genruntimeconfig.cache
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/ref/BackEnd.dll
+/Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.sourcelink.json

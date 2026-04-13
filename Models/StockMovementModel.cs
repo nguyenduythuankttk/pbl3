@@ -10,15 +10,14 @@ namespace Backend.Models{
         Waste,
         TransferIn,
         TransferOut,
-        ManualAdjustment,
-        AuditAdjustment
+        ManualAdjustment
     }
 
     public enum StockReferenceType
     {
         GoodsReceipt,
         Bill,
-        StockAudit,
+        Inspection,
         Transfer,
         Manual
     }
@@ -27,31 +26,18 @@ namespace Backend.Models{
     {
         [Key]
         public Guid StockMovementID { get; set; }
+        public Guid BatchID { get; set; }
 
-        public int WarehouseID { get; set; }
-
-        [ForeignKey(nameof(WarehouseID))]
-        public virtual Warehouse Warehouse { get; set; } = null!;
-
-        public int IngredientID { get; set; }
-
-        [ForeignKey(nameof(IngredientID))]
-        public virtual Ingredient Ingredient { get; set; } = null!;
-
-        public Guid? BatchID { get; set; }
-
-        [ForeignKey(nameof(BatchID))]
-        public virtual InventoryBatch? Batch { get; set; }
+        [ForeignKey("BatchID")]
+        public virtual InventoryBatch Batch { get; set; }
 
         public Guid EmployeeID { get; set; }
 
-        [ForeignKey(nameof(EmployeeID))]
+        [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
-
         public decimal QtyChange { get; set; }
         public StockMovementType MovementType { get; set; }
         public StockReferenceType ReferenceType { get; set; }
-        public string? ReferenceID { get; set; }
         public DateTime TimeStamp { get; set; }
         public string? Reason { get; set; }
         public string? Note { get; set; }

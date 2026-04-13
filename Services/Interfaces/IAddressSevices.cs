@@ -1,12 +1,14 @@
 using Backend.Models;
-using Backend.Models.DTOs;
+using Backend.Models.DTOs.Request;
+using Backend.Models.DTOs.Reponse;
 namespace Backend.Services.Interface{
     public interface IAddressService{
-        Task<List<Address>> GetAllAddresses();
-        Task<Address?> GetAddressByID (int addressID);
+        Task<Address?> GetAddressByID (Guid addressID);
+        Task<List<Address>?> GetStoreAddress();
+        Task<List<Address>?> GetSupplierAddress();
+        Task<List<Address>> GetUserAddress(User user);
         Task AddAddress(Address address);
-        Task UpdateAddress(Guid addressID, AddressRequest request);
-        Task DeleteAddress(Guid addressID);
-        Task SetDefault(Address address, User user);
+        Task DeleteUserAddress(Guid address,Guid user);
+        Task SetDefault(Guid address, Guid user);
     }
 }
