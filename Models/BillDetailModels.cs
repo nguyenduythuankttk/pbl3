@@ -7,13 +7,11 @@ namespace Backend.Models
     public class BillDetail
     {
         public Guid BillID { get; set; }
-
-        [ForeignKey(nameof(BillID))]
+        [ForeignKey("BillID")]
         public virtual Bill Bill { get; set; } = null!;
 
         public int ProductVarientID { get; set; }
-
-        [ForeignKey(nameof(ProductVarientID))]
+        [ForeignKey("ProductVarientID")]
         public virtual ProductVarient ProductVarient { get; set; } = null!;
 
         public decimal Quantity { get; set; }

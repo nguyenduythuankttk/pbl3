@@ -10,8 +10,10 @@ namespace Backend.Models {
         public int IngredientID {get; set;}
         [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient{get; set;} = null!;
-        public decimal Quantity {get; set;}
-        public decimal UnitPrice {get; set;}
+        public decimal Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
 
+        [JsonIgnore]
+        public virtual ICollection<InventoryBatch> InventoryBatches { get; set; } = new List<InventoryBatch>();
     }
 }

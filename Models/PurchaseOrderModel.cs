@@ -34,9 +34,12 @@ namespace Backend.Models{
         public DateTime ReceivedDate { get; set; }
         public bool IsDeleted {get; set;} = false;
         [JsonIgnore]
-        public ICollection<PODetail> PODetails { get; set; } = new List<PODetail>();
+        public virtual ICollection<PODetail> PODetails { get; set; } = new List<PODetail>();
 
         [JsonIgnore]
         public virtual ICollection<POApproval> POApprovals { get; set; } = new List<POApproval>();
+
+        [JsonIgnore]
+        public virtual ICollection<GoodsReceipt> GoodsReceipts { get; set; } = new List<GoodsReceipt>();
     }
 }

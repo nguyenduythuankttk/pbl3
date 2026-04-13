@@ -25,8 +25,6 @@ namespace Backend.Models{
         [ForeignKey(nameof(EmployeeID))]
         public virtual Employee Employee { get; set; } = null!;
 
-        public DateTime LastUpdated { get; set; }
-        public string? Comment { get; set; }
-        public PO_Status Status { get; set; }
+
     }
 }

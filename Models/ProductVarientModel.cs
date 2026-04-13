@@ -16,6 +16,10 @@ namespace Backend.Models{
         public decimal Price {get; set;}
         
         [JsonIgnore]
+<<<<<<< HEAD
+        public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();
+=======
         public virtual ICollection<ComboProduct> ComboProduct {get; set; } = new List<ComboProduct>();
+>>>>>>> 3f996c8133d0c3e2b659425e1aa1cdd644fb15df
     }
 }

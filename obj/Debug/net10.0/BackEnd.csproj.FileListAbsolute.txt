@@ -119,6 +119,7 @@
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.pdb
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.genruntimeconfig.cache
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/ref/BackEnd.dll
+<<<<<<< HEAD
 D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.csproj.AssemblyReference.cache
 D:\Wang\pbl3\obj\Debug\net10.0\rpswa.dswa.cache.json
 D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.GeneratedMSBuildEditorConfig.editorconfig
@@ -241,3 +242,6 @@ D:\Wang\pbl3\obj\Debug\net10.0\swae.build.ex.cache
 D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.csproj.Up2Date
 D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.genruntimeconfig.cache
 D:\Wang\pbl3\obj\Debug\net10.0\ref\BackEnd.dll
+=======
+/Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.sourcelink.json
+>>>>>>> 1b0fc8e7c07ad2c6505e01943d16ca7c103a9ced

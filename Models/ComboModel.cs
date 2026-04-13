@@ -10,6 +10,6 @@ namespace Backend.Models{
         public decimal FixedPrice {get; set;}
         public bool IsActive{get; set;}
         [JsonIgnore]
-        public virtual ICollection<ComboProduct> ComboProduct {get; set; } = new List<ComboProduct>();
+        public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();
     }
 }

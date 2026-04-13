@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Data {
     public class AppDbContext : DbContext {
@@ -12,7 +10,7 @@ namespace Backend.Data {
         public DbSet<BillDetail> BillDetail {get; set;}
         public DbSet<Bill> Bill {get; set;}
         public DbSet<Employee> Employee  {get; set;}
-        public DbSet<Receipt> Receipt  {get; set;}
+        public DbSet<Receipt> GoodsReceipt  {get; set;}
         public DbSet<Ingredient> Ingredient {get; set;}
         public DbSet<PurchaseOrder> PurchaseOrder  {get; set;}
         public DbSet<POApproval> POApproval {get; set;}
@@ -21,8 +19,6 @@ namespace Backend.Data {
         public DbSet<ReceiptDetail>  ReceiptDetail {get; set;}
         public DbSet<Receipe> Receipe {get; set;}
         public DbSet<Shift> Shift {get; set;}
-        public DbSet<StockAudit> StockAudit {get; set;}
-        public DbSet<StockAuditDetail> StockAuditDetail {get; set;}
         public DbSet<StockMovement>  StockMovement {get; set;}
         public DbSet<Store> Store {get; set;}
         public DbSet<Supplier> Supplier {get; set;}
@@ -32,49 +28,100 @@ namespace Backend.Data {
 
         public DbSet<Ticket> Ticket  {get; set;}
         public DbSet<UserAddress> UserAddress {get; set;}
-        public DbSet<Utility> Utility  {get; set;}
         public DbSet<Warehouse> Warehouse {get; set;}
 
         // Configure Dbset
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-            // many to many
-            modelBuilder.Entity<BillDetail>()
-            .HasKey(ma => new {ma.BillID,ma.ProductVarientID});
-            modelBuilder.Entity<PODetail>()
-            .HasKey (ma => new {ma.POID,ma.IngredientID});
-            modelBuilder.Entity<POApproval>()
-            .HasKey ( ma => new {ma.POID,ma.EmployeeID});
-            modelBuilder.Entity<ReceiptDetail>()
-            .HasKey (ma => new {ma.GoodsReceiptID, ma.IngredientID});
-            modelBuilder.Entity<Receipe>()
-            .HasKey (ma => new {ma.IngredientID,ma.ProductID});
-            modelBuilder.Entity<StockAuditDetail>()
-            .HasKey (ma => new {ma.StockAuditID,ma.BatchID});
-            modelBuilder.Entity<StoreUtility>()
-            .HasKey(ma => new {ma.StoreID,ma.UtilityID});
+            // ── Composite Keys ───────────────────────────────────────────────
             modelBuilder.Entity<UserAddress>()
-            .HasKey(ma => new {ma.UserID,ma.AddressID});
-            modelBuilder.Entity<ComboProduct>()
-            .HasKey (ma => new{ma.ComboID,ma.ProductVarientID});
+                .HasKey(x => new { x.UserID, x.AddressID });
 
-            // one to one
+            modelBuilder.Entity<BillDetail>()
+            .HasKey(ma => new {ma.BillID,ma.ProductVarient});
+            modelBuilder.Entity<PODetail>()
+                .HasKey(x => new { x.POID, x.IngredientID });
+
+            modelBuilder.Entity<POApproval>()
+                .HasKey(x => new { x.POID, x.EmployeeID });
+
+            modelBuilder.Entity<ReceiptDetail>()
+                .HasKey(x => new { x.GoodsReceiptID, x.IngredientID });
+
+            modelBuilder.Entity<InspectionDetail>()
+                .HasKey(x => new { x.InspectionID, x.IngredientID });
+
+            modelBuilder.Entity<Reservation>()
+                .HasKey(x => new { x.UserID, x.TableID });
+
+            // ── 1:1 ─────────────────────────────────────────────────────────
             modelBuilder.Entity<Store>()
-            .HasOne (s => s.Address)
-            .WithOne (a => a.Store)
-            .HasForeignKey<Store>(s => s.AddressID);
+                .HasOne(s => s.Address)
+                .WithOne(a => a.Store)
+                .HasForeignKey<Store>(s => s.AddressID);
 
             modelBuilder.Entity<Supplier>()
-            .HasOne (s => s.Address)
-            .WithOne (a => a.Supplier)
-            .HasForeignKey <Supplier> (s => s.AddressID);
+                .HasOne(s => s.Address)
+                .WithOne(a => a.Supplier)
+                .HasForeignKey<Supplier>(s => s.AddressID);
 
             modelBuilder.Entity<Bill>()
-            .Property(b => b.PaymentMethods)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
+                .HasOne(b => b.DeliveryInfo)
+                .WithOne(d => d.Bill)
+                .HasForeignKey<DeliveryInfo>(d => d.BillID);
+
+            // ── 1:N — Multiple FK cùng bảng (cần Restrict tránh cascade) ────
+            modelBuilder.Entity<Bill>()
+                .HasOne(b => b.Employee)
+                .WithMany()
+                .HasForeignKey(b => b.EmployeeID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Bill>()
+                .HasOne(b => b.DeletedByEmployee)
+                .WithMany()
+                .HasForeignKey(b => b.DeletedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Receipt>()
+                .HasOne(gr => gr.Employee)
+                .WithMany(e => e.GoodsReceipts)
+                .HasForeignKey(gr => gr.EmployeeID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Receipt>()
+                .HasOne(gr => gr.Deleted)
+                .WithMany()
+                .HasForeignKey(gr => gr.DeletedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<GoodsInspection>()
+                .HasOne(gi => gi.Employee)
+                .WithMany(e => e.GoodsInspections)
+                .HasForeignKey(gi => gi.InspectedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryLog>()
+                .HasOne(dl => dl.Employee)
+                .WithMany(e => e.DeliveryLogs)
+                .HasForeignKey(dl => dl.EmployeeID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ── Composite FK: InventoryBatch → ReceiptDetail ─────────────────
+            modelBuilder.Entity<InventoryBatch>()
+                .HasOne(ib => ib.ReceiptDetail)
+                .WithMany(rd => rd.InventoryBatches)
+                .HasForeignKey(ib => new { ib.GoodsReceiptID, ib.IngredientID })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<InventoryBatch>()
+                .HasOne(ib => ib.Ingredient)
+                .WithMany(i => i.InventoryBatches)
+                .HasForeignKey(ib => ib.IngredientID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ── Enum → String ────────────────────────────────────────────────
             modelBuilder.Entity<Employee>()
             .Property(b => b.Role)
             .HasConversion<string>()
@@ -86,46 +133,8 @@ namespace Backend.Data {
             .HasMaxLength(20)
             .IsRequired();
             modelBuilder.Entity<Ingredient>()
-            .Property(b => b.IngredientUnit)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity <InventoryBatch>()
-            .Property(b => b.Status)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity <POApproval> ()
-            .Property(b => b.Status)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity <Product>()
-            .Property(b => b.ProductType)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity <StockAudit>()
-            .Property(b => b.Status)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity <StockMovement>()
-            .Property(b => b.MovementType)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity <StockMovement>()
-            .Property(b => b.ReferenceType)
-            .HasConversion<string>()
-            .HasMaxLength(20)
-            .IsRequired();
-            modelBuilder.Entity<ProductVarient>()
-            .Property(b => b.ProductSize)
-            .HasConversion<string>()
-            .HasMaxLength(10)
-            .IsRequired();
-
+                .Property(x => x.IngredientUnit)
+                .HasConversion<string>().HasMaxLength(20).IsRequired();
         }
     }
 }

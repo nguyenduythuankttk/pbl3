@@ -7,15 +7,11 @@ namespace Backend.Models{
     {
         public int IngredientID { get; set; }
 
-        [ForeignKey(nameof(IngredientID))]
+        [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient { get; set; } = null!;
-
-        public int ProductID { get; set; }
-
-        [ForeignKey(nameof(ProductID))]
-        public virtual Product Product { get; set; } = null!;
-
-        public decimal Quantity { get; set; }
+        public int ProductVarientID { get; set; }
+        [ForeignKey("ProductVarientID")]
+        public virtual ProductVarient ProductVarient { get; set; } = null!;
         public decimal QtyBeforeProcess { get; set; }
         public decimal QtyAfterProcess { get; set; }
     }

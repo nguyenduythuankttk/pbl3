@@ -11,8 +11,8 @@ namespace Backend.Models {
         public virtual Employee Employee {get; set;} = null!;
         public DateTime TimeIn {get; set;}
         public DateTime TimeOut {get; set;}
-        public DateTime ChechIn {get; set;} 
-        public DateTime CheckOut {get; set;}
+        public DateTime? ChechIn {get; set;} 
+        public DateTime? CheckOut {get; set;}
 
     }
 }
