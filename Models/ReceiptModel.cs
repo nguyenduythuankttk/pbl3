@@ -28,6 +28,12 @@ namespace Backend.Models{
 
         public DateTime? DateReceive { get; set; } = null;
         public DateTime? DateUpdate {get; set; }
+        public ReceiptStatus Status { get; set; } = ReceiptStatus.Preparing;
+        public Guid? POID { get; set; }
+        [ForeignKey("POID")]
+        public virtual PurchaseOrder? PurchaseOrder { get; set; }
+        [JsonIgnore]
+        public virtual GoodsInspection? GoodsInspection { get; set; }
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
     }
