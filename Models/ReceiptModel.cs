@@ -29,6 +29,9 @@ namespace Backend.Models{
         public DateTime? DateReceive { get; set; } = null;
         public DateTime? DateUpdate {get; set; }
         public ReceiptStatus Status { get; set; } = ReceiptStatus.Preparing;
+        public Guid? DeletedBy { get; set; }
+        [ForeignKey("DeletedBy")]
+        public virtual Employee? DeletedByEmployee { get; set; }
         public Guid? POID { get; set; }
         [ForeignKey("POID")]
         public virtual PurchaseOrder? PurchaseOrder { get; set; }

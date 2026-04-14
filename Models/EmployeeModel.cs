@@ -25,7 +25,7 @@ namespace Backend.Models{
         [InverseProperty("Employee")]
         public virtual ICollection<Receipt> Receipts { get; set; } = new List<Receipt>();
         [JsonIgnore]
-        [InverseProperty("Deleted")]
+        [InverseProperty("DeletedByEmployee")]
         public virtual ICollection<Receipt> DeletedReceipts { get; set; } = new List<Receipt>();
         [JsonIgnore]
         
