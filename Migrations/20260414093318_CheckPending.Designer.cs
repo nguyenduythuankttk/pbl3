@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260414093318_CheckPending")]
+    partial class CheckPending
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -433,15 +436,11 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("AftStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                    b.Property<int>("AftStatus")
+                        .HasColumnType("int");
 
-                    b.Property<string>("BfrStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                    b.Property<int>("BfrStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Comment")
                         .HasColumnType("longtext");
@@ -457,6 +456,43 @@ namespace BackEnd.Migrations
                     b.HasIndex("EmployeeID");
 
                     b.ToTable("POApproval");
+                });
+
+            modelBuilder.Entity("Backend.Models.POApprovalChange", b =>
+                {
+                    b.Property<Guid>("POApprovalChangeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("AftStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("BfrStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("EmployeeID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("POID")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("POApprovalChangeID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.HasIndex("POID");
+
+                    b.ToTable("POApprovalChange");
                 });
 
             modelBuilder.Entity("Backend.Models.PODetail", b =>
@@ -1166,6 +1202,25 @@ namespace BackEnd.Migrations
 
                     b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
                         .WithMany("POApprovals")
+                        .HasForeignKey("POID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("PurchaseOrder");
+                });
+
+            modelBuilder.Entity("Backend.Models.POApprovalChange", b =>
+                {
+                    b.HasOne("Backend.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
+                        .WithMany()
                         .HasForeignKey("POID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

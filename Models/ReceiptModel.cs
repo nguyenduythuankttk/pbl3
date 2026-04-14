@@ -22,21 +22,12 @@ namespace Backend.Models{
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
         public Guid SupplierID { get; set; }
-
         [ForeignKey("SupplierID")]
         public virtual Supplier Supplier { get; set; } = null!;
-
-        public DateTime? DateReceive { get; set; } = null;
-        public DateTime? DateUpdate {get; set; }
-        public ReceiptStatus Status { get; set; } = ReceiptStatus.Preparing;
-        public Guid? DeletedBy { get; set; }
-        [ForeignKey("DeletedBy")]
-        public virtual Employee? DeletedByEmployee { get; set; }
         public Guid? POID { get; set; }
         [ForeignKey("POID")]
         public virtual PurchaseOrder? PurchaseOrder { get; set; }
-        [JsonIgnore]
-        public virtual GoodsInspection? GoodsInspection { get; set; }
+
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
     }

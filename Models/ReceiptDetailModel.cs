@@ -11,6 +11,7 @@ namespace Backend.Models {
         [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient{get; set;} = null!;
         public decimal Quantity { get; set; }
+        public decimal GoodQuantity {get; set;}
         public decimal UnitPrice { get; set; }
 
         [JsonIgnore]

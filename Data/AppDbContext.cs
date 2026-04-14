@@ -29,15 +29,13 @@ namespace Backend.Data {
         public DbSet<PurchaseOrder> PurchaseOrder { get; set; }
         public DbSet<PODetail> PODetail { get; set; }
         public DbSet<POApproval> POApproval { get; set; }
-        public DbSet<POApprovalChange> POApprovalChange { get; set; }
         public DbSet<Receipt> Receipt { get; set; }
         public DbSet<ReceiptDetail> ReceiptDetail { get; set; }
-        public DbSet<GoodsInspection> GoodsInspection { get; set; }
-        public DbSet<InspectionDetail> InspectionDetail { get; set; }
         public DbSet<Warehouse> Warehouse { get; set; }
         public DbSet<Ingredient> Ingredient { get; set; }
         public DbSet<InventoryBatch> InventoryBatch { get; set; }
         public DbSet<StockMovement> StockMovement { get; set; }
+        public DbSet<ReceiptChange> ReceiptChange {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -64,8 +62,6 @@ namespace Backend.Data {
             modelBuilder.Entity<ReceiptDetail>()
                 .HasKey(x => new { x.GoodsReceiptID, x.IngredientID });
 
-            modelBuilder.Entity<InspectionDetail>()
-                .HasKey(x => new { x.InspectionID, x.IngredientID });
 
             modelBuilder.Entity<Reservation>()
                 .HasKey(x => new { x.UserID, x.TableID });
@@ -80,10 +76,6 @@ namespace Backend.Data {
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Supplier)
                 .HasForeignKey<Supplier>(s => s.AddressID);
-            modelBuilder.Entity<GoodsInspection>()
-                .HasOne(g => g.Receipt)
-                .WithOne(r => r.GoodsInspection)
-                .HasForeignKey<GoodsInspection> (g => g.ReceiptID);
             modelBuilder.Entity<Receipt>()
                 .HasOne(r => r.PurchaseOrder)
                 .WithOne(p => p.Receipt)
@@ -126,17 +118,9 @@ namespace Backend.Data {
                 .Property(x => x.Size)
                 .HasConversion<string>().HasMaxLength(10).IsRequired();
 
-            modelBuilder.Entity<Receipt>()
+            modelBuilder.Entity<ReceiptChange>()
                 .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<GoodsInspection>()
-                .Property(x => x.Status)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<InspectionDetail>()
-                .Property(x => x.DamageReason)
-                .HasConversion<string>().HasMaxLength(20);
 
             modelBuilder.Entity<InventoryBatch>()
                 .Property(x => x.Status)
@@ -150,11 +134,11 @@ namespace Backend.Data {
                 .Property(x => x.ReferenceType)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
-            modelBuilder.Entity<POApprovalChange>()
+            modelBuilder.Entity<POApproval>()
                 .Property(x => x.BfrStatus)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
-            modelBuilder.Entity<POApprovalChange>()
+            modelBuilder.Entity<POApproval>()
                 .Property(x => x.AftStatus)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 

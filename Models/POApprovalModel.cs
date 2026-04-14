@@ -15,16 +15,22 @@ namespace Backend.Models{
 
     public class POApproval
     {
+        [Key]
+        public Guid POApprovalID { get; set; }
         public Guid POID { get; set; }
 
-        [ForeignKey(nameof(POID))]
+        [ForeignKey("POID")]
         public virtual PurchaseOrder PurchaseOrder { get; set; } = null!;
 
         public Guid EmployeeID { get; set; }
 
-        [ForeignKey(nameof(EmployeeID))]
+        [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
 
+        public DateTime LastUpdated { get; set; }
+        public string? Comment { get; set; }
+        public PO_Status BfrStatus { get; set; }
+        public PO_Status AftStatus { get; set; }
 
     }
 }

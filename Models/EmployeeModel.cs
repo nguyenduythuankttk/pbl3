@@ -22,14 +22,9 @@ namespace Backend.Models{
         [JsonIgnore]
         public virtual ICollection<POApproval> POApprovals { get; set; } = new List<POApproval>();
         [JsonIgnore]
-        [InverseProperty("Employee")]
         public virtual ICollection<Receipt> Receipts { get; set; } = new List<Receipt>();
         [JsonIgnore]
-        [InverseProperty("DeletedByEmployee")]
-        public virtual ICollection<Receipt> DeletedReceipts { get; set; } = new List<Receipt>();
-        [JsonIgnore]
-        
-        public virtual ICollection<GoodsInspection> GoodsInspections { get; set; } = new List<GoodsInspection>();
+        public virtual ICollection<ReceiptChange> ReceiptChanges{ get; set; } = new List<ReceiptChange>();
         [JsonIgnore]
         public virtual ICollection<DeliveryLog> DeliveryLogs { get; set; } = new List<DeliveryLog>();
         [JsonIgnore]
