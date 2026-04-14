@@ -26,6 +26,10 @@ namespace Backend.Models{
         [ForeignKey("SupplierID")]
         public virtual Supplier Supplier { get; set; } = null!;
 
+<<<<<<< HEAD
+        public DateTime? DateReceive { get; set; } = null;
+        public DateTime? DateUpdate {get; set; }
+=======
         public Guid POID { get; set; }
 
         [ForeignKey("POID")]
@@ -39,6 +43,12 @@ namespace Backend.Models{
         public Guid DeletedBy { get; set; }
         [ForeignKey("DeletedBy")]
         public virtual Employee Deleted { get; set; } = null!;
+=======
+        public DateTime DateUpdate {get; set; } = null;
+        public ReceiptStatus Status { get; set; }
+        public bool IsDeleted{get; set;} = false;
+
+>>>>>>> 3f996c8133d0c3e2b659425e1aa1cdd644fb15df:Models/ReceiptModel.cs
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
     }

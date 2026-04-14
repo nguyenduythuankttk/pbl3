@@ -19,6 +19,10 @@ namespace Backend.Models.DTOs.Request
         //public DateTime DateReceive { get; set; } -> Tương tự với employeeID
         public ReceiptStatus Status { get; set; }
     }
-
-
 }
+
+//     public class ReceiptDetailCreateRequest
+//     {
+//         public 
+//     }
+// }
