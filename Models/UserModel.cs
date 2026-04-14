@@ -19,6 +19,6 @@ namespace Backend.Models {
         [JsonIgnore]
         public virtual ICollection<Ticket> Ticket { get; set; } = new List<Ticket>();
         [JsonIgnore]
-        public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();
     }       
 }

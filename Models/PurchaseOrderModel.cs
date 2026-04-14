@@ -35,12 +35,12 @@ namespace Backend.Models{
         public bool IsDeleted {get; set;} = false;
         public virtual Receipt? Receipt{get; set;}
         [JsonIgnore]
-        public virtual ICollection<PODetail> PODetails { get; set; } = new List<PODetail>();
+        public virtual ICollection<PODetail> PODetail { get; set; } = new List<PODetail>();
 
         [JsonIgnore]
-        public virtual ICollection<POApproval> POApprovals { get; set; } = new List<POApproval>();
+        public virtual ICollection<POApproval> POApproval { get; set; } = new List<POApproval>();
 
         [JsonIgnore]
-        public virtual ICollection<Receipt> GoodsReceipts { get; set; } = new List<Receipt>();
+        public virtual ICollection<Receipt> GoodsReceipt { get; set; } = new List<Receipt>();
     }
 }

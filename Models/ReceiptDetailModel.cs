@@ -15,6 +15,6 @@ namespace Backend.Models {
         public decimal UnitPrice { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<InventoryBatch> InventoryBatches { get; set; } = new List<InventoryBatch>();
+        public virtual ICollection<InventoryBatch> InventoryBatch { get; set; } = new List<InventoryBatch>();
     }
 }

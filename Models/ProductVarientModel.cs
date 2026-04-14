@@ -18,8 +18,8 @@ namespace Backend.Models{
         [JsonIgnore]
         public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();
         [JsonIgnore]
-        public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
+        public virtual ICollection<BillDetail> BillDetail { get; set; } = new List<BillDetail>();
         [JsonIgnore]
-        public virtual ICollection<Receipe> Recipes { get; set; } = new List<Receipe>();
+        public virtual ICollection<Receipe> Recipe { get; set; } = new List<Receipe>();
     }
 }

@@ -31,6 +31,6 @@ namespace Backend.Models {
         public string? Note { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<DeliveryLog> DeliveryLogs { get; set; } = new List<DeliveryLog>();
+        public virtual ICollection<DeliveryLog> DeliveryLog { get; set; } = new List<DeliveryLog>();
     }
 }

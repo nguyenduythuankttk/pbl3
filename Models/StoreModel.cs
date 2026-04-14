@@ -21,12 +21,12 @@ namespace Backend.Models{
         public virtual Address Address { get; set; } = null!;
 
         [JsonIgnore]
-        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Employee> Employee { get; set; } = new List<Employee>();
 
         [JsonIgnore]
-        public virtual ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
+        public virtual ICollection<Warehouse> Warehouse { get; set; } = new List<Warehouse>();
 
         [JsonIgnore]
-        public virtual ICollection<DiningTable> DiningTables { get; set; } = new List<DiningTable>();
+        public virtual ICollection<DiningTable> DiningTable { get; set; } = new List<DiningTable>();
     }
 }

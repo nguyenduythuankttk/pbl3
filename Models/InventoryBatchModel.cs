@@ -37,6 +37,6 @@ namespace Backend.Models{
         public Guid GoodsReceiptID { get; set; }
         public virtual ReceiptDetail ReceiptDetail { get; set; } = null!;
         [JsonIgnore]
-        public virtual ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
+        public virtual ICollection<StockMovement> StockMovement { get; set; } = new List<StockMovement>();
     }
 }

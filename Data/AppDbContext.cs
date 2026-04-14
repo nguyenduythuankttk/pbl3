@@ -36,6 +36,8 @@ namespace Backend.Data {
         public DbSet<InventoryBatch> InventoryBatch { get; set; }
         public DbSet<StockMovement> StockMovement { get; set; }
         public DbSet<ReceiptChange> ReceiptChange {get; set;}
+        public DbSet<TicketCombo> TicketCombo {get; set;}
+        public DbSet<TicketProduct> TicketProduct {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -62,9 +64,14 @@ namespace Backend.Data {
             modelBuilder.Entity<ReceiptDetail>()
                 .HasKey(x => new { x.GoodsReceiptID, x.IngredientID });
 
-
             modelBuilder.Entity<Reservation>()
                 .HasKey(x => new { x.UserID, x.TableID });
+
+            modelBuilder.Entity<TicketCombo>()
+                .HasKey(x => new {x.TicketID, x.ComboID});
+
+            modelBuilder.Entity<TicketProduct>()
+                .HasKey(x => new {x.TicketID, x.ProductVarientID});
 
             //one to one
             modelBuilder.Entity<Store>()

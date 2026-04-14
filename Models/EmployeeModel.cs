@@ -18,17 +18,17 @@ namespace Backend.Models{
         [ForeignKey(nameof(StoreID))]
         public virtual Store Store { get; set; } = null!;
         [JsonIgnore]
-        public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
+        public virtual ICollection<Shift> Shift { get; set; } = new List<Shift>();
         [JsonIgnore]
-        public virtual ICollection<POApproval> POApprovals { get; set; } = new List<POApproval>();
+        public virtual ICollection<POApproval> POApproval { get; set; } = new List<POApproval>();
         [JsonIgnore]
-        public virtual ICollection<Receipt> Receipts { get; set; } = new List<Receipt>();
+        public virtual ICollection<Receipt> Receipt { get; set; } = new List<Receipt>();
         [JsonIgnore]
-        public virtual ICollection<ReceiptChange> ReceiptChanges{ get; set; } = new List<ReceiptChange>();
+        public virtual ICollection<ReceiptChange> ReceiptChange{ get; set; } = new List<ReceiptChange>();
         [JsonIgnore]
-        public virtual ICollection<DeliveryLog> DeliveryLogs { get; set; } = new List<DeliveryLog>();
+        public virtual ICollection<DeliveryLog> DeliveryLog { get; set; } = new List<DeliveryLog>();
         [JsonIgnore]
-        public virtual ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
+        public virtual ICollection<StockMovement> StockMovement { get; set; } = new List<StockMovement>();
         public decimal BasicSalary { get; set; }
     }
 }

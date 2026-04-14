@@ -12,6 +12,6 @@ namespace Backend.Models {
         public string? Image { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<Product> Product { get; set; } = new List<Product>();
     }
 }

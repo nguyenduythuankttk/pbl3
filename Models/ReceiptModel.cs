@@ -29,6 +29,6 @@ namespace Backend.Models{
         public virtual PurchaseOrder? PurchaseOrder { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
+        public virtual ICollection<ReceiptDetail> ReceiptDetail { get; set; } = new List<ReceiptDetail>();
     }
 }

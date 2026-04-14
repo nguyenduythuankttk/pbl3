@@ -22,18 +22,18 @@ namespace Backend.Models{
         public decimal CostPerUnit { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<PODetail> PODetails { get; set; } = new List<PODetail>();
+        public virtual ICollection<PODetail> PODetail { get; set; } = new List<PODetail>();
 
         [JsonIgnore]
-        public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
+        public virtual ICollection<ReceiptDetail> ReceiptDetail { get; set; } = new List<ReceiptDetail>();
 
         [JsonIgnore]
-        public virtual ICollection<InventoryBatch> InventoryBatches { get; set; } = new List<InventoryBatch>();
+        public virtual ICollection<InventoryBatch> InventoryBatche { get; set; } = new List<InventoryBatch>();
 
         [JsonIgnore]
-        public virtual ICollection<Receipe> Recipes { get; set; } = new List<Receipe>();
+        public virtual ICollection<Receipe> Recipe { get; set; } = new List<Receipe>();
 
         [JsonIgnore]
-        public virtual ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
+        public virtual ICollection<StockMovement> StockMovement { get; set; } = new List<StockMovement>();
     }
 }

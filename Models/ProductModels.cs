@@ -24,7 +24,7 @@ namespace Backend.Models{
         public bool IsActive { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<ProductVarient> ProductVarients { get; set; } = new List<ProductVarient>();
+        public virtual ICollection<ProductVarient> ProductVarient { get; set; } = new List<ProductVarient>();
 
 
     }

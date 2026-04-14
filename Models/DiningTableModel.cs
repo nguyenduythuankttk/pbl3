@@ -18,6 +18,6 @@ namespace Backend.Models {
         public int Capacity { get; set; }
         public TableStatus Status { get; set; } = TableStatus.Available;
         [JsonIgnore]
-        public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();
     }
 }
