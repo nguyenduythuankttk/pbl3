@@ -30,7 +30,7 @@ namespace Backend.Data {
         public DbSet<PODetail> PODetail { get; set; }
         public DbSet<POApproval> POApproval { get; set; }
         public DbSet<POApprovalChange> POApprovalChange { get; set; }
-        public DbSet<GoodsReceipt> GoodsReceipt { get; set; }
+        public DbSet<Receipt> Receipt { get; set; }
         public DbSet<ReceiptDetail> ReceiptDetail { get; set; }
         public DbSet<GoodsInspection> GoodsInspection { get; set; }
         public DbSet<InspectionDetail> InspectionDetail { get; set; }
@@ -42,7 +42,7 @@ namespace Backend.Data {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-            // ── Composite Keys ───────────────────────────────────────────────
+            // many to many
             modelBuilder.Entity<UserAddress>()
                 .HasKey(x => new { x.UserID, x.AddressID });
 
@@ -70,7 +70,7 @@ namespace Backend.Data {
             modelBuilder.Entity<Reservation>()
                 .HasKey(x => new { x.UserID, x.TableID });
 
-            // ── 1:1 ─────────────────────────────────────────────────────────
+            //one to one
             modelBuilder.Entity<Store>()
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Store)
@@ -80,63 +80,16 @@ namespace Backend.Data {
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Supplier)
                 .HasForeignKey<Supplier>(s => s.AddressID);
-
-            modelBuilder.Entity<Bill>()
-                .HasOne(b => b.DeliveryInfo)
-                .WithOne(d => d.Bill)
-                .HasForeignKey<DeliveryInfo>(d => d.BillID);
-
-            // ── 1:N — Multiple FK cùng bảng (cần Restrict tránh cascade) ────
-            modelBuilder.Entity<Bill>()
-                .HasOne(b => b.Employee)
-                .WithMany()
-                .HasForeignKey(b => b.EmployeeID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Bill>()
-                .HasOne(b => b.DeletedByEmployee)
-                .WithMany()
-                .HasForeignKey(b => b.DeletedBy)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<GoodsReceipt>()
-                .HasOne(gr => gr.Employee)
-                .WithMany(e => e.GoodsReceipts)
-                .HasForeignKey(gr => gr.EmployeeID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<GoodsReceipt>()
-                .HasOne(gr => gr.Deleted)
-                .WithMany()
-                .HasForeignKey(gr => gr.DeletedBy)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<GoodsInspection>()
-                .HasOne(gi => gi.Employee)
-                .WithMany(e => e.GoodsInspections)
-                .HasForeignKey(gi => gi.InspectedBy)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(g => g.Receipt)
+                .WithOne(r => r.GoodsInspection)
+                .HasForeignKey<GoodsInspection> (g => g.ReceiptID);
+            modelBuilder.Entity<Receipt>()
+                .HasOne(r => r.PurchaseOrder)
+                .WithOne(p => p.Receipt)
+                .HasForeignKey<Receipt> (r => r.POID);
 
-            modelBuilder.Entity<DeliveryLog>()
-                .HasOne(dl => dl.Employee)
-                .WithMany(e => e.DeliveryLogs)
-                .HasForeignKey(dl => dl.EmployeeID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // ── Composite FK: InventoryBatch → ReceiptDetail ─────────────────
-            modelBuilder.Entity<InventoryBatch>()
-                .HasOne(ib => ib.ReceiptDetail)
-                .WithMany(rd => rd.InventoryBatches)
-                .HasForeignKey(ib => new { ib.GoodsReceiptID, ib.IngredientID })
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<InventoryBatch>()
-                .HasOne(ib => ib.Ingredient)
-                .WithMany(i => i.InventoryBatches)
-                .HasForeignKey(ib => ib.IngredientID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // ── Enum → String ────────────────────────────────────────────────
+            // convert string
             modelBuilder.Entity<Employee>()
                 .Property(x => x.Role)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
@@ -173,7 +126,7 @@ namespace Backend.Data {
                 .Property(x => x.Size)
                 .HasConversion<string>().HasMaxLength(10).IsRequired();
 
-            modelBuilder.Entity<GoodsReceipt>()
+            modelBuilder.Entity<Receipt>()
                 .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 

@@ -33,6 +33,7 @@ namespace Backend.Models{
         [Required]
         public DateTime ReceivedDate { get; set; }
         public bool IsDeleted {get; set;} = false;
+        public virtual Receipt? Receipt{get; set;}
         [JsonIgnore]
         public virtual ICollection<PODetail> PODetails { get; set; } = new List<PODetail>();
 
@@ -40,6 +41,6 @@ namespace Backend.Models{
         public virtual ICollection<POApproval> POApprovals { get; set; } = new List<POApproval>();
 
         [JsonIgnore]
-        public virtual ICollection<GoodsReceipt> GoodsReceipts { get; set; } = new List<GoodsReceipt>();
+        public virtual ICollection<Receipt> GoodsReceipts { get; set; } = new List<Receipt>();
     }
 }

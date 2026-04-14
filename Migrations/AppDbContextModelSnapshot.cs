@@ -46,10 +46,16 @@ namespace BackEnd.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
+                    b.Property<int>("StoreID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
+
+                    b.Property<int>("SupplierID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Ward")
                         .IsRequired()
@@ -66,6 +72,21 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("BillID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("EmployeeID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Paid")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("PaymentMethods")
                         .IsRequired()
@@ -89,6 +110,10 @@ namespace BackEnd.Migrations
 
                     b.HasKey("BillID");
 
+                    b.HasIndex("DeletedBy");
+
+                    b.HasIndex("EmployeeID");
+
                     b.HasIndex("StoreID");
 
                     b.HasIndex("UserID");
@@ -96,12 +121,34 @@ namespace BackEnd.Migrations
                     b.ToTable("Bill");
                 });
 
+            modelBuilder.Entity("Backend.Models.BillChange", b =>
+                {
+                    b.Property<Guid>("BillChangeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<Guid>("BillID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("BillChangeID");
+
+                    b.HasIndex("BillID");
+
+                    b.ToTable("BillChange");
+                });
+
             modelBuilder.Entity("Backend.Models.BillDetail", b =>
                 {
                     b.Property<Guid>("BillID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ProductVarientID")
                         .HasColumnType("int");
 
                     b.Property<decimal>("InlineTotal")
@@ -113,55 +160,163 @@ namespace BackEnd.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("BillID", "ProductID");
+                    b.HasKey("BillID", "ProductVarientID");
 
-                    b.HasIndex("ProductID");
+                    b.HasIndex("ProductVarientID");
 
                     b.ToTable("BillDetail");
                 });
 
-            modelBuilder.Entity("Backend.Models.BillModify", b =>
+            modelBuilder.Entity("Backend.Models.Category", b =>
                 {
-                    b.Property<Guid>("BillModifyID")
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CategoryID"));
+
+                    b.Property<string>("Image")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("Backend.Models.Combo", b =>
+                {
+                    b.Property<int>("ComboID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ComboID"));
+
+                    b.Property<string>("ComboName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("FixedPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("ComboID");
+
+                    b.ToTable("Combo");
+                });
+
+            modelBuilder.Entity("Backend.Models.ComboProduct", b =>
+                {
+                    b.Property<int>("ComboID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductVarientID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("ComboID", "ProductVarientID");
+
+                    b.HasIndex("ProductVarientID");
+
+                    b.ToTable("ComboProduct");
+                });
+
+            modelBuilder.Entity("Backend.Models.DeliveryInfo", b =>
+                {
+                    b.Property<Guid>("DeliveryID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("BillDetailBillID")
-                        .HasColumnType("char(36)");
+                    b.Property<DateTime?>("ActualTime")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("BillDetailProductID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AddressID")
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("BillID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("ModifyType")
-                        .HasColumnType("int");
+                    b.Property<string>("CurrentStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
-                    b.Property<int>("ProductID")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EstimatedTime")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
 
-                    b.HasKey("BillModifyID");
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.HasIndex("BillDetailBillID", "BillDetailProductID");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
 
-                    b.ToTable("BillModify");
+                    b.HasKey("DeliveryID");
+
+                    b.HasIndex("AddressID");
+
+                    b.HasIndex("BillID");
+
+                    b.ToTable("DeliveryInfo");
                 });
 
-            modelBuilder.Entity("Backend.Models.GoodsReceipt", b =>
+            modelBuilder.Entity("Backend.Models.DeliveryLog", b =>
                 {
-                    b.Property<Guid>("GoodsReceiptID")
+                    b.Property<Guid>("LogID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("DateReceive")
+                    b.Property<DateTime>("ChangedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("DeliveryID")
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("FromStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("LogID");
+
+                    b.HasIndex("DeliveryID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("DeliveryLog");
+                });
+
+            modelBuilder.Entity("Backend.Models.DiningTable", b =>
+                {
+                    b.Property<int>("TableID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TableID"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -171,18 +326,47 @@ namespace BackEnd.Migrations
                     b.Property<int>("StoreID")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SupplierID")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
 
-                    b.HasKey("GoodsReceiptID");
-
-                    b.HasIndex("EmployeeID");
+                    b.HasKey("TableID");
 
                     b.HasIndex("StoreID");
 
-                    b.HasIndex("SupplierID");
+                    b.ToTable("DiningTable");
+                });
 
-                    b.ToTable("GoodsReceipt");
+            modelBuilder.Entity("Backend.Models.GoodsInspection", b =>
+                {
+                    b.Property<Guid>("InspectionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("InspectedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("InspectedBy")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("ReceiptID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("InspectionID");
+
+                    b.HasIndex("InspectedBy");
+
+                    b.HasIndex("ReceiptID")
+                        .IsUnique();
+
+                    b.ToTable("GoodsInspection");
                 });
 
             modelBuilder.Entity("Backend.Models.Ingredient", b =>
@@ -196,18 +380,55 @@ namespace BackEnd.Migrations
                     b.Property<decimal>("CostPerUnit")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<string>("IngredientName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("IngredientUnit")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.HasKey("IngredientID");
 
                     b.ToTable("Ingredient");
+                });
+
+            modelBuilder.Entity("Backend.Models.InspectionDetail", b =>
+                {
+                    b.Property<Guid>("InspectionID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("IngredientID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DamageReason")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<decimal>("DamagedQty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("ExpiredQty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("GoodQty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("ReceivedQty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("ShortageQty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("InspectionID", "IngredientID");
+
+                    b.HasIndex("IngredientID");
+
+                    b.ToTable("InspectionDetail");
                 });
 
             modelBuilder.Entity("Backend.Models.InventoryBatch", b =>
@@ -265,8 +486,6 @@ namespace BackEnd.Migrations
 
                     b.HasKey("BatchID");
 
-                    b.HasIndex("GoodsReceiptID");
-
                     b.HasIndex("IngredientID");
 
                     b.HasIndex("WarehouseID");
@@ -284,22 +503,38 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
 
+                    b.HasKey("POID", "EmployeeID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("POApproval");
+                });
+
+            modelBuilder.Entity("Backend.Models.POApprovalChange", b =>
+                {
+                    b.Property<Guid>("POApprovalChangeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("AftStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("BfrStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
                     b.Property<string>("Comment")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                    b.HasKey("POApprovalChangeID");
 
-                    b.HasKey("POID", "EmployeeID");
-
-                    b.HasIndex("EmployeeID");
-
-                    b.ToTable("POApproval");
+                    b.ToTable("POApprovalChange");
                 });
 
             modelBuilder.Entity("Backend.Models.PODetail", b =>
@@ -331,11 +566,14 @@ namespace BackEnd.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductID"));
 
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -351,7 +589,35 @@ namespace BackEnd.Migrations
 
                     b.HasKey("ProductID");
 
+                    b.HasIndex("CategoryID");
+
                     b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("Backend.Models.ProductVarient", b =>
+                {
+                    b.Property<int>("ProductVarientID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductVarientID"));
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.HasKey("ProductVarientID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("ProductVarient");
                 });
 
             modelBuilder.Entity("Backend.Models.PurchaseOrder", b =>
@@ -362,6 +628,9 @@ namespace BackEnd.Migrations
 
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("ReceivedDate")
                         .HasColumnType("datetime(6)");
@@ -394,7 +663,7 @@ namespace BackEnd.Migrations
                     b.Property<int>("IngredientID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ProductVarientID")
                         .HasColumnType("int");
 
                     b.Property<decimal>("QtyAfterProcess")
@@ -403,14 +672,64 @@ namespace BackEnd.Migrations
                     b.Property<decimal>("QtyBeforeProcess")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(65,30)");
+                    b.HasKey("IngredientID", "ProductVarientID");
 
-                    b.HasKey("IngredientID", "ProductID");
-
-                    b.HasIndex("ProductID");
+                    b.HasIndex("ProductVarientID");
 
                     b.ToTable("Receipe");
+                });
+
+            modelBuilder.Entity("Backend.Models.Receipt", b =>
+                {
+                    b.Property<Guid>("GoodsReceiptID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DateReceive")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("DeletedBy")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("EmployeeID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("POID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("PurchaseOrderPOID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("StoreID")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SupplierID")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("GoodsReceiptID");
+
+                    b.HasIndex("DeletedBy");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.HasIndex("POID")
+                        .IsUnique();
+
+                    b.HasIndex("PurchaseOrderPOID");
+
+                    b.HasIndex("StoreID");
+
+                    b.HasIndex("SupplierID");
+
+                    b.ToTable("Receipt");
                 });
 
             modelBuilder.Entity("Backend.Models.ReceiptDetail", b =>
@@ -434,16 +753,48 @@ namespace BackEnd.Migrations
                     b.ToTable("ReceiptDetail");
                 });
 
+            modelBuilder.Entity("Backend.Models.Reservation", b =>
+                {
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("TableID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("GuestCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ScheduledTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("UserID", "TableID");
+
+                    b.HasIndex("TableID");
+
+                    b.ToTable("Reservation");
+                });
+
             modelBuilder.Entity("Backend.Models.Shift", b =>
                 {
                     b.Property<Guid>("ShiftID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("ChechIn")
+                    b.Property<DateTime?>("ChechIn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("CheckOut")
+                    b.Property<DateTime?>("CheckOut")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("EmployeeID")
@@ -462,94 +813,25 @@ namespace BackEnd.Migrations
                     b.ToTable("Shift");
                 });
 
-            modelBuilder.Entity("Backend.Models.StockAudit", b =>
-                {
-                    b.Property<Guid>("StockAuditID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid?>("ApprovedBy")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("CreateBy")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<int>("WarehouseID")
-                        .HasColumnType("int");
-
-                    b.HasKey("StockAuditID");
-
-                    b.HasIndex("ApprovedBy");
-
-                    b.HasIndex("CreateBy");
-
-                    b.HasIndex("WarehouseID");
-
-                    b.ToTable("StockAudit");
-                });
-
-            modelBuilder.Entity("Backend.Models.StockAuditDetail", b =>
-                {
-                    b.Property<Guid>("StockAuditID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("BatchID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<decimal>("CounterQty")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("Difference")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int?>("IngredientID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("SysQty")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("StockAuditID", "BatchID");
-
-                    b.HasIndex("BatchID");
-
-                    b.HasIndex("IngredientID");
-
-                    b.ToTable("StockAuditDetail");
-                });
-
             modelBuilder.Entity("Backend.Models.StockMovement", b =>
                 {
                     b.Property<Guid>("StockMovementID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("BatchID")
+                    b.Property<Guid>("BatchID")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("IngredientID")
+                    b.Property<int?>("IngredientID")
                         .HasColumnType("int");
 
                     b.Property<string>("MovementType")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
@@ -560,9 +842,6 @@ namespace BackEnd.Migrations
                     b.Property<string>("Reason")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ReferenceID")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("ReferenceType")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -571,9 +850,6 @@ namespace BackEnd.Migrations
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("WarehouseID")
-                        .HasColumnType("int");
-
                     b.HasKey("StockMovementID");
 
                     b.HasIndex("BatchID");
@@ -581,8 +857,6 @@ namespace BackEnd.Migrations
                     b.HasIndex("EmployeeID");
 
                     b.HasIndex("IngredientID");
-
-                    b.HasIndex("WarehouseID");
 
                     b.ToTable("StockMovement");
                 });
@@ -621,27 +895,6 @@ namespace BackEnd.Migrations
                         .IsUnique();
 
                     b.ToTable("Store");
-                });
-
-            modelBuilder.Entity("Backend.Models.StoreUtility", b =>
-                {
-                    b.Property<int>("StoreID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UtilityID")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("double");
-
-                    b.HasKey("StoreID", "UtilityID");
-
-                    b.HasIndex("UtilityID");
-
-                    b.ToTable("StoreUtility");
                 });
 
             modelBuilder.Entity("Backend.Models.Supplier", b =>
@@ -766,25 +1019,6 @@ namespace BackEnd.Migrations
                     b.ToTable("UserAddress");
                 });
 
-            modelBuilder.Entity("Backend.Models.Utility", b =>
-                {
-                    b.Property<int>("UtilityID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UtilityID"));
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("UtilityID");
-
-                    b.ToTable("Utility");
-                });
-
             modelBuilder.Entity("Backend.Models.Warehouse", b =>
                 {
                     b.Property<int>("WarehouseID")
@@ -828,6 +1062,16 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Bill", b =>
                 {
+                    b.HasOne("Backend.Models.Employee", "DeletedByEmployee")
+                        .WithMany()
+                        .HasForeignKey("DeletedBy");
+
+                    b.HasOne("Backend.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreID")
@@ -840,9 +1084,24 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("DeletedByEmployee");
+
+                    b.Navigation("Employee");
+
                     b.Navigation("Store");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.BillChange", b =>
+                {
+                    b.HasOne("Backend.Models.Bill", "Bill")
+                        .WithMany("BillChanges")
+                        .HasForeignKey("BillID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
                 });
 
             modelBuilder.Entity("Backend.Models.BillDetail", b =>
@@ -853,63 +1112,125 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Product", "Product")
+                    b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
                         .WithMany("BillDetails")
-                        .HasForeignKey("ProductID")
+                        .HasForeignKey("ProductVarientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Bill");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductVarient");
                 });
 
-            modelBuilder.Entity("Backend.Models.BillModify", b =>
+            modelBuilder.Entity("Backend.Models.ComboProduct", b =>
                 {
-                    b.HasOne("Backend.Models.BillDetail", "BillDetail")
-                        .WithMany()
-                        .HasForeignKey("BillDetailBillID", "BillDetailProductID")
+                    b.HasOne("Backend.Models.Combo", "Combo")
+                        .WithMany("ComboProduct")
+                        .HasForeignKey("ComboID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BillDetail");
+                    b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
+                        .WithMany("ComboProduct")
+                        .HasForeignKey("ProductVarientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("ProductVarient");
                 });
 
-            modelBuilder.Entity("Backend.Models.GoodsReceipt", b =>
+            modelBuilder.Entity("Backend.Models.DeliveryInfo", b =>
                 {
+                    b.HasOne("Backend.Models.Address", "Address")
+                        .WithMany("DeliveryInfos")
+                        .HasForeignKey("AddressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Bill", "Bill")
+                        .WithMany()
+                        .HasForeignKey("BillID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Bill");
+                });
+
+            modelBuilder.Entity("Backend.Models.DeliveryLog", b =>
+                {
+                    b.HasOne("Backend.Models.DeliveryInfo", "DeliveryInfo")
+                        .WithMany("DeliveryLogs")
+                        .HasForeignKey("DeliveryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("GoodsReceipts")
+                        .WithMany("DeliveryLogs")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("DeliveryInfo");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Backend.Models.DiningTable", b =>
+                {
                     b.HasOne("Backend.Models.Store", "Store")
-                        .WithMany()
+                        .WithMany("DiningTables")
                         .HasForeignKey("StoreID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierID")
+                    b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("Backend.Models.GoodsInspection", b =>
+                {
+                    b.HasOne("Backend.Models.Employee", "Employee")
+                        .WithMany("GoodsInspections")
+                        .HasForeignKey("InspectedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Receipt", "Receipt")
+                        .WithOne("GoodsInspection")
+                        .HasForeignKey("Backend.Models.GoodsInspection", "ReceiptID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
 
-                    b.Navigation("Store");
+                    b.Navigation("Receipt");
+                });
 
-                    b.Navigation("Supplier");
+            modelBuilder.Entity("Backend.Models.InspectionDetail", b =>
+                {
+                    b.HasOne("Backend.Models.Ingredient", "Ingredient")
+                        .WithMany("InspectionDetails")
+                        .HasForeignKey("IngredientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.GoodsInspection", "GoodsInspection")
+                        .WithMany("InspectionDetails")
+                        .HasForeignKey("InspectionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GoodsInspection");
+
+                    b.Navigation("Ingredient");
                 });
 
             modelBuilder.Entity("Backend.Models.InventoryBatch", b =>
                 {
-                    b.HasOne("Backend.Models.GoodsReceipt", null)
-                        .WithMany("InventoryBatches")
-                        .HasForeignKey("GoodsReceiptID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.Ingredient", "Ingredient")
                         .WithMany("InventoryBatches")
                         .HasForeignKey("IngredientID")
@@ -923,7 +1244,7 @@ namespace BackEnd.Migrations
                         .IsRequired();
 
                     b.HasOne("Backend.Models.ReceiptDetail", "ReceiptDetail")
-                        .WithMany()
+                        .WithMany("InventoryBatches")
                         .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -973,6 +1294,28 @@ namespace BackEnd.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
+            modelBuilder.Entity("Backend.Models.Product", b =>
+                {
+                    b.HasOne("Backend.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Backend.Models.ProductVarient", b =>
+                {
+                    b.HasOne("Backend.Models.Product", "Product")
+                        .WithMany("ProductVarients")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Backend.Models.PurchaseOrder", b =>
                 {
                     b.HasOne("Backend.Models.Employee", "Employee")
@@ -1008,20 +1351,67 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Product", "Product")
+                    b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
                         .WithMany("Recipes")
-                        .HasForeignKey("ProductID")
+                        .HasForeignKey("ProductVarientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ingredient");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductVarient");
+                });
+
+            modelBuilder.Entity("Backend.Models.Receipt", b =>
+                {
+                    b.HasOne("Backend.Models.Employee", "Deleted")
+                        .WithMany("DeletedReceipts")
+                        .HasForeignKey("DeletedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Employee", "Employee")
+                        .WithMany("Receipts")
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
+                        .WithOne("Receipt")
+                        .HasForeignKey("Backend.Models.Receipt", "POID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.PurchaseOrder", null)
+                        .WithMany("GoodsReceipts")
+                        .HasForeignKey("PurchaseOrderPOID");
+
+                    b.HasOne("Backend.Models.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deleted");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("PurchaseOrder");
+
+                    b.Navigation("Store");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Backend.Models.ReceiptDetail", b =>
                 {
-                    b.HasOne("Backend.Models.GoodsReceipt", "GoodsReceipt")
+                    b.HasOne("Backend.Models.Receipt", "Receipt")
                         .WithMany("ReceiptDetails")
                         .HasForeignKey("GoodsReceiptID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1033,9 +1423,28 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GoodsReceipt");
-
                     b.Navigation("Ingredient");
+
+                    b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("Backend.Models.Reservation", b =>
+                {
+                    b.HasOne("Backend.Models.DiningTable", "Table")
+                        .WithMany("Reservations")
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Reservations")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.Shift", b =>
@@ -1049,85 +1458,27 @@ namespace BackEnd.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Backend.Models.StockAudit", b =>
+            modelBuilder.Entity("Backend.Models.StockMovement", b =>
                 {
-                    b.HasOne("Backend.Models.Employee", "ApprovedByEmployee")
-                        .WithMany()
-                        .HasForeignKey("ApprovedBy");
-
-                    b.HasOne("Backend.Models.Employee", "CreateByEmployee")
-                        .WithMany()
-                        .HasForeignKey("CreateBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApprovedByEmployee");
-
-                    b.Navigation("CreateByEmployee");
-
-                    b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("Backend.Models.StockAuditDetail", b =>
-                {
-                    b.HasOne("Backend.Models.InventoryBatch", "InventoryBatch")
-                        .WithMany("StockAuditDetails")
+                    b.HasOne("Backend.Models.InventoryBatch", "Batch")
+                        .WithMany("StockMovements")
                         .HasForeignKey("BatchID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Ingredient", null)
-                        .WithMany("StockAuditDetails")
-                        .HasForeignKey("IngredientID");
-
-                    b.HasOne("Backend.Models.StockAudit", "StockAudit")
-                        .WithMany("StockAuditDetails")
-                        .HasForeignKey("StockAuditID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InventoryBatch");
-
-                    b.Navigation("StockAudit");
-                });
-
-            modelBuilder.Entity("Backend.Models.StockMovement", b =>
-                {
-                    b.HasOne("Backend.Models.InventoryBatch", "Batch")
-                        .WithMany()
-                        .HasForeignKey("BatchID");
-
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany()
+                        .WithMany("StockMovements")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Backend.Models.Ingredient", null)
+                        .WithMany("StockMovements")
+                        .HasForeignKey("IngredientID");
 
                     b.Navigation("Batch");
 
                     b.Navigation("Employee");
-
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Backend.Models.Store", b =>
@@ -1139,25 +1490,6 @@ namespace BackEnd.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("Backend.Models.StoreUtility", b =>
-                {
-                    b.HasOne("Backend.Models.Store", "Store")
-                        .WithMany("StoreUtilities")
-                        .HasForeignKey("StoreID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.Utility", "Utility")
-                        .WithMany("StoreUtility")
-                        .HasForeignKey("UtilityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-
-                    b.Navigation("Utility");
                 });
 
             modelBuilder.Entity("Backend.Models.Supplier", b =>
@@ -1225,6 +1557,8 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Address", b =>
                 {
+                    b.Navigation("DeliveryInfos");
+
                     b.Navigation("Store");
 
                     b.Navigation("Supplier");
@@ -1234,18 +1568,40 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Bill", b =>
                 {
+                    b.Navigation("BillChanges");
+
                     b.Navigation("BillDetails");
                 });
 
-            modelBuilder.Entity("Backend.Models.GoodsReceipt", b =>
+            modelBuilder.Entity("Backend.Models.Category", b =>
                 {
-                    b.Navigation("InventoryBatches");
+                    b.Navigation("Products");
+                });
 
-                    b.Navigation("ReceiptDetails");
+            modelBuilder.Entity("Backend.Models.Combo", b =>
+                {
+                    b.Navigation("ComboProduct");
+                });
+
+            modelBuilder.Entity("Backend.Models.DeliveryInfo", b =>
+                {
+                    b.Navigation("DeliveryLogs");
+                });
+
+            modelBuilder.Entity("Backend.Models.DiningTable", b =>
+                {
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("Backend.Models.GoodsInspection", b =>
+                {
+                    b.Navigation("InspectionDetails");
                 });
 
             modelBuilder.Entity("Backend.Models.Ingredient", b =>
                 {
+                    b.Navigation("InspectionDetails");
+
                     b.Navigation("InventoryBatches");
 
                     b.Navigation("PODetails");
@@ -1254,52 +1610,67 @@ namespace BackEnd.Migrations
 
                     b.Navigation("Recipes");
 
-                    b.Navigation("StockAuditDetails");
+                    b.Navigation("StockMovements");
                 });
 
             modelBuilder.Entity("Backend.Models.InventoryBatch", b =>
                 {
-                    b.Navigation("StockAuditDetails");
+                    b.Navigation("StockMovements");
                 });
 
             modelBuilder.Entity("Backend.Models.Product", b =>
                 {
+                    b.Navigation("ProductVarients");
+                });
+
+            modelBuilder.Entity("Backend.Models.ProductVarient", b =>
+                {
                     b.Navigation("BillDetails");
+
+                    b.Navigation("ComboProduct");
 
                     b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("Backend.Models.PurchaseOrder", b =>
                 {
+                    b.Navigation("GoodsReceipts");
+
                     b.Navigation("POApprovals");
 
                     b.Navigation("PODetails");
+
+                    b.Navigation("Receipt");
                 });
 
-            modelBuilder.Entity("Backend.Models.StockAudit", b =>
+            modelBuilder.Entity("Backend.Models.Receipt", b =>
                 {
-                    b.Navigation("StockAuditDetails");
+                    b.Navigation("GoodsInspection");
+
+                    b.Navigation("ReceiptDetails");
+                });
+
+            modelBuilder.Entity("Backend.Models.ReceiptDetail", b =>
+                {
+                    b.Navigation("InventoryBatches");
                 });
 
             modelBuilder.Entity("Backend.Models.Store", b =>
                 {
-                    b.Navigation("Employees");
+                    b.Navigation("DiningTables");
 
-                    b.Navigation("StoreUtilities");
+                    b.Navigation("Employees");
 
                     b.Navigation("Warehouses");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
+                    b.Navigation("Reservations");
+
                     b.Navigation("Ticket");
 
                     b.Navigation("UserAddress");
-                });
-
-            modelBuilder.Entity("Backend.Models.Utility", b =>
-                {
-                    b.Navigation("StoreUtility");
                 });
 
             modelBuilder.Entity("Backend.Models.Warehouse", b =>
@@ -1309,11 +1680,19 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Employee", b =>
                 {
-                    b.Navigation("GoodsReceipts");
+                    b.Navigation("DeletedReceipts");
+
+                    b.Navigation("DeliveryLogs");
+
+                    b.Navigation("GoodsInspections");
 
                     b.Navigation("POApprovals");
 
+                    b.Navigation("Receipts");
+
                     b.Navigation("Shifts");
+
+                    b.Navigation("StockMovements");
                 });
 #pragma warning restore 612, 618
         }

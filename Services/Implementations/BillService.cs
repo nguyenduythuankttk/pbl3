@@ -1,13 +1,9 @@
-using Backend.Data;
+/*using Backend.Data;
 using Backend.Models;
 using Backend.Models.DTOs.Request;
 using Backend.Models.DTOs.Reponse;
 using Backend.Services.Interface;
-<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
-=======
-using Microsoft.EntityFrameworkCore
->>>>>>> 3f996c8133d0c3e2b659425e1aa1cdd644fb15df
 namespace Backend.Services.Implementations{
     public class BillService : IBillService{
         private readonly AppDbContext _dbContext;
@@ -34,11 +30,7 @@ namespace Backend.Services.Implementations{
                 .Include(a => a.ProductVarient)
                 .Where (b => b.User.UserID == user) 
                 .ToListAsync();
-        /*public async Task<List<Bill>> GetUserBillSuccess(Guid userID)=>
-            await _dbContext.Bill.Include(a =>a.BillDetail)
-                .Include(a => a.ProductVarient)
-                .Where (b => b.User.UserID == UserID && b.PaymentStatus == PaymentStatus.Success) 
-                .ToListAsync();*/
+
         public async Task<List<Bill>> GetUserBillPending(Guid userID)=>
             await _dbContext.Bill.Include(a =>a.BillDetail)
                 .Include(a => a.ProductVarient)
@@ -90,4 +82,4 @@ namespace Backend.Services.Implementations{
             }
         }
     }
-}
+}*/

@@ -1,4 +1,4 @@
-using Backend.Models;
+/*using Backend.Models;
 using Backend.Models.DTOs;
 
 namespace Backend.Services.Interface
@@ -11,4 +11,4 @@ namespace Backend.Services.Interface
         Task UpdateReceipt(Guid ReceiptID, ReceiptUpdateRequest request);
         Task DeleteReceipt(Guid ReceiptID);
     }
-}
+}*/

@@ -1,4 +1,4 @@
-using Backend.Models;
+/*using Backend.Models;
 using Backend.Models.DTOs;
 using Backend.Data;
 using Backend.Services.Interface;
@@ -24,9 +24,9 @@ namespace Backend.Services.Implementations
                 .ToListAsync();
         
         //GET BY ID
-        public async Task<ReceiptItem?>  GetReceiptbyID(Guid ReceiptID)
+        public async Task<ReceiptItem?>  GetReceiptbyID(Guid ReceiptID){}
 
                 
     }
 
-}
+}*/

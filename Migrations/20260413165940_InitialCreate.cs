@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BackEnd.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalDatabase : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,11 +30,47 @@ namespace BackEnd.Migrations
                     Province = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Country = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StoreID = table.Column<int>(type: "int", nullable: false),
+                    SupplierID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Address", x => x.AddressID);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Category",
+                columns: table => new
+                {
+                    CategoryID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Image = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Category", x => x.CategoryID);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Combo",
+                columns: table => new
+                {
+                    ComboID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ComboName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FixedPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Combo", x => x.ComboID);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -44,7 +80,7 @@ namespace BackEnd.Migrations
                 {
                     IngredientID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    IngredientName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IngredientUnit = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -57,38 +93,21 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Product",
+                name: "POApprovalChange",
                 columns: table => new
                 {
-                    ProductID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ProductName = table.Column<string>(type: "longtext", nullable: false)
+                    POApprovalChangeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    LastUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Comment = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ProductType = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                    BfrStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ProductionTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    Image = table.Column<string>(type: "longtext", nullable: true)
+                    AftStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Product", x => x.ProductID);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Utility",
-                columns: table => new
-                {
-                    UtilityID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Cost = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Utility", x => x.UtilityID);
+                    table.PrimaryKey("PK_POApprovalChange", x => x.POApprovalChangeID);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -147,56 +166,53 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Receipe",
+                name: "Product",
                 columns: table => new
                 {
-                    IngredientID = table.Column<int>(type: "int", nullable: false),
-                    ProductID = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    QtyBeforeProcess = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    QtyAfterProcess = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    ProductID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProductType = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProductionTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Image = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Receipe", x => new { x.IngredientID, x.ProductID });
+                    table.PrimaryKey("PK_Product", x => x.ProductID);
                     table.ForeignKey(
-                        name: "FK_Receipe_Ingredient_IngredientID",
-                        column: x => x.IngredientID,
-                        principalTable: "Ingredient",
-                        principalColumn: "IngredientID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Receipe_Product_ProductID",
-                        column: x => x.ProductID,
-                        principalTable: "Product",
-                        principalColumn: "ProductID",
+                        name: "FK_Product_Category_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Category",
+                        principalColumn: "CategoryID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "StoreUtility",
+                name: "DiningTable",
                 columns: table => new
                 {
-                    UtilityID = table.Column<int>(type: "int", nullable: false),
+                    TableID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     StoreID = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    Quantity = table.Column<double>(type: "double", nullable: false)
+                    TableNumber = table.Column<int>(type: "int", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreUtility", x => new { x.StoreID, x.UtilityID });
+                    table.PrimaryKey("PK_DiningTable", x => x.TableID);
                     table.ForeignKey(
-                        name: "FK_StoreUtility_Store_StoreID",
+                        name: "FK_DiningTable_Store_StoreID",
                         column: x => x.StoreID,
                         principalTable: "Store",
                         principalColumn: "StoreID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StoreUtility_Utility_UtilityID",
-                        column: x => x.UtilityID,
-                        principalTable: "Utility",
-                        principalColumn: "UtilityID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -259,17 +275,46 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "ProductVarient",
+                columns: table => new
+                {
+                    ProductVarientID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ProductID = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductVarient", x => x.ProductVarientID);
+                    table.ForeignKey(
+                        name: "FK_ProductVarient_Product_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Product",
+                        principalColumn: "ProductID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Bill",
                 columns: table => new
                 {
                     BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     StoreID = table.Column<int>(type: "int", nullable: false),
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     VAT = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     PaymentMethods = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TimeCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    Total = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedBy = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    Paid = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    Note = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -281,44 +326,19 @@ namespace BackEnd.Migrations
                         principalColumn: "StoreID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bill_User_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Bill_User_DeletedBy",
+                        column: x => x.DeletedBy,
+                        principalTable: "User",
+                        principalColumn: "UserID");
+                    table.ForeignKey(
+                        name: "FK_Bill_User_EmployeeID",
+                        column: x => x.EmployeeID,
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "GoodsReceipt",
-                columns: table => new
-                {
-                    GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    StoreID = table.Column<int>(type: "int", nullable: false),
-                    SupplierID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    DateReceive = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GoodsReceipt", x => x.GoodsReceiptID);
                     table.ForeignKey(
-                        name: "FK_GoodsReceipt_Store_StoreID",
-                        column: x => x.StoreID,
-                        principalTable: "Store",
-                        principalColumn: "StoreID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GoodsReceipt_Supplier_SupplierID",
-                        column: x => x.SupplierID,
-                        principalTable: "Supplier",
-                        principalColumn: "SupplierID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GoodsReceipt_User_EmployeeID",
-                        column: x => x.EmployeeID,
+                        name: "FK_Bill_User_UserID",
+                        column: x => x.UserID,
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -335,7 +355,8 @@ namespace BackEnd.Migrations
                     EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     SentAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     TaxRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ReceivedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    ReceivedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -362,6 +383,38 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Reservation",
+                columns: table => new
+                {
+                    UserID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    TableID = table.Column<int>(type: "int", nullable: false),
+                    GuestCount = table.Column<int>(type: "int", nullable: false),
+                    ScheduledTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Note = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservation", x => new { x.UserID, x.TableID });
+                    table.ForeignKey(
+                        name: "FK_Reservation_DiningTable_TableID",
+                        column: x => x.TableID,
+                        principalTable: "DiningTable",
+                        principalColumn: "TableID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservation_User_UserID",
+                        column: x => x.UserID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Shift",
                 columns: table => new
                 {
@@ -369,8 +422,8 @@ namespace BackEnd.Migrations
                     EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     TimeIn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     TimeOut = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ChechIn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CheckOut = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    ChechIn = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    CheckOut = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -433,38 +486,75 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "StockAudit",
+                name: "ComboProduct",
                 columns: table => new
                 {
-                    StockAuditID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    WarehouseID = table.Column<int>(type: "int", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreateBy = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    ApprovedBy = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    Note = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    ComboID = table.Column<int>(type: "int", nullable: false),
+                    ProductVarientID = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockAudit", x => x.StockAuditID);
+                    table.PrimaryKey("PK_ComboProduct", x => new { x.ComboID, x.ProductVarientID });
                     table.ForeignKey(
-                        name: "FK_StockAudit_User_ApprovedBy",
-                        column: x => x.ApprovedBy,
-                        principalTable: "User",
-                        principalColumn: "UserID");
-                    table.ForeignKey(
-                        name: "FK_StockAudit_User_CreateBy",
-                        column: x => x.CreateBy,
-                        principalTable: "User",
-                        principalColumn: "UserID",
+                        name: "FK_ComboProduct_Combo_ComboID",
+                        column: x => x.ComboID,
+                        principalTable: "Combo",
+                        principalColumn: "ComboID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StockAudit_Warehouse_WarehouseID",
-                        column: x => x.WarehouseID,
-                        principalTable: "Warehouse",
-                        principalColumn: "WarehouseID",
+                        name: "FK_ComboProduct_ProductVarient_ProductVarientID",
+                        column: x => x.ProductVarientID,
+                        principalTable: "ProductVarient",
+                        principalColumn: "ProductVarientID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Receipe",
+                columns: table => new
+                {
+                    IngredientID = table.Column<int>(type: "int", nullable: false),
+                    ProductVarientID = table.Column<int>(type: "int", nullable: false),
+                    QtyBeforeProcess = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    QtyAfterProcess = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Receipe", x => new { x.IngredientID, x.ProductVarientID });
+                    table.ForeignKey(
+                        name: "FK_Receipe_Ingredient_IngredientID",
+                        column: x => x.IngredientID,
+                        principalTable: "Ingredient",
+                        principalColumn: "IngredientID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipe_ProductVarient_ProductVarientID",
+                        column: x => x.ProductVarientID,
+                        principalTable: "ProductVarient",
+                        principalColumn: "ProductVarientID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "BillChange",
+                columns: table => new
+                {
+                    BillChangeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CreateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    AmountPaid = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillChange", x => x.BillChangeID);
+                    table.ForeignKey(
+                        name: "FK_BillChange_Bill_BillID",
+                        column: x => x.BillID,
+                        principalTable: "Bill",
+                        principalColumn: "BillID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -474,14 +564,14 @@ namespace BackEnd.Migrations
                 columns: table => new
                 {
                     BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    ProductID = table.Column<int>(type: "int", nullable: false),
+                    ProductVarientID = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     InlineTotal = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BillDetail", x => new { x.BillID, x.ProductID });
+                    table.PrimaryKey("PK_BillDetail", x => new { x.BillID, x.ProductVarientID });
                     table.ForeignKey(
                         name: "FK_BillDetail_Bill_BillID",
                         column: x => x.BillID,
@@ -489,37 +579,44 @@ namespace BackEnd.Migrations
                         principalColumn: "BillID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BillDetail_Product_ProductID",
-                        column: x => x.ProductID,
-                        principalTable: "Product",
-                        principalColumn: "ProductID",
+                        name: "FK_BillDetail_ProductVarient_ProductVarientID",
+                        column: x => x.ProductVarientID,
+                        principalTable: "ProductVarient",
+                        principalColumn: "ProductVarientID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ReceiptDetail",
+                name: "DeliveryInfo",
                 columns: table => new
                 {
-                    GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    IngredientID = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    DeliveryID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    AddressID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    EstimatedTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ActualTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ShippingFee = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    CurrentStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Note = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReceiptDetail", x => new { x.GoodsReceiptID, x.IngredientID });
+                    table.PrimaryKey("PK_DeliveryInfo", x => x.DeliveryID);
                     table.ForeignKey(
-                        name: "FK_ReceiptDetail_GoodsReceipt_GoodsReceiptID",
-                        column: x => x.GoodsReceiptID,
-                        principalTable: "GoodsReceipt",
-                        principalColumn: "GoodsReceiptID",
+                        name: "FK_DeliveryInfo_Address_AddressID",
+                        column: x => x.AddressID,
+                        principalTable: "Address",
+                        principalColumn: "AddressID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ReceiptDetail_Ingredient_IngredientID",
-                        column: x => x.IngredientID,
-                        principalTable: "Ingredient",
-                        principalColumn: "IngredientID",
+                        name: "FK_DeliveryInfo_Bill_BillID",
+                        column: x => x.BillID,
+                        principalTable: "Bill",
+                        principalColumn: "BillID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -529,12 +626,7 @@ namespace BackEnd.Migrations
                 columns: table => new
                 {
                     POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    LastUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Comment = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -582,25 +674,183 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "BillModify",
+                name: "Receipt",
                 columns: table => new
                 {
-                    BillModifyID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    ProductID = table.Column<int>(type: "int", nullable: false),
-                    BillDetailBillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    BillDetailProductID = table.Column<int>(type: "int", nullable: false),
-                    ModifyType = table.Column<int>(type: "int", nullable: false),
-                    Size = table.Column<int>(type: "int", nullable: false)
+                    GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    StoreID = table.Column<int>(type: "int", nullable: false),
+                    SupplierID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    DateReceive = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedBy = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    PurchaseOrderPOID = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BillModify", x => x.BillModifyID);
+                    table.PrimaryKey("PK_Receipt", x => x.GoodsReceiptID);
                     table.ForeignKey(
-                        name: "FK_BillModify_BillDetail_BillDetailBillID_BillDetailProductID",
-                        columns: x => new { x.BillDetailBillID, x.BillDetailProductID },
-                        principalTable: "BillDetail",
-                        principalColumns: new[] { "BillID", "ProductID" },
+                        name: "FK_Receipt_PurchaseOrder_POID",
+                        column: x => x.POID,
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "POID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipt_PurchaseOrder_PurchaseOrderPOID",
+                        column: x => x.PurchaseOrderPOID,
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "POID");
+                    table.ForeignKey(
+                        name: "FK_Receipt_Store_StoreID",
+                        column: x => x.StoreID,
+                        principalTable: "Store",
+                        principalColumn: "StoreID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipt_Supplier_SupplierID",
+                        column: x => x.SupplierID,
+                        principalTable: "Supplier",
+                        principalColumn: "SupplierID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipt_User_DeletedBy",
+                        column: x => x.DeletedBy,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipt_User_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "DeliveryLog",
+                columns: table => new
+                {
+                    LogID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    DeliveryID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FromStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ToStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ChangedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Note = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeliveryLog", x => x.LogID);
+                    table.ForeignKey(
+                        name: "FK_DeliveryLog_DeliveryInfo_DeliveryID",
+                        column: x => x.DeliveryID,
+                        principalTable: "DeliveryInfo",
+                        principalColumn: "DeliveryID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeliveryLog_User_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "GoodsInspection",
+                columns: table => new
+                {
+                    InspectionID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    InspectedBy = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    InspectedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Note = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GoodsInspection", x => x.InspectionID);
+                    table.ForeignKey(
+                        name: "FK_GoodsInspection_Receipt_ReceiptID",
+                        column: x => x.ReceiptID,
+                        principalTable: "Receipt",
+                        principalColumn: "GoodsReceiptID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GoodsInspection_User_InspectedBy",
+                        column: x => x.InspectedBy,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ReceiptDetail",
+                columns: table => new
+                {
+                    GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    IngredientID = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReceiptDetail", x => new { x.GoodsReceiptID, x.IngredientID });
+                    table.ForeignKey(
+                        name: "FK_ReceiptDetail_Ingredient_IngredientID",
+                        column: x => x.IngredientID,
+                        principalTable: "Ingredient",
+                        principalColumn: "IngredientID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReceiptDetail_Receipt_GoodsReceiptID",
+                        column: x => x.GoodsReceiptID,
+                        principalTable: "Receipt",
+                        principalColumn: "GoodsReceiptID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "InspectionDetail",
+                columns: table => new
+                {
+                    InspectionID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    IngredientID = table.Column<int>(type: "int", nullable: false),
+                    ReceivedQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    GoodQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    DamagedQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ExpiredQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ShortageQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    DamageReason = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Note = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InspectionDetail", x => new { x.InspectionID, x.IngredientID });
+                    table.ForeignKey(
+                        name: "FK_InspectionDetail_GoodsInspection_InspectionID",
+                        column: x => x.InspectionID,
+                        principalTable: "GoodsInspection",
+                        principalColumn: "InspectionID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InspectionDetail_Ingredient_IngredientID",
+                        column: x => x.IngredientID,
+                        principalTable: "Ingredient",
+                        principalColumn: "IngredientID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -633,12 +883,6 @@ namespace BackEnd.Migrations
                 {
                     table.PrimaryKey("PK_InventoryBatch", x => x.BatchID);
                     table.ForeignKey(
-                        name: "FK_InventoryBatch_GoodsReceipt_GoodsReceiptID",
-                        column: x => x.GoodsReceiptID,
-                        principalTable: "GoodsReceipt",
-                        principalColumn: "GoodsReceiptID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_InventoryBatch_Ingredient_IngredientID",
                         column: x => x.IngredientID,
                         principalTable: "Ingredient",
@@ -660,62 +904,23 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "StockAuditDetail",
-                columns: table => new
-                {
-                    StockAuditID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    BatchID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    SysQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    CounterQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    Difference = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    Note = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IngredientID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StockAuditDetail", x => new { x.StockAuditID, x.BatchID });
-                    table.ForeignKey(
-                        name: "FK_StockAuditDetail_Ingredient_IngredientID",
-                        column: x => x.IngredientID,
-                        principalTable: "Ingredient",
-                        principalColumn: "IngredientID");
-                    table.ForeignKey(
-                        name: "FK_StockAuditDetail_InventoryBatch_BatchID",
-                        column: x => x.BatchID,
-                        principalTable: "InventoryBatch",
-                        principalColumn: "BatchID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StockAuditDetail_StockAudit_StockAuditID",
-                        column: x => x.StockAuditID,
-                        principalTable: "StockAudit",
-                        principalColumn: "StockAuditID",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "StockMovement",
                 columns: table => new
                 {
                     StockMovementID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    WarehouseID = table.Column<int>(type: "int", nullable: false),
-                    IngredientID = table.Column<int>(type: "int", nullable: false),
-                    BatchID = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    BatchID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     QtyChange = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    MovementType = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                    MovementType = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ReferenceType = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ReferenceID = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TimeStamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Reason = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Note = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IngredientID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -724,27 +929,31 @@ namespace BackEnd.Migrations
                         name: "FK_StockMovement_Ingredient_IngredientID",
                         column: x => x.IngredientID,
                         principalTable: "Ingredient",
-                        principalColumn: "IngredientID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IngredientID");
                     table.ForeignKey(
                         name: "FK_StockMovement_InventoryBatch_BatchID",
                         column: x => x.BatchID,
                         principalTable: "InventoryBatch",
-                        principalColumn: "BatchID");
+                        principalColumn: "BatchID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StockMovement_User_EmployeeID",
                         column: x => x.EmployeeID,
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StockMovement_Warehouse_WarehouseID",
-                        column: x => x.WarehouseID,
-                        principalTable: "Warehouse",
-                        principalColumn: "WarehouseID",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bill_DeletedBy",
+                table: "Bill",
+                column: "DeletedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bill_EmployeeID",
+                table: "Bill",
+                column: "EmployeeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bill_StoreID",
@@ -757,34 +966,60 @@ namespace BackEnd.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BillDetail_ProductID",
+                name: "IX_BillChange_BillID",
+                table: "BillChange",
+                column: "BillID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BillDetail_ProductVarientID",
                 table: "BillDetail",
-                column: "ProductID");
+                column: "ProductVarientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BillModify_BillDetailBillID_BillDetailProductID",
-                table: "BillModify",
-                columns: new[] { "BillDetailBillID", "BillDetailProductID" });
+                name: "IX_ComboProduct_ProductVarientID",
+                table: "ComboProduct",
+                column: "ProductVarientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GoodsReceipt_EmployeeID",
-                table: "GoodsReceipt",
+                name: "IX_DeliveryInfo_AddressID",
+                table: "DeliveryInfo",
+                column: "AddressID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryInfo_BillID",
+                table: "DeliveryInfo",
+                column: "BillID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryLog_DeliveryID",
+                table: "DeliveryLog",
+                column: "DeliveryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryLog_EmployeeID",
+                table: "DeliveryLog",
                 column: "EmployeeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GoodsReceipt_StoreID",
-                table: "GoodsReceipt",
+                name: "IX_DiningTable_StoreID",
+                table: "DiningTable",
                 column: "StoreID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GoodsReceipt_SupplierID",
-                table: "GoodsReceipt",
-                column: "SupplierID");
+                name: "IX_GoodsInspection_InspectedBy",
+                table: "GoodsInspection",
+                column: "InspectedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InventoryBatch_GoodsReceiptID",
-                table: "InventoryBatch",
-                column: "GoodsReceiptID");
+                name: "IX_GoodsInspection_ReceiptID",
+                table: "GoodsInspection",
+                column: "ReceiptID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InspectionDetail_IngredientID",
+                table: "InspectionDetail",
+                column: "IngredientID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryBatch_IngredientID",
@@ -812,6 +1047,16 @@ namespace BackEnd.Migrations
                 column: "IngredientID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Product_CategoryID",
+                table: "Product",
+                column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductVarient_ProductID",
+                table: "ProductVarient",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PurchaseOrder_EmployeeID",
                 table: "PurchaseOrder",
                 column: "EmployeeID");
@@ -827,9 +1072,40 @@ namespace BackEnd.Migrations
                 column: "SupplierID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Receipe_ProductID",
+                name: "IX_Receipe_ProductVarientID",
                 table: "Receipe",
-                column: "ProductID");
+                column: "ProductVarientID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipt_DeletedBy",
+                table: "Receipt",
+                column: "DeletedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipt_EmployeeID",
+                table: "Receipt",
+                column: "EmployeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipt_POID",
+                table: "Receipt",
+                column: "POID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipt_PurchaseOrderPOID",
+                table: "Receipt",
+                column: "PurchaseOrderPOID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipt_StoreID",
+                table: "Receipt",
+                column: "StoreID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipt_SupplierID",
+                table: "Receipt",
+                column: "SupplierID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReceiptDetail_IngredientID",
@@ -837,34 +1113,14 @@ namespace BackEnd.Migrations
                 column: "IngredientID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reservation_TableID",
+                table: "Reservation",
+                column: "TableID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Shift_EmployeeID",
                 table: "Shift",
                 column: "EmployeeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockAudit_ApprovedBy",
-                table: "StockAudit",
-                column: "ApprovedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockAudit_CreateBy",
-                table: "StockAudit",
-                column: "CreateBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockAudit_WarehouseID",
-                table: "StockAudit",
-                column: "WarehouseID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockAuditDetail_BatchID",
-                table: "StockAuditDetail",
-                column: "BatchID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockAuditDetail_IngredientID",
-                table: "StockAuditDetail",
-                column: "IngredientID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StockMovement_BatchID",
@@ -882,20 +1138,10 @@ namespace BackEnd.Migrations
                 column: "IngredientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StockMovement_WarehouseID",
-                table: "StockMovement",
-                column: "WarehouseID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Store_AddressID",
                 table: "Store",
                 column: "AddressID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StoreUtility_UtilityID",
-                table: "StoreUtility",
-                column: "UtilityID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Supplier_AddressID",
@@ -928,10 +1174,25 @@ namespace BackEnd.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BillModify");
+                name: "BillChange");
+
+            migrationBuilder.DropTable(
+                name: "BillDetail");
+
+            migrationBuilder.DropTable(
+                name: "ComboProduct");
+
+            migrationBuilder.DropTable(
+                name: "DeliveryLog");
+
+            migrationBuilder.DropTable(
+                name: "InspectionDetail");
 
             migrationBuilder.DropTable(
                 name: "POApproval");
+
+            migrationBuilder.DropTable(
+                name: "POApprovalChange");
 
             migrationBuilder.DropTable(
                 name: "PODetail");
@@ -940,16 +1201,13 @@ namespace BackEnd.Migrations
                 name: "Receipe");
 
             migrationBuilder.DropTable(
+                name: "Reservation");
+
+            migrationBuilder.DropTable(
                 name: "Shift");
 
             migrationBuilder.DropTable(
-                name: "StockAuditDetail");
-
-            migrationBuilder.DropTable(
                 name: "StockMovement");
-
-            migrationBuilder.DropTable(
-                name: "StoreUtility");
 
             migrationBuilder.DropTable(
                 name: "Ticket");
@@ -958,19 +1216,22 @@ namespace BackEnd.Migrations
                 name: "UserAddress");
 
             migrationBuilder.DropTable(
-                name: "BillDetail");
+                name: "Combo");
 
             migrationBuilder.DropTable(
-                name: "PurchaseOrder");
+                name: "DeliveryInfo");
 
             migrationBuilder.DropTable(
-                name: "StockAudit");
+                name: "GoodsInspection");
+
+            migrationBuilder.DropTable(
+                name: "ProductVarient");
+
+            migrationBuilder.DropTable(
+                name: "DiningTable");
 
             migrationBuilder.DropTable(
                 name: "InventoryBatch");
-
-            migrationBuilder.DropTable(
-                name: "Utility");
 
             migrationBuilder.DropTable(
                 name: "Bill");
@@ -985,10 +1246,16 @@ namespace BackEnd.Migrations
                 name: "Warehouse");
 
             migrationBuilder.DropTable(
-                name: "GoodsReceipt");
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "Ingredient");
+
+            migrationBuilder.DropTable(
+                name: "Receipt");
+
+            migrationBuilder.DropTable(
+                name: "PurchaseOrder");
 
             migrationBuilder.DropTable(
                 name: "Supplier");

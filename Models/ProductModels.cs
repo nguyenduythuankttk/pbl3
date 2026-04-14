@@ -26,13 +26,6 @@ namespace Backend.Models{
         [JsonIgnore]
         public virtual ICollection<ProductVarient> ProductVarients { get; set; } = new List<ProductVarient>();
 
-        [JsonIgnore]
-        public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 
-        [JsonIgnore]
-        public virtual ICollection<Receipe> Recipes { get; set; } = new List<Receipe>();
-
-        [JsonIgnore]
-        public virtual ICollection<ProductVarient> ProductVarient {get; set; } = new List<ProductVarient>();
     }
 }

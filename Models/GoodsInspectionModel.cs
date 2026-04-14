@@ -12,11 +12,11 @@ namespace Backend.Models {
     public class GoodsInspection {
         [Key]
         public Guid InspectionID { get; set; }
-        public Guid GoodsReceiptID { get; set; }
-        [ForeignKey("GoodsReceiptID")]
-        public virtual GoodsReceipt GoodsReceipt { get; set; } = null!;
+        public Guid ReceiptID { get; set; }
+        [ForeignKey("ReceiptID")]
+        public virtual Receipt Receipt { get; set; } = null!;
         public Guid InspectedBy { get; set; }
-        [ForeignKey(nameof(InspectedBy))]
+        [ForeignKey("InspectedBy")]
         public virtual Employee Employee { get; set; } = null!;
         public DateTime InspectedAt { get; set; }
         public InspectionStatus Status { get; set; } = InspectionStatus.Pending;
