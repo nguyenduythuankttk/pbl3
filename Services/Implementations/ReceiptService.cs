@@ -1,4 +1,4 @@
-/*using Backend.Models;
+using Backend.Models;
 using Backend.Models.DTOs;
 using Backend.Data;
 using Backend.Services.Interface;
@@ -16,17 +16,32 @@ namespace Backend.Services.Implementations
         }
 
         //GET ALL
-        public async Task<List<ReceiptItem>> GetAllReceipt() =>
+        public async Task<List<Receipt>> GetAllReceipt() =>
             await _dbContext.Receipt
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                 .Include(r => r.Supplier)
                 .ToListAsync();
         
-        //GET BY ID
-        public async Task<ReceiptItem?>  GetReceiptbyID(Guid ReceiptID){}
+        public async Task<Receipt?> GetReceiptbyID(Guid goodsReceiptID) =>
+            await _dbContext.Receipt    
+                .Include(r => r.Employee)
+                .Include(r => r.Store)
+                    .ThenInclude(c => c.Address)
+                .Include(r => r.PurchaseOrder)
+                .Include(r => r.Supplier)
+                    .ThenInclude(c => c.Address)
+                .FirstOrDefaultAsync(r => r.GoodsReceiptID == goodsReceiptID);
+        
+        public async Task<List<Receipt>> GetReceiptbyPO(Guid pOID) =>
+            await _dbContext.Receipt
+                .Include(r => )
+
+        
+
+
 
                 
     }
 
-}*/
+}
