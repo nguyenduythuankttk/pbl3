@@ -1,12 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+using Backend.Models;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-
-namespace Backend.Models {
-
-    public class DeliveryInfo {
-        [Key]
-        public Guid DeliveryID { get; set; }
+namespace Backend.Models.DTOs.Request{
+    public class DeliveryInfoCreateRequest{
         public Guid BillID { get; set; }
         [ForeignKey("BillID")]
         public virtual Bill Bill { get; set; } = null!;
@@ -18,8 +13,5 @@ namespace Backend.Models {
         public DateTime? CreateAt { get; set; }  
         public decimal ShippingFee { get; set; }
         public string? Note { get; set; }
-
-        [JsonIgnore]
-        public virtual ICollection<DeliveryLog> DeliveryLog { get; set; } = new List<DeliveryLog>();
     }
 }

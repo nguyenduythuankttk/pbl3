@@ -32,6 +32,8 @@ namespace Backend.Models{
         public decimal Total { get; set; }
         public decimal Paid {get; set;}
         public string? Note { get; set; }
+        public decimal MoneyReceived {get; set; }
+        public decimal MoneyGiveBack {get; set; }
 
         [JsonIgnore]
         public virtual ICollection<BillDetail> BillDetail { get; set; } = new List<BillDetail>();
