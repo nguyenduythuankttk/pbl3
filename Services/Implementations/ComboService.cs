@@ -1,4 +1,4 @@
-/*using Backend.Data;
+using Backend.Data;
 using Backend.Models;
 using Backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,7 @@ namespace Backend.Services.Implementations{
         public async Task AddCombo (Combo newCombo){
             try {
                 _dbcontext.Combo.Add(newCombo);
-                await _dbcontext.SaveChangeAsync();
+                await _dbcontext.SaveChangesAsync();
             }   catch (Exception e){
                 Console.WriteLine(e.Message);
             }
@@ -21,14 +21,14 @@ namespace Backend.Services.Implementations{
         public async Task <List<Combo>?> GetAllCombo() =>
         await _dbcontext.Combo
         .Include(c => c.ComboProduct)
-        .Include(c => c.ProductVarient)
-        .Include(c => c.Product)
+            .ThenInclude(c => c.ProductVarient)
+                .ThenInclude(c => c.Product)
         .ToListAsync();
         public async Task <List<Combo>?> GetAllComboIsActive() =>
         await _dbcontext.Combo
         .Include(c => c.ComboProduct)
-        .Include(c => c.ProductVarient)
-        .Include(c => c.Product)
+            .ThenInclude(c => c.ProductVarient)
+                .ThenInclude(c => c.Product)
         .Where (c => c.IsActive ==true)
         .ToListAsync();
         public async Task UpdateCombo (ComboRequest comboUpdate){
@@ -39,7 +39,7 @@ namespace Backend.Services.Implementations{
                     combo.FixedPrice = comboUpdate.FixedPrice;
                     combo.IsActive = comboUpdate.IsActive;
                     _dbcontext.Combo.Update(combo);
-                    await _dbcontext.SaveChangeAsync();
+                    await _dbcontext.SaveChangesAsync();
                 }
             } catch (Exception e){
                 Console.WriteLine(e.Message);
@@ -47,4 +47,4 @@ namespace Backend.Services.Implementations{
         }
         public async Task <Combo?> GetComboByID(int comboID) => await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
     }
-}*/
+}

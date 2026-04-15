@@ -13,7 +13,7 @@ namespace Backend.Models{
         public Guid BillID{ get; set;}
         [ForeignKey("BillID")]
         public virtual Bill Bill {get; set;} = null!;
-        public DateTime CreateAt {get; set;}
+        public DateTime ChangeAt {get; set;}
         public BillStatus Status {get; set;}
     }
 }
