@@ -26,16 +26,33 @@ namespace Backend.Services.Implementations{
             .ToListAsync();
         public async Task<List<Address>> GetUserAddress(User user)=>
             await _dbContext.UserAddress
-            .Where (ua => ua.User.UserID == user.UserID)
+            .Where (ua => ua.UserID == user.UserID)
             .Select (ua => ua.Address)
             .ToListAsync();
-        public async Task AddAddress(Address address){
+        public async Task AddUserAddress(Address address, Guid userID){
             try{
                 _dbContext.Address.Add(address); 
+                await _dbContext.SaveChangesAsync();
+                bool hadAddress = _dbContext.UserAddress
+                                    .AnyAsync(ua => ua.UserID == userID);
+                var newUA = new UserAddress{
+                    UserID = userID,
+                    AddressID = address.AddressID,
+                    IsDefault = !hadAddress
+                };
+                _dbContext.UserAddress.Add(newUA);
                 await _dbContext.SaveChangesAsync();
             } catch (Exception ex){
                 Console.WriteLine(ex.Message);
             }    
+        }
+            public async Task AddAddress(AddressCreateRequest request){
+            try{
+                var address = new Address{
+                    HouseNumber = request.HouseNumber,
+                    
+                }
+            }
         }
         public async Task DeleteUserAddress(Guid address,Guid user){
             try{

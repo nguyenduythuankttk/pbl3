@@ -3,7 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Backend.Models {
-    // Ghi lại lịch sử thay đổi trạng thái từng bước trong quá trình giao hàng
+    public enum DeliveryStatus {
+        Pending,        
+        Confirmed,   
+        Preparing,  
+        OnTheWay,   
+        Delivered,   
+        Cancelled,
+        Failed     
+    }
     public class DeliveryLog {
         [Key]
         public Guid LogID { get; set; }
