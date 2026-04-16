@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Backend.Models {
     public enum DeliveryStatus {
+        Create,
         Pending,        
         Confirmed,   
         Preparing,  
@@ -21,9 +22,8 @@ namespace Backend.Models {
         public Guid EmployeeID { get; set; }
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
-        public DeliveryStatus FromStatus { get; set; } // Trạng thái trước khi thay đổi
-        public DeliveryStatus ToStatus { get; set; } // Trạng thái sau khi thay đổi
-        public DateTime ChangedAt { get; set; }
+        public DeliveryStatus Status { get; set;}
+        public DateTime ChangeAt { get; set; }
         public string? Note { get; set; }
     }
 }

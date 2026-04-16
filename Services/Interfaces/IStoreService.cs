@@ -1,4 +1,4 @@
-using Backend.Models.DTOs;
+/*using Backend.Models.DTOs;
 
 namespace Backend.Services.Interface
 {
@@ -11,4 +11,4 @@ namespace Backend.Services.Interface
         Task UpdateStore (int StoreID, StoreUpdateRequest request);
         Task DeleteStore(int StoreID);
     }
-}
+}*/

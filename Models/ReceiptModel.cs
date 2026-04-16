@@ -8,7 +8,8 @@ namespace Backend.Models{
     {
         Preparing,
         Delivering,
-        Received
+        Received,
+        Deleted
     }
 
     public class Receipt

@@ -96,19 +96,6 @@ namespace Backend.Data {
             modelBuilder.Entity<Bill>()
                 .Property(x => x.PaymentMethods)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<DeliveryInfo>()
-                .Property(x => x.CurrentStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<DeliveryLog>()
-                .Property(x => x.FromStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<DeliveryLog>()
-                .Property(x => x.ToStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
             modelBuilder.Entity<DiningTable>()
                 .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();

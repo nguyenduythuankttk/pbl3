@@ -31,9 +31,9 @@ namespace Backend.Services.Implementations{
                 .ThenInclude(c => c.Product)
         .Where (c => c.IsActive ==true)
         .ToListAsync();
-        public async Task UpdateCombo (ComboRequest comboUpdate){
+        public async Task UpdateCombo (ComboChangeRequest comboUpdate, int comboID){
             try {
-                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( a => a.ComboID == comboUpdate.ComboID);
+                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( a => a.ComboID == comboID);
                 if (combo != null){
                     combo.ComboName = comboUpdate.ComboName;
                     combo.FixedPrice = comboUpdate.FixedPrice;

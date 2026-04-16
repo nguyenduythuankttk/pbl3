@@ -23,12 +23,8 @@ namespace Backend.Models{
 
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
-        public Guid EmployeeID {get; set;}
-        [ForeignKey("EmployeeID")]
-        public virtual Employee Employee { get; set; } = null!;
         public decimal VAT { get; set; }
         public PaymentMethods PaymentMethods { get; set; }
-        public DateTime CreateAt { get; set; }
         public decimal Total { get; set; }
         public decimal Paid {get; set;}
         public string? Note { get; set; }

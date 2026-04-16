@@ -1,6 +1,8 @@
 
 using Backend.Data;
 using Backend.Models;
+using Backend.Models.DTOs.Reponse;
+using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 namespace Backend.Services.Implementations{
@@ -33,7 +35,7 @@ namespace Backend.Services.Implementations{
             try{
                 _dbContext.Address.Add(address); 
                 await _dbContext.SaveChangesAsync();
-                bool hadAddress = _dbContext.UserAddress
+                bool hadAddress = await _dbContext.UserAddress
                                     .AnyAsync(ua => ua.UserID == userID);
                 var newUA = new UserAddress{
                     UserID = userID,
@@ -50,8 +52,18 @@ namespace Backend.Services.Implementations{
             try{
                 var address = new Address{
                     HouseNumber = request.HouseNumber,
-                    
-                }
+                    Street = request.Street,
+                    Ward = request.Ward,
+                    Province = request.Province,
+                    Country = request.Country,
+                    District = request.District,
+                    StoreID = request.StoreID,
+                    SupplierID = request.SupplierID,
+                };
+                _dbContext.Address.Add(address);
+                await _dbContext.SaveChangesAsync();
+            }catch (Exception e){
+                Console.WriteLine(e.Message);
             }
         }
         public async Task DeleteUserAddress(Guid address,Guid user){

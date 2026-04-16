@@ -7,7 +7,7 @@ namespace Backend.Services.Interface{
         Task <List<Combo>?> GetAllCombo();
         Task <List<Combo>?> GetAllComboIsActive();
         Task <Combo?> GetComboByID(int comboID);
-        Task UpdateCombo (ComboRequest combo);
+        Task UpdateCombo (ComboChangeRequest combo, int comboID);
         Task AddCombo(Combo newCombo);
         
     }
