@@ -21,8 +21,4 @@ namespace Backend.Models.DTOs.Request
     }
 }
 
-//     public class ReceiptDetailCreateRequest
-//     {
-//         public 
-//     }
-// }
+
