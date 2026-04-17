@@ -88,17 +88,6 @@ namespace Backend.Services.Implementations
 
         // tam thoi Q chua lam set trong receipt nha
 
-        // public async Task DeleteReceipt(Guid receiptID){
-        //     var receipt = await _dbcontext.Receipt.FindAsync(receiptID);
-        //     if (receipt == null) return;
-        //     var change = new BillChange {
-        //         BillChangeID = Guid.NewGuid(),
-        //         BillID = billID,
-        //         Status = BillStatus.Delete,
-        //         ChangeAt = DateTime.UtcNow
-        //     };
-        //     _dbcontext.BillChange.Add(change);
-        //     await _dbcontext.SaveChangesAsync();
         }
 
 
