@@ -13,7 +13,7 @@ namespace Backend.Models {
         public Guid EmployeeID {get; set;}
         [ForeignKey("EmployeeID")]
         public Employee Employee {get; set;}
-        public DateTime UpdateAt {get; set;}
+        public DateTime UpdateAt {get; set;} 
 
     }
 }

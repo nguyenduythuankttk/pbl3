@@ -99,8 +99,8 @@ namespace Backend.Services.Implementations{
             .FirstOrDefaultAsync();
         public async Task AddBill(Bill bill){
             try {
-                _dbcontext.Bill.Add(bill);
-                await _dbcontext.SaveChangesAsync();
+                _dbcontext.Bill.Add(bill); // thêm Bill vào bảng Bill trong db
+                await _dbcontext.SaveChangesAsync(); //chờ lưu tất cả thay đổi vào db
             }catch (Exception e){
                 Console.WriteLine(e.Message);
             }

@@ -3,17 +3,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Backend.Models {
+    public enum Gender
+    {
+        Male, 
+        Female,
+        Others
+    }
 
     public class User{
         [Key]
         public Guid UserID {get; set;}
-        public string UserName {get; set;}
-        public string Password {get; set;}
-        public DateOnly BirthDate {get; set;}
-        public DateTime CreateAt {get; set;}
-        public string Email {get; set;}
-        public string Phone {get; set;}
-        public string FullName {get; set;}
+        [Required, MaxLength(50)]
+        public string UserName {get; set;}  = null!;
+        [Required,MaxLength(50)]
+        public string HashPassword {get; set;} = null!;
+        public DateOnly BirthDate {get; set;} 
+        public DateTime CreateAt {get; set;} = DateTime.UtcNow;
+        public string? Email {get; set;}
+        [Required, Phone, MaxLength(10)]
+        public string Phone {get; set;} = null!;
+        [Required, StringLength(100)]
+        public string FullName {get; set;} = null!;
+        public Gender Gender {get; set;} 
         [JsonIgnore]
         public virtual ICollection<UserAddress> UserAddress { get; set; } = new List<UserAddress>();
         [JsonIgnore]

@@ -22,7 +22,7 @@ namespace Backend.Services.Implementations{
                 .Include(di => di.DeliveryLog)
                 .OrderBy(Log => Log.ChangeAt)
                     .ThenInclude(Log => Log.Employee)
-                .Where (di => di.UserID ==userID)
+                .Where (di => di.UserID == userID)
                 .ToListAsync();
         public async Task AddDeliveryInfo(DeliveryInfoCreateRequest request){
             try {

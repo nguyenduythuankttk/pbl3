@@ -8,12 +8,18 @@ namespace Backend.Models{
     {
         [Key]
         public int StoreID { get; set; }
+        [Required, MaxLength(255)]
+        public string StoreName {get; set; } = null!;
+        [Required, Phone, MaxLength(255)]
 
         public string Phone { get; set; } = null!;
+        [Required, MaxLength(100)]
         public string Email { get; set; } = null!;
+        
         public int TotalReviews { get; set; }
         public int TotalPoints { get; set; }
         public int SeatingCapacity { get; set; }
+        public bool IsActive {get; set; } = true;
 
         public Guid AddressID { get; set; }
 

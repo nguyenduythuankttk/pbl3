@@ -1,22 +1,81 @@
-// using Backend.Data;
-// using Backend.Models;
-// using Backend.Models.DTOs;
-// using Backend.Services.Interface;
-// using Microsoft.EntityFrameworkCore;
+using Backend.Data;
+using Backend.Models;
+using Backend.Models.DTOs;
+using Backend.Models.DTOs.Reponse;
+using Backend.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 
-// namespace Backend.Services.Implementations
-// {
-//     public class UserService : IUserService
-//     {
-//         private readonly AppDbContext _dbContext;
+namespace Backend.Services.Implementations
+{
+    public class UserService : IUserService
+    {
+        private readonly AppDbContext _dbContext;
 
-//         public UserService(AppDbContext dbContext)
-//         {
-//             _dbContext = dbContext;
-//         }
+        public UserService(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
-//         //Get all User
-//         public async Task<List<UserResponse>> GetAllUsers() => 
+        //Get all User
+        public async Task<List<User>?> GetAllUsers() => 
+            await _dbContext.User
+                .Include(u => u.UserAddress)
+                .ToListAsync();
+
+        public async Task<User?> GetUserByID(Guid userID) =>
+            await _dbContext.User //lay du lieu raa
+                .Include(u => u.UserAddress)
+                .FirstOrDefaultAsync(u => u.UserID == userID);
+
+        public async Task AddUser(User user)
+        {
+            try
+            {
+                _dbContext.User.Add(user);
+                await _dbContext.SaveChangesAsync();
+            }catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public async Task UpdateUser(Guid userID, UserUpdateRequest request)
+        {
+            var user = await _dbContext.User.FindAsync(userID);
+
+            if(user == null)
+                throw new Exception("User not found");
+
+            try
+            {
+                if(request.BirthDate.HasValue)
+                    user.BirthDate = request.BirthDate.Value;
+
+                if(request.UserName != null)
+                    user.UserName = request.UserName;
+                
+                if(request.HashPassword != null)
+                    user.HashPassword = request.HashPassword;
+
+                if(request.Email != null)
+                    user.Email = request.Email;
+
+                if(request.Phone != null)
+                    user.Phone = request.Phone;
+
+                if(request.FullName != null)
+                    user.FullName = request.FullName;
+
+                user.Gender = request.Gender;
+
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Update User Error: {ex.Message}");
+                throw new Exception($"An error occurred while updating the user: {ex.Message}");
+            }
+        }
+
             
-//     }
-// }
+    }
+}
