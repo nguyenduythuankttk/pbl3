@@ -1,13 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-public enum BillStatus{
-    Create,
-    Paid,
-    UnPaid,
-    Delete
-}
+
 namespace Backend.Models{
+    public enum BillStatus{
+        Create,
+        Paid,
+        UnPaid,
+        Delete
+    }
     public class BillChange{
         [Key]
         public Guid BillChangeID { get; set;}
@@ -17,7 +18,9 @@ namespace Backend.Models{
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee {get; set;} = null!;
         public virtual Bill Bill {get; set;} = null!;
+        [Required]
         public DateTime ChangeAt {get; set;}
+        [Required]
         public BillStatus Status {get; set;}
     }
 }

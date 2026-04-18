@@ -21,12 +21,19 @@ namespace Backend.Models{
         [ForeignKey("WarehouseID")]
         public virtual Warehouse Warehouse { get; set; } = null!;
 
+        [Required]
         public DateTime ImportDate { get; set; }
+        [Required]
         public DateOnly Exp { get; set; }
+        [Required]
         public DateOnly Mfd { get; set; }
+        [Required]
         public decimal QuantityOriginal { get; set; }
+        [Required]
         public decimal QuantityOnHand { get; set; }
+        [Required]
         public BatchStatus Status { get; set; }
+        [Required]
         public decimal UnitCost { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? BatchCode { get; set; }

@@ -15,7 +15,5 @@ namespace Backend.Models.DTOs.Request{
         public string Province { get; set; } = null!;
 
         public string Country { get; set; } = "Viet Nam";
-        public int StoreID{get; set;}
-        public int SupplierID{get; set; }
     }
 }

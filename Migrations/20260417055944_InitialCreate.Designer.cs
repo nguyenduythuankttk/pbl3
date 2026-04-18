@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260414093318_CheckPending")]
-    partial class CheckPending
+    [Migration("20260417055944_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,14 +76,11 @@ namespace BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("char(36)");
+                    b.Property<decimal>("MoneyGiveBack")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("EmployeeID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<decimal>("MoneyReceived")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
@@ -99,9 +96,6 @@ namespace BackEnd.Migrations
                     b.Property<int>("StoreID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("TimeCreated")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(65,30)");
 
@@ -112,10 +106,6 @@ namespace BackEnd.Migrations
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("BillID");
-
-                    b.HasIndex("DeletedBy");
-
-                    b.HasIndex("EmployeeID");
 
                     b.HasIndex("StoreID");
 
@@ -130,18 +120,23 @@ namespace BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<Guid>("BillID")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreateAt")
+                    b.Property<DateTime>("ChangeAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("EmployeeID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("BillChangeID");
 
                     b.HasIndex("BillID");
+
+                    b.HasIndex("EmployeeID");
 
                     b.ToTable("BillChange");
                 });
@@ -238,22 +233,11 @@ namespace BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("ActualTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<Guid>("AddressID")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("BillID")
                         .HasColumnType("char(36)");
-
-                    b.Property<string>("CurrentStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<DateTime?>("EstimatedTime")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
@@ -270,6 +254,8 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("BillID");
 
+                    b.HasIndex("UserID");
+
                     b.ToTable("DeliveryInfo");
                 });
 
@@ -279,7 +265,7 @@ namespace BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("ChangedAt")
+                    b.Property<DateTime>("ChangeAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("DeliveryID")
@@ -288,18 +274,11 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("FromStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ToStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("LogID");
 
@@ -436,12 +415,6 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("AftStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BfrStatus")
-                        .HasColumnType("int");
-
                     b.Property<string>("Comment")
                         .HasColumnType("longtext");
 
@@ -451,48 +424,16 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("POApprovalID")
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
                     b.HasKey("POID", "EmployeeID");
 
                     b.HasIndex("EmployeeID");
 
                     b.ToTable("POApproval");
-                });
-
-            modelBuilder.Entity("Backend.Models.POApprovalChange", b =>
-                {
-                    b.Property<Guid>("POApprovalChangeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("AftStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("BfrStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("EmployeeID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("POID")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("POApprovalChangeID");
-
-                    b.HasIndex("EmployeeID");
-
-                    b.HasIndex("POID");
-
-                    b.ToTable("POApprovalChange");
                 });
 
             modelBuilder.Entity("Backend.Models.PODetail", b =>
@@ -584,30 +525,19 @@ namespace BackEnd.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("EmployeeID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("ReceivedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<int>("StoreID")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SupplierID")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("SupplierID")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TaxRate")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("POID");
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.HasIndex("EmployeeID");
+                    b.HasKey("POID");
 
                     b.HasIndex("StoreID");
 
@@ -649,14 +579,11 @@ namespace BackEnd.Migrations
                     b.Property<Guid?>("POID")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("PurchaseOrderPOID")
-                        .HasColumnType("char(36)");
-
                     b.Property<int>("StoreID")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SupplierID")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("SupplierID")
+                        .HasColumnType("int");
 
                     b.HasKey("GoodsReceiptID");
 
@@ -664,8 +591,6 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("POID")
                         .IsUnique();
-
-                    b.HasIndex("PurchaseOrderPOID");
 
                     b.HasIndex("StoreID");
 
@@ -873,9 +798,11 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Supplier", b =>
                 {
-                    b.Property<Guid>("SupplierID")
+                    b.Property<int>("SupplierID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SupplierID"));
 
                     b.Property<Guid>("AddressID")
                         .HasColumnType("char(36)");
@@ -927,6 +854,36 @@ namespace BackEnd.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("Backend.Models.TicketCombo", b =>
+                {
+                    b.Property<Guid>("TicketID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("ComboID")
+                        .HasColumnType("int");
+
+                    b.HasKey("TicketID", "ComboID");
+
+                    b.HasIndex("ComboID");
+
+                    b.ToTable("TicketCombo");
+                });
+
+            modelBuilder.Entity("Backend.Models.TicketProduct", b =>
+                {
+                    b.Property<Guid>("TicketID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("ProductVarientID")
+                        .HasColumnType("int");
+
+                    b.HasKey("TicketID", "ProductVarientID");
+
+                    b.HasIndex("ProductVarientID");
+
+                    b.ToTable("TicketProduct");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -1036,16 +993,6 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Bill", b =>
                 {
-                    b.HasOne("Backend.Models.Employee", "DeletedByEmployee")
-                        .WithMany()
-                        .HasForeignKey("DeletedBy");
-
-                    b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreID")
@@ -1058,10 +1005,6 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DeletedByEmployee");
-
-                    b.Navigation("Employee");
-
                     b.Navigation("Store");
 
                     b.Navigation("User");
@@ -1070,24 +1013,32 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.BillChange", b =>
                 {
                     b.HasOne("Backend.Models.Bill", "Bill")
-                        .WithMany("BillChanges")
+                        .WithMany("BillChange")
                         .HasForeignKey("BillID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Bill");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Backend.Models.BillDetail", b =>
                 {
                     b.HasOne("Backend.Models.Bill", "Bill")
-                        .WithMany("BillDetails")
+                        .WithMany("BillDetail")
                         .HasForeignKey("BillID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
-                        .WithMany("BillDetails")
+                        .WithMany("BillDetail")
                         .HasForeignKey("ProductVarientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1130,21 +1081,29 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
 
                     b.Navigation("Bill");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.DeliveryLog", b =>
                 {
                     b.HasOne("Backend.Models.DeliveryInfo", "DeliveryInfo")
-                        .WithMany("DeliveryLogs")
+                        .WithMany("DeliveryLog")
                         .HasForeignKey("DeliveryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("DeliveryLogs")
+                        .WithMany("DeliveryLog")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1157,7 +1116,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.DiningTable", b =>
                 {
                     b.HasOne("Backend.Models.Store", "Store")
-                        .WithMany("DiningTables")
+                        .WithMany("DiningTable")
                         .HasForeignKey("StoreID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1168,19 +1127,19 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.InventoryBatch", b =>
                 {
                     b.HasOne("Backend.Models.Ingredient", "Ingredient")
-                        .WithMany("InventoryBatches")
+                        .WithMany("InventoryBatch")
                         .HasForeignKey("IngredientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.Warehouse", "Warehouse")
-                        .WithMany("InventoryBatches")
+                        .WithMany("InventoryBatch")
                         .HasForeignKey("WarehouseID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.ReceiptDetail", "ReceiptDetail")
-                        .WithMany("InventoryBatches")
+                        .WithMany("InventoryBatch")
                         .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1195,32 +1154,13 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.POApproval", b =>
                 {
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("POApprovals")
+                        .WithMany("POApproval")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
-                        .WithMany("POApprovals")
-                        .HasForeignKey("POID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("PurchaseOrder");
-                });
-
-            modelBuilder.Entity("Backend.Models.POApprovalChange", b =>
-                {
-                    b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
-                        .WithMany()
+                        .WithMany("POApproval")
                         .HasForeignKey("POID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1233,13 +1173,13 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.PODetail", b =>
                 {
                     b.HasOne("Backend.Models.Ingredient", "Ingredient")
-                        .WithMany("PODetails")
+                        .WithMany("PODetail")
                         .HasForeignKey("IngredientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
-                        .WithMany("PODetails")
+                        .WithMany("PODetail")
                         .HasForeignKey("POID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1252,7 +1192,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Product", b =>
                 {
                     b.HasOne("Backend.Models.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany("Product")
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1263,7 +1203,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.ProductVarient", b =>
                 {
                     b.HasOne("Backend.Models.Product", "Product")
-                        .WithMany("ProductVarients")
+                        .WithMany("ProductVarient")
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1273,12 +1213,6 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.PurchaseOrder", b =>
                 {
-                    b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreID")
@@ -1291,8 +1225,6 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Employee");
-
                     b.Navigation("Store");
 
                     b.Navigation("Supplier");
@@ -1301,13 +1233,13 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Receipe", b =>
                 {
                     b.HasOne("Backend.Models.Ingredient", "Ingredient")
-                        .WithMany("Recipes")
+                        .WithMany("Recipe")
                         .HasForeignKey("IngredientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
-                        .WithMany("Recipes")
+                        .WithMany("Recipe")
                         .HasForeignKey("ProductVarientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1320,7 +1252,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Receipt", b =>
                 {
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("Receipts")
+                        .WithMany("Receipt")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1328,10 +1260,6 @@ namespace BackEnd.Migrations
                     b.HasOne("Backend.Models.PurchaseOrder", "PurchaseOrder")
                         .WithOne("Receipt")
                         .HasForeignKey("Backend.Models.Receipt", "POID");
-
-                    b.HasOne("Backend.Models.PurchaseOrder", null)
-                        .WithMany("GoodsReceipts")
-                        .HasForeignKey("PurchaseOrderPOID");
 
                     b.HasOne("Backend.Models.Store", "Store")
                         .WithMany()
@@ -1357,7 +1285,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.ReceiptChange", b =>
                 {
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("ReceiptChanges")
+                        .WithMany("ReceiptChange")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1376,13 +1304,13 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.ReceiptDetail", b =>
                 {
                     b.HasOne("Backend.Models.Receipt", "Receipt")
-                        .WithMany("ReceiptDetails")
+                        .WithMany("ReceiptDetail")
                         .HasForeignKey("GoodsReceiptID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.Ingredient", "Ingredient")
-                        .WithMany("ReceiptDetails")
+                        .WithMany("ReceiptDetail")
                         .HasForeignKey("IngredientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1395,13 +1323,13 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Reservation", b =>
                 {
                     b.HasOne("Backend.Models.DiningTable", "Table")
-                        .WithMany("Reservations")
+                        .WithMany("Reservation")
                         .HasForeignKey("TableID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.User", "User")
-                        .WithMany("Reservations")
+                        .WithMany("Reservation")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1414,7 +1342,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Shift", b =>
                 {
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("Shifts")
+                        .WithMany("Shift")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1425,19 +1353,19 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.StockMovement", b =>
                 {
                     b.HasOne("Backend.Models.InventoryBatch", "Batch")
-                        .WithMany("StockMovements")
+                        .WithMany("StockMovement")
                         .HasForeignKey("BatchID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.Employee", "Employee")
-                        .WithMany("StockMovements")
+                        .WithMany("StockMovement")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.Ingredient", null)
-                        .WithMany("StockMovements")
+                        .WithMany("StockMovement")
                         .HasForeignKey("IngredientID");
 
                     b.Navigation("Batch");
@@ -1478,6 +1406,44 @@ namespace BackEnd.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Backend.Models.TicketCombo", b =>
+                {
+                    b.HasOne("Backend.Models.Combo", "Combo")
+                        .WithMany()
+                        .HasForeignKey("ComboID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("Backend.Models.TicketProduct", b =>
+                {
+                    b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
+                        .WithMany()
+                        .HasForeignKey("ProductVarientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductVarient");
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("Backend.Models.UserAddress", b =>
                 {
                     b.HasOne("Backend.Models.Address", "Address")
@@ -1500,7 +1466,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Warehouse", b =>
                 {
                     b.HasOne("Backend.Models.Store", "Store")
-                        .WithMany("Warehouses")
+                        .WithMany("Warehouse")
                         .HasForeignKey("StoreID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1511,7 +1477,7 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Employee", b =>
                 {
                     b.HasOne("Backend.Models.Store", "Store")
-                        .WithMany("Employees")
+                        .WithMany("Employee")
                         .HasForeignKey("StoreID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1532,14 +1498,14 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Bill", b =>
                 {
-                    b.Navigation("BillChanges");
+                    b.Navigation("BillChange");
 
-                    b.Navigation("BillDetails");
+                    b.Navigation("BillDetail");
                 });
 
             modelBuilder.Entity("Backend.Models.Category", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Backend.Models.Combo", b =>
@@ -1549,79 +1515,77 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.DeliveryInfo", b =>
                 {
-                    b.Navigation("DeliveryLogs");
+                    b.Navigation("DeliveryLog");
                 });
 
             modelBuilder.Entity("Backend.Models.DiningTable", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("Backend.Models.Ingredient", b =>
                 {
-                    b.Navigation("InventoryBatches");
+                    b.Navigation("InventoryBatch");
 
-                    b.Navigation("PODetails");
+                    b.Navigation("PODetail");
 
-                    b.Navigation("ReceiptDetails");
+                    b.Navigation("ReceiptDetail");
 
-                    b.Navigation("Recipes");
+                    b.Navigation("Recipe");
 
-                    b.Navigation("StockMovements");
+                    b.Navigation("StockMovement");
                 });
 
             modelBuilder.Entity("Backend.Models.InventoryBatch", b =>
                 {
-                    b.Navigation("StockMovements");
+                    b.Navigation("StockMovement");
                 });
 
             modelBuilder.Entity("Backend.Models.Product", b =>
                 {
-                    b.Navigation("ProductVarients");
+                    b.Navigation("ProductVarient");
                 });
 
             modelBuilder.Entity("Backend.Models.ProductVarient", b =>
                 {
-                    b.Navigation("BillDetails");
+                    b.Navigation("BillDetail");
 
                     b.Navigation("ComboProduct");
 
-                    b.Navigation("Recipes");
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("Backend.Models.PurchaseOrder", b =>
                 {
-                    b.Navigation("GoodsReceipts");
+                    b.Navigation("POApproval");
 
-                    b.Navigation("POApprovals");
-
-                    b.Navigation("PODetails");
+                    b.Navigation("PODetail");
 
                     b.Navigation("Receipt");
                 });
 
             modelBuilder.Entity("Backend.Models.Receipt", b =>
                 {
-                    b.Navigation("ReceiptDetails");
+                    b.Navigation("ReceiptDetail");
                 });
 
             modelBuilder.Entity("Backend.Models.ReceiptDetail", b =>
                 {
-                    b.Navigation("InventoryBatches");
+                    b.Navigation("InventoryBatch");
                 });
 
             modelBuilder.Entity("Backend.Models.Store", b =>
                 {
-                    b.Navigation("DiningTables");
+                    b.Navigation("DiningTable");
 
-                    b.Navigation("Employees");
+                    b.Navigation("Employee");
 
-                    b.Navigation("Warehouses");
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.Navigation("Reservation");
 
                     b.Navigation("Ticket");
 
@@ -1630,22 +1594,22 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Warehouse", b =>
                 {
-                    b.Navigation("InventoryBatches");
+                    b.Navigation("InventoryBatch");
                 });
 
             modelBuilder.Entity("Backend.Models.Employee", b =>
                 {
-                    b.Navigation("DeliveryLogs");
+                    b.Navigation("DeliveryLog");
 
-                    b.Navigation("POApprovals");
+                    b.Navigation("POApproval");
 
-                    b.Navigation("ReceiptChanges");
+                    b.Navigation("Receipt");
 
-                    b.Navigation("Receipts");
+                    b.Navigation("ReceiptChange");
 
-                    b.Navigation("Shifts");
+                    b.Navigation("Shift");
 
-                    b.Navigation("StockMovements");
+                    b.Navigation("StockMovement");
                 });
 #pragma warning restore 612, 618
         }

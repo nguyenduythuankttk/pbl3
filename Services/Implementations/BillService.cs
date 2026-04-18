@@ -13,13 +13,14 @@ namespace Backend.Services.Implementations{
 
         public async Task <List<Bill>?> GetAllBillIn(DateOnly start, DateOnly end) =>
             await _dbcontext.Bill
+                    .AsNoTracking()
                     .Include (b => b.BillChange
                     .OrderBy(bc =>bc.ChangeAt)
                     .Take(1))
                     .ThenInclude(bc => bc.Employee)
                     .Where( b => b.BillChange.Any() &&
-                            b.BillChange.Max(l => l.ChangeAt) >= start.ToDateTime(TimeOnly.MinValue) &&
-                            b.BillChange.Max(l => l.ChangeAt) <= end.ToDateTime(TimeOnly.MinValue))
+                            b.BillChange.Max(b => b.ChangeAt) >= start.ToDateTime(TimeOnly.MinValue) &&
+                            b.BillChange.Max(b => b.ChangeAt) <= end.ToDateTime(TimeOnly.MinValue))
                     .Include(b => b.BillDetail)
                         .ThenInclude(bd => bd.ProductVarient)
                             .ThenInclude(pr => pr.Product)
@@ -28,22 +29,24 @@ namespace Backend.Services.Implementations{
                     
         public async Task <List<Bill>?> GetUserBill(Guid userID) => 
             await _dbcontext.Bill
+            .AsNoTracking()
+            .Where (b => b.UserID == userID)
             .Include (b => b.BillDetail)
                 .ThenInclude (bd => bd.ProductVarient)
                     .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt).Take(1))
+            .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
             .Include (b => b.Store)
-            .Where (b => b.UserID == userID)
             .ToListAsync();
         public async Task<Bill?> GetBillByID(Guid billID) =>
             await _dbcontext.Bill
+            .AsNoTracking()
+            .Where(b => b.BillID == billID)
             .Include(b => b.BillDetail)
                 .ThenInclude (bd => bd.ProductVarient)
                     .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt).Take(1))
+            .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
                 .ThenInclude (b => b.Employee)
             .Include (b => b.Store)
-            .Where(b => b.BillID == billID)
             .FirstOrDefaultAsync();
         public async Task AddBill(BillCreateRequest request){
             var newBill = new Bill{
@@ -57,8 +60,15 @@ namespace Backend.Services.Implementations{
                 MoneyGiveBack = request.MoneyGiveBack,
                 MoneyReceived = request.MoneyReceived
             };
+            var newChange = new BillChange{
+                BillID = newBill.BillID,
+                EmployeeID = request.EmployeID,
+                ChangeAt = DateTime.UtcNow,
+                Status = BillStatus.Create
+            };
             try {
                 _dbcontext.Bill.Add(newBill);
+                _dbcontext.BillChange.Add(newChange);
                 await _dbcontext.SaveChangesAsync();
             } catch (Exception e){
                 Console.WriteLine(e.Message);
@@ -70,6 +80,8 @@ namespace Backend.Services.Implementations{
                 Status = changeRequest.Status,
                 ChangeAt = changeRequest.ChangeAt
             };
+            _dbcontext.BillChange.Add(newChange);
+            await _dbcontext.SaveChangesAsync();
         }
     }
 }

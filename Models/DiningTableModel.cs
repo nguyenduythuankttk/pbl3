@@ -14,8 +14,11 @@ namespace Backend.Models {
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
+        [Required]
         public int TableNumber { get; set; }
+        [Required]
         public int Capacity { get; set; }
+        [Required]
         public TableStatus Status { get; set; } = TableStatus.Available;
         [JsonIgnore]
         public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();

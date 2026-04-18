@@ -23,12 +23,18 @@ namespace Backend.Models{
 
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
+        [Required]
         public decimal VAT { get; set; }
+        [Required]
         public PaymentMethods PaymentMethods { get; set; }
+        [Required]
         public decimal Total { get; set; }
+        [Required]
         public decimal Paid {get; set;}
         public string? Note { get; set; }
+        [Required]
         public decimal MoneyReceived {get; set; }
+        [Required]
         public decimal MoneyGiveBack {get; set; }
 
         [JsonIgnore]

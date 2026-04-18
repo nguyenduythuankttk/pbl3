@@ -22,7 +22,9 @@ namespace Backend.Models {
         public Guid EmployeeID { get; set; }
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
+        [Required]
         public DeliveryStatus Status { get; set;}
+        [Required]
         public DateTime ChangeAt { get; set; }
         public string? Note { get; set; }
     }

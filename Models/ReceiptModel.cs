@@ -22,7 +22,7 @@ namespace Backend.Models{
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
-        public Guid SupplierID { get; set; }
+        public int SupplierID { get; set; }
         [ForeignKey("SupplierID")]
         public virtual Supplier Supplier { get; set; } = null!;
         public Guid? POID { get; set; }

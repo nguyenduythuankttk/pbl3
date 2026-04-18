@@ -20,12 +20,14 @@ namespace Backend.Services.Implementations{
         }
         public async Task <List<Combo>?> GetAllCombo() =>
         await _dbcontext.Combo
+        .AsNoTracking()
         .Include(c => c.ComboProduct)
             .ThenInclude(c => c.ProductVarient)
                 .ThenInclude(c => c.Product)
         .ToListAsync();
         public async Task <List<Combo>?> GetAllComboIsActive() =>
         await _dbcontext.Combo
+        .AsNoTracking()
         .Include(c => c.ComboProduct)
             .ThenInclude(c => c.ProductVarient)
                 .ThenInclude(c => c.Product)

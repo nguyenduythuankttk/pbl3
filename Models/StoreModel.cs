@@ -9,10 +9,15 @@ namespace Backend.Models{
         [Key]
         public int StoreID { get; set; }
 
+        [Required]
         public string Phone { get; set; } = null!;
+        [Required]
         public string Email { get; set; } = null!;
+        [Required]
         public int TotalReviews { get; set; }
+        [Required]
         public int TotalPoints { get; set; }
+        [Required]
         public int SeatingCapacity { get; set; }
 
         public Guid AddressID { get; set; }

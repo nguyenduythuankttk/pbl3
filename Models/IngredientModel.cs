@@ -17,8 +17,11 @@ namespace Backend.Models{
         [Key]
         public int IngredientID { get; set; }
 
+        [Required]
         public string IngredientName { get; set; } = null!;
+        [Required]
         public IngredientUnit IngredientUnit { get; set; }
+        [Required]
         public decimal CostPerUnit { get; set; }
 
         [JsonIgnore]
@@ -28,7 +31,7 @@ namespace Backend.Models{
         public virtual ICollection<ReceiptDetail> ReceiptDetail { get; set; } = new List<ReceiptDetail>();
 
         [JsonIgnore]
-        public virtual ICollection<InventoryBatch> InventoryBatche { get; set; } = new List<InventoryBatch>();
+        public virtual ICollection<InventoryBatch> InventoryBatch { get; set; } = new List<InventoryBatch>();
 
         [JsonIgnore]
         public virtual ICollection<Receipe> Recipe { get; set; } = new List<Receipe>();

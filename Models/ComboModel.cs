@@ -6,8 +6,11 @@ namespace Backend.Models{
     public class Combo{
         [Key]
         public int ComboID {get; set;}
+        [Required]
         public string ComboName {get; set;} = null!;
+        [Required]
         public decimal FixedPrice {get; set;}
+        [Required]
         public bool IsActive{get; set;}
         [JsonIgnore]
         public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();

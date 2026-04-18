@@ -35,9 +35,13 @@ namespace Backend.Models{
 
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
+        [Required]
         public decimal QtyChange { get; set; }
+        [Required]
         public StockMovementType MovementType { get; set; }
+        [Required]
         public StockReferenceType ReferenceType { get; set; }
+        [Required]
         public DateTime TimeStamp { get; set; }
         public string? Reason { get; set; }
         public string? Note { get; set; }

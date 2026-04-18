@@ -16,6 +16,7 @@ namespace Backend.Models {
         public Guid AddressID { get; set; }
         [ForeignKey("AddressID")]
         public virtual Address Address { get; set; } = null!;
+        [Required]
         public decimal ShippingFee { get; set; }
         public string? Note { get; set; }
 

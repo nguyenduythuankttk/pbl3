@@ -12,6 +12,7 @@ namespace Backend.Services.Implementations{
         }
         public async Task <List<DeliveryInfo>?> GetAllDeliveryIn (DateTime start, DateTime end) =>
             await _dbcontext.DeliveryInfo
+                .AsNoTracking()
                 .Include(di => di.DeliveryLog.OrderByDescending(l => l.ChangeAt).Take(1))
                 .Where(di => di.DeliveryLog.Any() &&
                             di.DeliveryLog.Max(l => l.ChangeAt) >= start &&
@@ -19,6 +20,7 @@ namespace Backend.Services.Implementations{
                 .ToListAsync();
         public async Task <List<DeliveryInfo>?> GetAllDeliveryByUser(Guid userID) =>
             await _dbcontext.DeliveryInfo
+                .AsNoTracking()
                 .Where (d => d.UserID == userID)
                 .Include(d => d.User)
                 .Include (d => d.DeliveryLog
@@ -36,6 +38,14 @@ namespace Backend.Services.Implementations{
                     ShippingFee = request.ShippingFee,
                     Note = request.Note
                 };
+                var deliveryLog = new DeliveryLog{
+                    DeliveryID = delivery.DeliveryID,
+                    EmployeeID = request.EmployeeID,
+                    ChangeAt = DateTime.UtcNow,
+                    Status = DeliveryStatus.Create,
+                    Note = request.Note
+                };
+                _dbcontext.DeliveryLog.Add(deliveryLog);
                 _dbcontext.DeliveryInfo.Add(delivery);
                 await _dbcontext.SaveChangesAsync();
             } catch (Exception e){
@@ -45,14 +55,16 @@ namespace Backend.Services.Implementations{
         public async Task UpdateDelivery(Guid deliveryID, DeliveryUpdateRequest updateRequest){
             try{
                 var delivery = _dbcontext.DeliveryInfo
-                                .FirstOrDefault(d =>d.DeliveryID == deliveryID);
+                                .FirstOrDefaultAsync(d =>d.DeliveryID == deliveryID);
                 if (delivery != null){
                     var Log = new DeliveryLog {
+                        DeliveryID = deliveryID,
                         EmployeeID = updateRequest.EmployeeID,
                         Status = updateRequest.Status,
                         ChangeAt = updateRequest.ChangeAt,
                         Note = updateRequest.Note
                     };
+                    
                     _dbcontext.DeliveryLog.Add(Log);
                     await _dbcontext.SaveChangesAsync();
                 }   

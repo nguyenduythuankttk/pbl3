@@ -2,10 +2,11 @@ using Backend.Models;
 using Backend.Models.DTOs.Request;
 using Backend.Models.DTOs.Reponse;
 namespace Backend.Services.Interface{
-    public class IDiningTableService{
-        Task <List<DiningTable>?> GetAllTables();
-        Task <DiningTable?> GetTableByID();
-        Task AddTable (TableCreateRequest table, int tableID);
-        
+    public interface IDiningTableService{
+        Task<TableListResponse?> GetAllTablesAtStore(int storeID);
+        Task<DiningTableResponse?> GetTableByID(int tableID);
+        Task AddTable (DiningTable newTable);
+        Task UpdateTable (int tableID, int capacity);
+        Task DeleteTable (int tableID);
     }
 }

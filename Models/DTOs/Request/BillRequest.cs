@@ -11,9 +11,11 @@ namespace Backend.Models.DTOs.Request{
         public string? Note { get; set; }
         public decimal MoneyReceived {get; set; }
         public decimal MoneyGiveBack {get; set; }
+        public Guid EmployeID {get; set;}
     }
     public class BillChangeRequest{
         public Guid BillID{get; set;}
+        public Guid EmployeID {get; set;}
         public DateTime ChangeAt {get; set;} = DateTime.UtcNow;
         public BillStatus Status {get; set;}
     }

@@ -57,15 +57,8 @@ namespace Backend.Data {
 
             modelBuilder.Entity<PODetail>()
                 .HasKey(x => new { x.POID, x.IngredientID });
-
-            modelBuilder.Entity<POApproval>()
-                .HasKey(x => new { x.POID, x.EmployeeID });
-
             modelBuilder.Entity<ReceiptDetail>()
                 .HasKey(x => new { x.GoodsReceiptID, x.IngredientID });
-
-            modelBuilder.Entity<Reservation>()
-                .HasKey(x => new { x.UserID, x.TableID });
 
             modelBuilder.Entity<TicketCombo>()
                 .HasKey(x => new {x.TicketID, x.ComboID});
@@ -129,11 +122,7 @@ namespace Backend.Data {
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<POApproval>()
-                .Property(x => x.BfrStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<POApproval>()
-                .Property(x => x.AftStatus)
+                .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<Ingredient>()

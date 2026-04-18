@@ -5,8 +5,11 @@ namespace Backend.Models {
     public class Ticket{
         [Key]
         public Guid TicketID {get; set;}
+        [Required]
         public DateTime StartDate {get; set;}
+        [Required]
         public DateTime EndDate {get; set;}
+        [Required]
         public decimal Discount {get; set;}
         public Guid UserID{get; set;}
         [ForeignKey("UserID")]

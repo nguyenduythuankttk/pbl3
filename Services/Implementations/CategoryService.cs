@@ -12,17 +12,20 @@ namespace Backend.Services.Implementations{
         }
         public async Task <List<Category>?> GetAllCategory() =>
             await _dbcontext.Category
+            .AsNoTracking()
             .Include(c => c.Product)
             .ToListAsync();
         public async Task <List<Product>?> GetProductInCategory(int categoryID) =>
             await _dbcontext.Product
+            .AsNoTracking()
             .Where (p => p.CategoryID == categoryID)
             .Include (p => p.Category)
             .ToListAsync();
         public async Task <Category?> GetCategoryByID(int categoryID) =>
             await _dbcontext.Category
-                .Include(c => c.Product)
+                .AsNoTracking()
                 .Where (c => c.CategoryID == categoryID)
+                .Include(c => c.Product)
                 .FirstOrDefaultAsync();
         public async Task AddCategory(Category newCategory){
             try{

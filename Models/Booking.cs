@@ -10,7 +10,9 @@ namespace Backend.Models {
         Completed
     }
 
-    public class Reservation {
+    public class Booking {
+        [Key]
+        public Guid BookingID {get; set;}
         public Guid UserID { get; set; }
         [ForeignKey("UserID")]
         public virtual User User { get; set; } = null!;
@@ -18,11 +20,7 @@ namespace Backend.Models {
 
         [ForeignKey("TableID")]
         public virtual DiningTable Table { get; set; } = null!;
-
-        public int GuestCount { get; set; }
+        [Required]
         public DateTime ScheduledTime { get; set; }
-        public ReservationStatus Status { get; set; } = ReservationStatus.Pending;
-        public string? Note { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }
