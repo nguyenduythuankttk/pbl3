@@ -1,14 +1,15 @@
-// using Backend.Models;
-// using Backend.Models.DTOs;
+using Backend.Models;
+using Backend.Models.DTOs;
+using Backend.Models.DTOs.Reponse;
 
-// namespace Backend.Services.Interface
-// {
-//     public interface IUserService
-//     {
-//         Task<List<UserResponse>> GetAllUsers();
-//         Task<UserResponse?> GetByID(Guid UserID);
-//         Task CreateUser(UserCreateRequest User);
-//         Task UpdateUser(int UserID, UserUpdateRequest request);
-//         Task Delete(int UserID);
-//     }
-// }
+namespace Backend.Services.Interface
+{
+    public interface IUserService
+    {
+        Task<List<User>?> GetAllUsers();
+        Task<User?> GetUserByID(Guid userID);
+        Task AddUser(User User);
+        Task UpdateUser(Guid userID, UserUpdateRequest request);
+        // Task DeleteUser(Guid userID); xu li xoa user sau
+    }
+}

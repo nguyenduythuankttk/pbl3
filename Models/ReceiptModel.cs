@@ -16,6 +16,7 @@ namespace Backend.Models{
     {
         [Key]
         public Guid GoodsReceiptID { get; set; }
+        public DateTime DateReceive {get; set; }
         public Guid EmployeeID { get; set; }
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;

@@ -3,7 +3,7 @@ using Backend.Models.DTOs.Reponse;
 using Backend.Models.DTOs.Request;
 namespace Backend.Services.Interface{
     public interface IProductService{
-        Task <Task<Product>?> GetAllProduct();
+        Task <List<Product>?> GetAllProduct();
         Task <Product?> GetProductByID(int productID);
         Task AddProduct(ProductCreateRequest request);
         Task AddProductVarient(ProductVarientCreate request);

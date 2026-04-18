@@ -7,13 +7,14 @@ namespace Backend.Services.Interface
 {
     public interface IReceiptService
     {
-        Task<List<Receipt>> GetAllReceipt(DateOnly start, DateOnly end);
-        Task<Receipt?> GetReceiptbyID(Guid goodsReceiptID);
-        Task<List<Receipt?>> GetReceiptbyPO(Guid pOID);
-        Task <List<Receipt?>> GetReceiptbyStore(int storeID);
-        Task <List<Receipt?>> GetReceiptbyEmployee(Guid receiptID);
-        Task AddReceipt(ReceiptItem receiptItem);
-        Task UpdateReceipt(Guid receiptID, ReceiptUpdateRequest request);
-        Task DeleteReceipt(Guid receiptID);
+        Task<List<Receipt>?> GetAllReceiptIn(DateOnly start, DateOnly end);
+        Task<Receipt?> GetReceiptByID(Guid goodsReceiptID);
+        Task<List<Receipt>?> GetReceiptByPO(Guid pOID);
+        Task <List<Receipt>?> GetReceiptByStore(int storeID);
+        Task <List<Receipt>?> GetReceiptByEmployee(Guid employeeID);
+        Task <List<Receipt>?> GetReceiptBySupplier(Guid supplierID);
+        Task AddReceipt(Receipt receipt);
+        // Task UpdateReceipt(Guid receiptID, Set request);
+        // Task DeleteReceipt(Guid receiptID);
     }
 }
