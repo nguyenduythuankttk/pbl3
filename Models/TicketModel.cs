@@ -14,6 +14,8 @@ namespace Backend.Models {
         public Guid UserID{get; set;}
         [ForeignKey("UserID")]
         public virtual User User {get; set;} = null!;
+        [JsonIgnore]
+        public virtual ICollection<TicketProduct> TicketProduct {get;set;} = null!;
         
     }
 }
