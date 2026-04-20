@@ -12,10 +12,11 @@ namespace Backend.Models {
         public virtual Bill Bill { get; set; } = null!;
         public Guid UserID {get; set;}
         [ForeignKey("UserID")]
+        public virtual User User{get; set;}
         public Guid AddressID { get; set; }
         [ForeignKey("AddressID")]
         public virtual Address Address { get; set; } = null!;
-        public DateTime? CreateAt { get; set; }  
+        [Required]
         public decimal ShippingFee { get; set; }
         public string? Note { get; set; }
 

@@ -6,6 +6,6 @@ namespace Backend.Services.Interface{
         Task <List<DeliveryInfo>?> GetAllDeliveryIn (DateTime start, DateTime end);
         Task <List<DeliveryInfo>?> GetAllDeliveryByUser(Guid userID);
         Task AddDeliveryInfo(DeliveryInfoCreateRequest request);
-        Task UpdateDelivery(Guid employeeID);
+        Task UpdateDelivery(Guid deliveryID, DeliveryUpdateRequest updateRequest);
     }
 }

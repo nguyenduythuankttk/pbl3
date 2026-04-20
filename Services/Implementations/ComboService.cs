@@ -20,20 +20,22 @@ namespace Backend.Services.Implementations{
         }
         public async Task <List<Combo>?> GetAllCombo() =>
         await _dbcontext.Combo
+        .AsNoTracking()
         .Include(c => c.ComboProduct)
             .ThenInclude(c => c.ProductVarient)
                 .ThenInclude(c => c.Product)
         .ToListAsync();
         public async Task <List<Combo>?> GetAllComboIsActive() =>
         await _dbcontext.Combo
+        .AsNoTracking()
         .Include(c => c.ComboProduct)
             .ThenInclude(c => c.ProductVarient)
                 .ThenInclude(c => c.Product)
         .Where (c => c.IsActive ==true)
         .ToListAsync();
-        public async Task UpdateCombo (ComboRequest comboUpdate){
+        public async Task UpdateCombo (ComboChangeRequest comboUpdate, int comboID){
             try {
-                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( a => a.ComboID == comboUpdate.ComboID);
+                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( a => a.ComboID == comboID);
                 if (combo != null){
                     combo.ComboName = comboUpdate.ComboName;
                     combo.FixedPrice = comboUpdate.FixedPrice;

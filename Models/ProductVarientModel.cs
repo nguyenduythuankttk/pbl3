@@ -12,7 +12,9 @@ namespace Backend.Models{
         [ForeignKey("ProductID")]
         public virtual Product Product {get; set;} = null!;
 
+        [Required]
         public ProductSize Size {get; set;} = ProductSize.Default;
+        [Required]
         public decimal Price {get; set;}
         
         [JsonIgnore]

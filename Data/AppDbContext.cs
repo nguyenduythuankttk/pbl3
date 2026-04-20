@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Backend.Data {
     public class AppDbContext : DbContext {
@@ -22,7 +23,8 @@ namespace Backend.Data {
         public DbSet<BillChange> BillChange { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<DiningTable> DiningTable { get; set; }
-        public DbSet<Reservation> Reservation { get; set; }
+        public DbSet<Booking> Booking { get; set; }
+        public DbSet<BookingApproval> BookingApproval {get; set; }
         public DbSet<DeliveryInfo> DeliveryInfo { get; set; }
         public DbSet<DeliveryLog> DeliveryLog { get; set; }
         public DbSet<Supplier> Supplier { get; set; }
@@ -57,21 +59,15 @@ namespace Backend.Data {
 
             modelBuilder.Entity<PODetail>()
                 .HasKey(x => new { x.POID, x.IngredientID });
-
-            modelBuilder.Entity<POApproval>()
-                .HasKey(x => new { x.POID, x.EmployeeID });
-
             modelBuilder.Entity<ReceiptDetail>()
                 .HasKey(x => new { x.GoodsReceiptID, x.IngredientID });
-
-            modelBuilder.Entity<Reservation>()
-                .HasKey(x => new { x.UserID, x.TableID });
 
             modelBuilder.Entity<TicketCombo>()
                 .HasKey(x => new {x.TicketID, x.ComboID});
 
             modelBuilder.Entity<TicketProduct>()
                 .HasKey(x => new {x.TicketID, x.ProductVarientID});
+
 
             //one to one
             modelBuilder.Entity<Store>()
@@ -88,6 +84,12 @@ namespace Backend.Data {
                 .WithOne(p => p.Receipt)
                 .HasForeignKey<Receipt> (r => r.POID);
 
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.BookingApproval)
+                .WithOne(a => a.Booking)
+                .HasForeignKey<Booking> (b => b.BookingID);
+
+
             // convert string
             modelBuilder.Entity<Employee>()
                 .Property(x => x.Role)
@@ -96,25 +98,16 @@ namespace Backend.Data {
             modelBuilder.Entity<Bill>()
                 .Property(x => x.PaymentMethods)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<DeliveryInfo>()
-                .Property(x => x.CurrentStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<DeliveryLog>()
-                .Property(x => x.FromStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<DeliveryLog>()
-                .Property(x => x.ToStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
             modelBuilder.Entity<DiningTable>()
                 .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
-            modelBuilder.Entity<Reservation>()
-                .Property(x => x.Status)
+            modelBuilder.Entity<Booking>()
+                .Property(x => x.BookingStatus)
+                .HasConversion<string>().HasMaxLength(20).IsRequired();
+            
+            modelBuilder.Entity<BookingApproval>()
+                .Property(x => x.ApprovalStatus)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<Product>()
@@ -142,11 +135,7 @@ namespace Backend.Data {
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<POApproval>()
-                .Property(x => x.BfrStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<POApproval>()
-                .Property(x => x.AftStatus)
+                .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<Ingredient>()

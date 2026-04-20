@@ -11,7 +11,7 @@ namespace Backend.Models.DTOs.Reponse
 
         public Guid EmployeeID { get; set; }
         public int StoreID { get; set; }
-        public Guid SupplierID { get; set; }
+        public int SupplierID { get; set; }
         public DateTime DateReceive { get; set; }
         public ReceiptStatus Status { get; set; }
     }

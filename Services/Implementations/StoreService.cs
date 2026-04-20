@@ -4,19 +4,19 @@ using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Services.Implementations
-{
-    public class StoreService : IStoreService
-    {
-        private readonly AppDbContext _dbContext;
-        public StoreService(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+ namespace Backend.Services.Implementations
+ {
+     public class StoreService : IStoreService
+     {
+         private readonly AppDbContext _dbContext;
+         public StoreService(AppDbContext dbContext)
+         {
+             _dbContext = dbContext;
+         }
 
-        public async Task<List<Store>?> GetAllStore() =>
+         public async Task<List<Store>?> GetAllStore() =>
             await _dbContext.Store
-                .Include(s => s.Address)
+                 .Include(s => s.Address)
                 .ToListAsync();
 
         public async Task<Store?> GetStoreByID (int storeID) => 

@@ -17,7 +17,9 @@ namespace Backend.Models{
         public string Email { get; set; } = null!;
         
         public int TotalReviews { get; set; }
+        [Required]
         public int TotalPoints { get; set; }
+        [Required]
         public int SeatingCapacity { get; set; }
         public bool IsActive {get; set; } = true;
 

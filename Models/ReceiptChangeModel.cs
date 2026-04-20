@@ -9,6 +9,7 @@ namespace Backend.Models {
         public Guid ReceiptID {get; set;}
         [ForeignKey("ReceiptID")]
         public virtual Receipt Receipt {get; set;} = null!;
+        [Required]
         public ReceiptStatus Status {get; set;}
         public Guid EmployeeID {get; set;}
         [ForeignKey("EmployeeID")]

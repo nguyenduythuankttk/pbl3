@@ -13,6 +13,7 @@ namespace Backend.Models{
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
 
+        [Required]
         public int Capacity { get; set; }
 
         [JsonIgnore]

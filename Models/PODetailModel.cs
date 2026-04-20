@@ -10,7 +10,9 @@ namespace Backend.Models {
         public int IngredientID{get; set;}
         [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient{get; set;} = null!;
-        public float Quantity {get; set;}
+        [Required]
+        public decimal Quantity {get; set;}
+        [Required]
         public decimal UnitPriceExpected {get; set;}
     }
 }

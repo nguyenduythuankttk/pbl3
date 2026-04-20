@@ -1,5 +1,7 @@
 using Backend.Data;
 using Backend.Models;
+using Backend.Models.DTOs.Reponse;
+using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 namespace Backend.Services.Implementations{
@@ -11,122 +13,74 @@ namespace Backend.Services.Implementations{
 
         public async Task <List<Bill>?> GetAllBillIn(DateOnly start, DateOnly end) =>
             await _dbcontext.Bill
-            .Include (b => b.BillDetail)
-                .ThenInclude(bd => bd.ProductVarient)
-                    .ThenInclude(pv => pv.Product)
-            .Include(b => b.BillChange)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where (b => b.CreateAt > start.ToDateTime(TimeOnly.MinValue) && b.CreateAt < end.ToDateTime(TimeOnly.MaxValue))
-            .ToListAsync();
+                    .AsNoTracking()
+                    .Include (b => b.BillChange
+                    .OrderBy(bc =>bc.ChangeAt)
+                    .Take(1))
+                    .ThenInclude(bc => bc.Employee)
+                    .Where( b => b.BillChange.Any() &&
+                            b.BillChange.Max(b => b.ChangeAt) >= start.ToDateTime(TimeOnly.MinValue) &&
+                            b.BillChange.Max(b => b.ChangeAt) <= end.ToDateTime(TimeOnly.MinValue))
+                    .Include(b => b.BillDetail)
+                        .ThenInclude(bd => bd.ProductVarient)
+                            .ThenInclude(pr => pr.Product)
+                    .Include(b => b.Store)
+                    .ToListAsync();
+                    
         public async Task <List<Bill>?> GetUserBill(Guid userID) => 
             await _dbcontext.Bill
-            .Include (b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where (b => b.UserID == userID)
-            .ToListAsync();
-        public async Task<List<Bill>?> GetPaidBill() =>
-            await _dbcontext.Bill
-            .Include (b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Include (b => b.BillChange)
-            .Where(b => b.BillChange
-                .OrderByDescending(bc => bc.ChangeAt)
-                .Select(bc => bc.Status)
-                .FirstOrDefault() == BillStatus.Paid)
-            .ToListAsync();
-        public async Task<List<Bill>?> GetUnPaidBill() =>
-            await _dbcontext.Bill
-            .Include (b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where(b => b.BillChange
-                .OrderByDescending(bc => bc.ChangeAt)
-                .Select(bc => bc.Status)
-                .FirstOrDefault() == BillStatus.UnPaid)
-            .ToListAsync();
-        public async Task<List<Bill>?> GetDeletedBill() =>
-            await _dbcontext.Bill
-            .Include (b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where(b => b.BillChange
-                .OrderByDescending(bc => bc.ChangeAt)
-                .Select(bc => bc.Status)
-                .FirstOrDefault() == BillStatus.Delete)
-            .ToListAsync();
-        public async Task <List<Bill>?> GetCashBill() =>
-            await _dbcontext.Bill
-            .Include(b => b.BillDetail)
+                .AsNoTracking()
+                .Where (b => b.UserID == userID)
+                .Include (b => b.BillDetail)
                     .ThenInclude (bd => bd.ProductVarient)
                         .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where(b => b.PaymentMethods == PaymentMethods.Cash)
-            .ToListAsync();
-        public async Task <List<Bill>?> GetCardBill() =>
-            await _dbcontext.Bill
-            .Include(b => b.BillDetail)
-                    .ThenInclude (bd => bd.ProductVarient)
-                        .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where(b => b.PaymentMethods == PaymentMethods.Card)
-            .ToListAsync();
+                .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
+                .Include (b => b.Store)
+                .ToListAsync();
         public async Task<Bill?> GetBillByID(Guid billID) =>
             await _dbcontext.Bill
-            .Include(b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.Employee)
-            .Include (b => b.Store)
-            .Where(b => b.BillID == billID)
-            .FirstOrDefaultAsync();
-        public async Task AddBill(Bill bill){
+            .AsNoTracking()
+                .Where(b => b.BillID == billID)
+                .Include(b => b.BillDetail)
+                    .ThenInclude (bd => bd.ProductVarient)
+                        .ThenInclude (pr => pr.Product)
+                .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
+                    .ThenInclude (b => b.Employee)
+                .Include (b => b.Store)
+                .FirstOrDefaultAsync();
+        public async Task AddBill(BillCreateRequest request){
+            var newBill = new Bill{
+                UserID = request.UserID,
+                StoreID = request.StoreID,
+                VAT = request.VAT,
+                PaymentMethods = request.PaymentMethods,
+                Total = request.Total,
+                Paid = request.Paid,
+                Note = request.Note,
+                MoneyGiveBack = request.MoneyGiveBack,
+                MoneyReceived = request.MoneyReceived
+            };
+            var newChange = new BillChange{
+                BillID = newBill.BillID,
+                EmployeeID = request.EmployeID,
+                ChangeAt = DateTime.UtcNow,
+                Status = BillStatus.Create
+            };
             try {
-                _dbcontext.Bill.Add(bill); // thêm Bill vào bảng Bill trong db
-                await _dbcontext.SaveChangesAsync(); //chờ lưu tất cả thay đổi vào db
-            }catch (Exception e){
+                _dbcontext.Bill.Add(newBill);
+                _dbcontext.BillChange.Add(newChange);
+                await _dbcontext.SaveChangesAsync();
+            } catch (Exception e){
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task SetPaid(Guid billID){
-            var bill = await _dbcontext.Bill.FindAsync(billID);
-            if (bill == null) return;
-            var change = new BillChange {
-                BillChangeID = Guid.NewGuid(),
-                BillID = billID,
-                Status = BillStatus.Paid,
-                ChangeAt = DateTime.UtcNow
+        public async Task ChangeBill(BillChangeRequest changeRequest){
+            var newChange = new BillChange {
+                BillID = changeRequest.BillID,
+                Status = changeRequest.Status,
+                ChangeAt = changeRequest.ChangeAt
             };
-            _dbcontext.BillChange.Add(change);
-            await _dbcontext.SaveChangesAsync();
-        }
-        public async Task DeleteBill(Guid billID){
-            var bill = await _dbcontext.Bill.FindAsync(billID);
-            if (bill == null) return;
-            var change = new BillChange {
-                BillChangeID = Guid.NewGuid(),
-                BillID = billID,
-                Status = BillStatus.Delete,
-                ChangeAt = DateTime.UtcNow
-            };
-            _dbcontext.BillChange.Add(change);
+            _dbcontext.BillChange.Add(newChange);
             await _dbcontext.SaveChangesAsync();
         }
     }

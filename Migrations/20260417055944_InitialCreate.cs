@@ -93,25 +93,6 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "POApprovalChange",
-                columns: table => new
-                {
-                    POApprovalChangeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    LastUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Comment = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    BfrStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    AftStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_POApprovalChange", x => x.POApprovalChangeID);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Store",
                 columns: table => new
                 {
@@ -142,7 +123,8 @@ namespace BackEnd.Migrations
                 name: "Supplier",
                 columns: table => new
                 {
-                    SupplierID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    SupplierID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     SupplierName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AddressID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -275,6 +257,34 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "PurchaseOrder",
+                columns: table => new
+                {
+                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    StoreID = table.Column<int>(type: "int", nullable: false),
+                    SupplierID = table.Column<int>(type: "int", nullable: false),
+                    TaxRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchaseOrder", x => x.POID);
+                    table.ForeignKey(
+                        name: "FK_PurchaseOrder_Store_StoreID",
+                        column: x => x.StoreID,
+                        principalTable: "Store",
+                        principalColumn: "StoreID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PurchaseOrder_Supplier_SupplierID",
+                        column: x => x.SupplierID,
+                        principalTable: "Supplier",
+                        principalColumn: "SupplierID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ProductVarient",
                 columns: table => new
                 {
@@ -304,17 +314,15 @@ namespace BackEnd.Migrations
                     BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     StoreID = table.Column<int>(type: "int", nullable: false),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     VAT = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     PaymentMethods = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    TimeCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedBy = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
                     Paid = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Note = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MoneyReceived = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    MoneyGiveBack = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -326,56 +334,8 @@ namespace BackEnd.Migrations
                         principalColumn: "StoreID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bill_User_DeletedBy",
-                        column: x => x.DeletedBy,
-                        principalTable: "User",
-                        principalColumn: "UserID");
-                    table.ForeignKey(
-                        name: "FK_Bill_User_EmployeeID",
-                        column: x => x.EmployeeID,
-                        principalTable: "User",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Bill_User_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PurchaseOrder",
-                columns: table => new
-                {
-                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    StoreID = table.Column<int>(type: "int", nullable: false),
-                    SupplierID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    SentAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    TaxRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ReceivedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PurchaseOrder", x => x.POID);
-                    table.ForeignKey(
-                        name: "FK_PurchaseOrder_Store_StoreID",
-                        column: x => x.StoreID,
-                        principalTable: "Store",
-                        principalColumn: "StoreID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PurchaseOrder_Supplier_SupplierID",
-                        column: x => x.SupplierID,
-                        principalTable: "Supplier",
-                        principalColumn: "SupplierID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PurchaseOrder_User_EmployeeID",
-                        column: x => x.EmployeeID,
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -486,6 +446,103 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "POApproval",
+                columns: table => new
+                {
+                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    POApprovalID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    LastUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Comment = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_POApproval", x => new { x.POID, x.EmployeeID });
+                    table.ForeignKey(
+                        name: "FK_POApproval_PurchaseOrder_POID",
+                        column: x => x.POID,
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "POID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_POApproval_User_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "PODetail",
+                columns: table => new
+                {
+                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    IngredientID = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<float>(type: "float", nullable: false),
+                    UnitPriceExpected = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PODetail", x => new { x.POID, x.IngredientID });
+                    table.ForeignKey(
+                        name: "FK_PODetail_Ingredient_IngredientID",
+                        column: x => x.IngredientID,
+                        principalTable: "Ingredient",
+                        principalColumn: "IngredientID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PODetail_PurchaseOrder_POID",
+                        column: x => x.POID,
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "POID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Receipt",
+                columns: table => new
+                {
+                    GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    StoreID = table.Column<int>(type: "int", nullable: false),
+                    SupplierID = table.Column<int>(type: "int", nullable: false),
+                    POID = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Receipt", x => x.GoodsReceiptID);
+                    table.ForeignKey(
+                        name: "FK_Receipt_PurchaseOrder_POID",
+                        column: x => x.POID,
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "POID");
+                    table.ForeignKey(
+                        name: "FK_Receipt_Store_StoreID",
+                        column: x => x.StoreID,
+                        principalTable: "Store",
+                        principalColumn: "StoreID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipt_Supplier_SupplierID",
+                        column: x => x.SupplierID,
+                        principalTable: "Supplier",
+                        principalColumn: "SupplierID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Receipt_User_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ComboProduct",
                 columns: table => new
                 {
@@ -544,8 +601,9 @@ namespace BackEnd.Migrations
                 {
                     BillChangeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CreateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AmountPaid = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ChangeAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -555,6 +613,12 @@ namespace BackEnd.Migrations
                         column: x => x.BillID,
                         principalTable: "Bill",
                         principalColumn: "BillID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BillChange_User_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -595,11 +659,7 @@ namespace BackEnd.Migrations
                     BillID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     AddressID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EstimatedTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    ActualTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     ShippingFee = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    CurrentStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Note = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
@@ -618,28 +678,9 @@ namespace BackEnd.Migrations
                         principalTable: "Bill",
                         principalColumn: "BillID",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "POApproval",
-                columns: table => new
-                {
-                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_POApproval", x => new { x.POID, x.EmployeeID });
                     table.ForeignKey(
-                        name: "FK_POApproval_PurchaseOrder_POID",
-                        column: x => x.POID,
-                        principalTable: "PurchaseOrder",
-                        principalColumn: "POID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_POApproval_User_EmployeeID",
-                        column: x => x.EmployeeID,
+                        name: "FK_DeliveryInfo_User_UserID",
+                        column: x => x.UserID,
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -647,147 +688,78 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PODetail",
+                name: "TicketCombo",
                 columns: table => new
                 {
-                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    IngredientID = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<float>(type: "float", nullable: false),
-                    UnitPriceExpected = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    ComboID = table.Column<int>(type: "int", nullable: false),
+                    TicketID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PODetail", x => new { x.POID, x.IngredientID });
+                    table.PrimaryKey("PK_TicketCombo", x => new { x.TicketID, x.ComboID });
                     table.ForeignKey(
-                        name: "FK_PODetail_Ingredient_IngredientID",
-                        column: x => x.IngredientID,
-                        principalTable: "Ingredient",
-                        principalColumn: "IngredientID",
+                        name: "FK_TicketCombo_Combo_ComboID",
+                        column: x => x.ComboID,
+                        principalTable: "Combo",
+                        principalColumn: "ComboID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PODetail_PurchaseOrder_POID",
-                        column: x => x.POID,
-                        principalTable: "PurchaseOrder",
-                        principalColumn: "POID",
+                        name: "FK_TicketCombo_Ticket_TicketID",
+                        column: x => x.TicketID,
+                        principalTable: "Ticket",
+                        principalColumn: "TicketID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Receipt",
+                name: "TicketProduct",
                 columns: table => new
                 {
-                    GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    StoreID = table.Column<int>(type: "int", nullable: false),
-                    SupplierID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    POID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    DateReceive = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedBy = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    PurchaseOrderPOID = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                    ProductVarientID = table.Column<int>(type: "int", nullable: false),
+                    TicketID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Receipt", x => x.GoodsReceiptID);
+                    table.PrimaryKey("PK_TicketProduct", x => new { x.TicketID, x.ProductVarientID });
                     table.ForeignKey(
-                        name: "FK_Receipt_PurchaseOrder_POID",
-                        column: x => x.POID,
-                        principalTable: "PurchaseOrder",
-                        principalColumn: "POID",
+                        name: "FK_TicketProduct_ProductVarient_ProductVarientID",
+                        column: x => x.ProductVarientID,
+                        principalTable: "ProductVarient",
+                        principalColumn: "ProductVarientID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Receipt_PurchaseOrder_PurchaseOrderPOID",
-                        column: x => x.PurchaseOrderPOID,
-                        principalTable: "PurchaseOrder",
-                        principalColumn: "POID");
-                    table.ForeignKey(
-                        name: "FK_Receipt_Store_StoreID",
-                        column: x => x.StoreID,
-                        principalTable: "Store",
-                        principalColumn: "StoreID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Receipt_Supplier_SupplierID",
-                        column: x => x.SupplierID,
-                        principalTable: "Supplier",
-                        principalColumn: "SupplierID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Receipt_User_DeletedBy",
-                        column: x => x.DeletedBy,
-                        principalTable: "User",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Receipt_User_EmployeeID",
-                        column: x => x.EmployeeID,
-                        principalTable: "User",
-                        principalColumn: "UserID",
+                        name: "FK_TicketProduct_Ticket_TicketID",
+                        column: x => x.TicketID,
+                        principalTable: "Ticket",
+                        principalColumn: "TicketID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "DeliveryLog",
+                name: "ReceiptChange",
                 columns: table => new
                 {
-                    LogID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    DeliveryID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    FromStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ToStatus = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ChangedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Note = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DeliveryLog", x => x.LogID);
-                    table.ForeignKey(
-                        name: "FK_DeliveryLog_DeliveryInfo_DeliveryID",
-                        column: x => x.DeliveryID,
-                        principalTable: "DeliveryInfo",
-                        principalColumn: "DeliveryID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DeliveryLog_User_EmployeeID",
-                        column: x => x.EmployeeID,
-                        principalTable: "User",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "GoodsInspection",
-                columns: table => new
-                {
-                    InspectionID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ReceiptChangeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    InspectedBy = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    InspectedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Note = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UpdateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GoodsInspection", x => x.InspectionID);
+                    table.PrimaryKey("PK_ReceiptChange", x => x.ReceiptChangeID);
                     table.ForeignKey(
-                        name: "FK_GoodsInspection_Receipt_ReceiptID",
+                        name: "FK_ReceiptChange_Receipt_ReceiptID",
                         column: x => x.ReceiptID,
                         principalTable: "Receipt",
                         principalColumn: "GoodsReceiptID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GoodsInspection_User_InspectedBy",
-                        column: x => x.InspectedBy,
+                        name: "FK_ReceiptChange_User_EmployeeID",
+                        column: x => x.EmployeeID,
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -801,6 +773,7 @@ namespace BackEnd.Migrations
                     GoodsReceiptID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     IngredientID = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    GoodQuantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
@@ -822,35 +795,31 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "InspectionDetail",
+                name: "DeliveryLog",
                 columns: table => new
                 {
-                    InspectionID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    IngredientID = table.Column<int>(type: "int", nullable: false),
-                    ReceivedQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    GoodQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DamagedQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ExpiredQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ShortageQty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DamageReason = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LogID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    DeliveryID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    EmployeeID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ChangeAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Note = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InspectionDetail", x => new { x.InspectionID, x.IngredientID });
+                    table.PrimaryKey("PK_DeliveryLog", x => x.LogID);
                     table.ForeignKey(
-                        name: "FK_InspectionDetail_GoodsInspection_InspectionID",
-                        column: x => x.InspectionID,
-                        principalTable: "GoodsInspection",
-                        principalColumn: "InspectionID",
+                        name: "FK_DeliveryLog_DeliveryInfo_DeliveryID",
+                        column: x => x.DeliveryID,
+                        principalTable: "DeliveryInfo",
+                        principalColumn: "DeliveryID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_InspectionDetail_Ingredient_IngredientID",
-                        column: x => x.IngredientID,
-                        principalTable: "Ingredient",
-                        principalColumn: "IngredientID",
+                        name: "FK_DeliveryLog_User_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "User",
+                        principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -946,16 +915,6 @@ namespace BackEnd.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bill_DeletedBy",
-                table: "Bill",
-                column: "DeletedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bill_EmployeeID",
-                table: "Bill",
-                column: "EmployeeID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Bill_StoreID",
                 table: "Bill",
                 column: "StoreID");
@@ -969,6 +928,11 @@ namespace BackEnd.Migrations
                 name: "IX_BillChange_BillID",
                 table: "BillChange",
                 column: "BillID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BillChange_EmployeeID",
+                table: "BillChange",
+                column: "EmployeeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BillDetail_ProductVarientID",
@@ -991,6 +955,11 @@ namespace BackEnd.Migrations
                 column: "BillID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeliveryInfo_UserID",
+                table: "DeliveryInfo",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeliveryLog_DeliveryID",
                 table: "DeliveryLog",
                 column: "DeliveryID");
@@ -1004,22 +973,6 @@ namespace BackEnd.Migrations
                 name: "IX_DiningTable_StoreID",
                 table: "DiningTable",
                 column: "StoreID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GoodsInspection_InspectedBy",
-                table: "GoodsInspection",
-                column: "InspectedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GoodsInspection_ReceiptID",
-                table: "GoodsInspection",
-                column: "ReceiptID",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspectionDetail_IngredientID",
-                table: "InspectionDetail",
-                column: "IngredientID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryBatch_IngredientID",
@@ -1057,11 +1010,6 @@ namespace BackEnd.Migrations
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PurchaseOrder_EmployeeID",
-                table: "PurchaseOrder",
-                column: "EmployeeID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PurchaseOrder_StoreID",
                 table: "PurchaseOrder",
                 column: "StoreID");
@@ -1077,11 +1025,6 @@ namespace BackEnd.Migrations
                 column: "ProductVarientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Receipt_DeletedBy",
-                table: "Receipt",
-                column: "DeletedBy");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Receipt_EmployeeID",
                 table: "Receipt",
                 column: "EmployeeID");
@@ -1093,11 +1036,6 @@ namespace BackEnd.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Receipt_PurchaseOrderPOID",
-                table: "Receipt",
-                column: "PurchaseOrderPOID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Receipt_StoreID",
                 table: "Receipt",
                 column: "StoreID");
@@ -1106,6 +1044,16 @@ namespace BackEnd.Migrations
                 name: "IX_Receipt_SupplierID",
                 table: "Receipt",
                 column: "SupplierID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReceiptChange_EmployeeID",
+                table: "ReceiptChange",
+                column: "EmployeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReceiptChange_ReceiptID",
+                table: "ReceiptChange",
+                column: "ReceiptID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReceiptDetail_IngredientID",
@@ -1155,6 +1103,16 @@ namespace BackEnd.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TicketCombo_ComboID",
+                table: "TicketCombo",
+                column: "ComboID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TicketProduct_ProductVarientID",
+                table: "TicketProduct",
+                column: "ProductVarientID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_StoreID",
                 table: "User",
                 column: "StoreID");
@@ -1186,19 +1144,16 @@ namespace BackEnd.Migrations
                 name: "DeliveryLog");
 
             migrationBuilder.DropTable(
-                name: "InspectionDetail");
-
-            migrationBuilder.DropTable(
                 name: "POApproval");
-
-            migrationBuilder.DropTable(
-                name: "POApprovalChange");
 
             migrationBuilder.DropTable(
                 name: "PODetail");
 
             migrationBuilder.DropTable(
                 name: "Receipe");
+
+            migrationBuilder.DropTable(
+                name: "ReceiptChange");
 
             migrationBuilder.DropTable(
                 name: "Reservation");
@@ -1210,22 +1165,16 @@ namespace BackEnd.Migrations
                 name: "StockMovement");
 
             migrationBuilder.DropTable(
-                name: "Ticket");
+                name: "TicketCombo");
+
+            migrationBuilder.DropTable(
+                name: "TicketProduct");
 
             migrationBuilder.DropTable(
                 name: "UserAddress");
 
             migrationBuilder.DropTable(
-                name: "Combo");
-
-            migrationBuilder.DropTable(
                 name: "DeliveryInfo");
-
-            migrationBuilder.DropTable(
-                name: "GoodsInspection");
-
-            migrationBuilder.DropTable(
-                name: "ProductVarient");
 
             migrationBuilder.DropTable(
                 name: "DiningTable");
@@ -1234,10 +1183,16 @@ namespace BackEnd.Migrations
                 name: "InventoryBatch");
 
             migrationBuilder.DropTable(
-                name: "Bill");
+                name: "Combo");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "ProductVarient");
+
+            migrationBuilder.DropTable(
+                name: "Ticket");
+
+            migrationBuilder.DropTable(
+                name: "Bill");
 
             migrationBuilder.DropTable(
                 name: "ReceiptDetail");
@@ -1246,7 +1201,7 @@ namespace BackEnd.Migrations
                 name: "Warehouse");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Product");
 
             migrationBuilder.DropTable(
                 name: "Ingredient");
@@ -1255,13 +1210,16 @@ namespace BackEnd.Migrations
                 name: "Receipt");
 
             migrationBuilder.DropTable(
+                name: "Category");
+
+            migrationBuilder.DropTable(
                 name: "PurchaseOrder");
 
             migrationBuilder.DropTable(
-                name: "Supplier");
+                name: "User");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Supplier");
 
             migrationBuilder.DropTable(
                 name: "Store");

@@ -15,15 +15,16 @@ namespace Backend.Models{
     public class Receipt
     {
         [Key]
-        public Guid GoodsReceiptID { get; set; }
+        public Guid ReceiptID { get; set; }
         public DateTime DateReceive {get; set; }
+        public DateTime? DeletedAt {get; set; }
         public Guid EmployeeID { get; set; }
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
         public int StoreID { get; set; }
         [ForeignKey("StoreID")]
         public virtual Store Store { get; set; } = null!;
-        public Guid SupplierID { get; set; }
+        public int SupplierID { get; set; }
         [ForeignKey("SupplierID")]
         public virtual Supplier Supplier { get; set; } = null!;
         public Guid? POID { get; set; }
@@ -32,5 +33,12 @@ namespace Backend.Models{
 
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetail { get; set; } = new List<ReceiptDetail>();
+
+        public Receipt()
+        {
+            ReceiptDetail = new List<ReceiptDetail>();
+        }
     }
+
+
 }

@@ -5,9 +5,9 @@ namespace Backend.Models{
 
     public enum ProductType
     {
-        Combo,
         Food,
-        Drink
+        Drink,
+        Addon
     }
 
     public class Product
@@ -17,12 +17,11 @@ namespace Backend.Models{
         public int CategoryID { get; set; }
         [ForeignKey("CategoryID")]
         public virtual Category Category { get; set; } = null!;
+        [Required]
         public string ProductName { get; set; } = null!;
+        [Required]
         public ProductType ProductType { get; set; }
-        public DateTime ProductionTime { get; set; }
         public string? Image { get; set; }
-        public bool IsActive { get; set; }
-
         [JsonIgnore]
         public virtual ICollection<ProductVarient> ProductVarient { get; set; } = new List<ProductVarient>();
 

@@ -2,11 +2,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Models.DTOs.Request
 {
-    public class GoodsReceiptCreateRequest
+    public class ReceiptCreateRequest
     {
         public Guid EmployeeID { get; set; }
-        public int StoreID { get; set; }
-        public Guid SupplierID { get; set; }
         public DateTime DateReceive { get; set; }
         public ReceiptStatus Status { get; set; }
     }
@@ -15,8 +13,7 @@ namespace Backend.Models.DTOs.Request
     {
         //public Guid EmployeeID { get; set; } -> Quang đang hơi thắc mắc vì người cập nhật thì cần thêm thuộc tính chứ nhỉ..
         public int StoreID { get; set; }
-        public Guid SupplierID { get; set; }
-        //public DateTime DateReceive { get; set; } -> Tương tự với employeeID
+        public int SupplierID { get; set; }
         public ReceiptStatus Status { get; set; }
     }
 }

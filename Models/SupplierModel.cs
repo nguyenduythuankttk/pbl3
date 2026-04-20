@@ -4,14 +4,19 @@ using System.Text.Json.Serialization;
 namespace Backend.Models {
     public class Supplier{
         [Key]
-        public Guid SupplierID{get; set;}
-        public string SupplierName{get; set;}
+        public int SupplierID{get; set;}
+        [Required, MaxLength(100)]
+        public string SupplierName{get; set;} = null!;
         public Guid AddressID {get; set;}
         [ForeignKey("AddressID")]
         public virtual Address Address {get; set;} = null!;
-        public string Phone{get; set;}
-        public string Email{get; set;}
-        public string TaxCode{get; set;}
+        [Required, Phone, MaxLength(11)]
+        public string Phone{get; set;} = null!;
+        [Required, MaxLength(100)]
+        public string Email{get; set;} = null!;
+        [Required, MaxLength(15)]
+        public string TaxCode{get; set;} = null!;
+        public DateTime? DeletedAt {get; set; }
 
     }
 }

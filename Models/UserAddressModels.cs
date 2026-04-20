@@ -14,6 +14,7 @@ namespace Backend.Models{
         [ForeignKey("AddressID")]
         public virtual Address Address { get; set; } = null!;
 
+        [Required]
         public bool IsDefault { get; set; }
     }
 }
