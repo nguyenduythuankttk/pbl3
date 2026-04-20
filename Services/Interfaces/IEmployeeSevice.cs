@@ -1,4 +1,4 @@
-/*using Backend.Models;
+using Backend.Models;
 using Backend.Models.DTOs;
 namespace Backend.Services.Interface{
     public interface IEmployeeService{
@@ -8,4 +8,4 @@ namespace Backend.Services.Interface{
         Task DeleteEmployee (Employee employee);
         
     }
-}*/
+}

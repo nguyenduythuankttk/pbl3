@@ -38,7 +38,7 @@ namespace Backend.Services.Implementations{
             try{
                 var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == shiftID);
                 if (shift != null){
-                    shift.CheckIn = request.;
+                    shift.CheckIn = request.CheckIn;
                     shift.CheckOut = request.CheckOut;
                     _dbContext.Shift.Update(shift);
                     await _dbContext.SaveChangesAsync();
