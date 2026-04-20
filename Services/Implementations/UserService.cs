@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Backend.Data;
 using Backend.Models;
 using Backend.Models.DTOs;
@@ -19,13 +20,16 @@ namespace Backend.Services.Implementations
         //Get all User
         public async Task<List<User>?> GetAllUsers() => 
             await _dbContext.User
+                .Where(u => u.DeletedAt == null)
+                .AsNoTracking()
                 .Include(u => u.UserAddress)
                 .ToListAsync();
 
         public async Task<User?> GetUserByID(Guid userID) =>
             await _dbContext.User //lay du lieu raa
+                .AsNoTracking()
                 .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.UserID == userID);
+                .FirstOrDefaultAsync(u => u.UserID == userID && u.DeletedAt == null);
 
         public async Task AddUser(User user)
         {
@@ -76,6 +80,27 @@ namespace Backend.Services.Implementations
             }
         }
 
+        public async Task DeleteUser(Guid userID)
+        {
+            var user = await _dbContext.User    
+                .FirstOrDefaultAsync(u => u.UserID == userID &&
+                                          u.DeletedAt == null);
+
+            if(user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            try
+            {
+                user.DeletedAt = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Delete user error {ex.Message}");
+                throw new Exception($"An error occured while deleting user: {ex.Message}");
+            }
+        }
             
     }
 }

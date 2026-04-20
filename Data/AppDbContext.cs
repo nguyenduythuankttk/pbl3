@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Backend.Data {
     public class AppDbContext : DbContext {
@@ -22,7 +23,8 @@ namespace Backend.Data {
         public DbSet<BillChange> BillChange { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<DiningTable> DiningTable { get; set; }
-        public DbSet<Reservation> Reservation { get; set; }
+        public DbSet<Booking> Booking { get; set; }
+        public DbSet<BookingApproval> BookingApproval {get; set; }
         public DbSet<DeliveryInfo> DeliveryInfo { get; set; }
         public DbSet<DeliveryLog> DeliveryLog { get; set; }
         public DbSet<Supplier> Supplier { get; set; }
@@ -66,6 +68,7 @@ namespace Backend.Data {
             modelBuilder.Entity<TicketProduct>()
                 .HasKey(x => new {x.TicketID, x.ProductVarientID});
 
+
             //one to one
             modelBuilder.Entity<Store>()
                 .HasOne(s => s.Address)
@@ -81,6 +84,12 @@ namespace Backend.Data {
                 .WithOne(p => p.Receipt)
                 .HasForeignKey<Receipt> (r => r.POID);
 
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.BookingApproval)
+                .WithOne(a => a.Booking)
+                .HasForeignKey<Booking> (b => b.BookingID);
+
+
             // convert string
             modelBuilder.Entity<Employee>()
                 .Property(x => x.Role)
@@ -93,8 +102,12 @@ namespace Backend.Data {
                 .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
-            modelBuilder.Entity<Reservation>()
-                .Property(x => x.Status)
+            modelBuilder.Entity<Booking>()
+                .Property(x => x.BookingStatus)
+                .HasConversion<string>().HasMaxLength(20).IsRequired();
+            
+            modelBuilder.Entity<BookingApproval>()
+                .Property(x => x.ApprovalStatus)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<Product>()

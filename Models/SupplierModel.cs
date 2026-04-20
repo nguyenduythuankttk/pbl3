@@ -5,17 +5,18 @@ namespace Backend.Models {
     public class Supplier{
         [Key]
         public int SupplierID{get; set;}
-        [Required]
-        public string SupplierName{get; set;}
+        [Required, MaxLength(100)]
+        public string SupplierName{get; set;} = null!;
         public Guid AddressID {get; set;}
         [ForeignKey("AddressID")]
         public virtual Address Address {get; set;} = null!;
-        [Required]
-        public string Phone{get; set;}
-        [Required]
-        public string Email{get; set;}
-        [Required]
-        public string TaxCode{get; set;}
+        [Required, Phone, MaxLength(11)]
+        public string Phone{get; set;} = null!;
+        [Required, MaxLength(100)]
+        public string Email{get; set;} = null!;
+        [Required, MaxLength(15)]
+        public string TaxCode{get; set;} = null!;
+        public DateTime? DeletedAt {get; set; }
 
     }
 }

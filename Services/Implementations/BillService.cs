@@ -29,25 +29,25 @@ namespace Backend.Services.Implementations{
                     
         public async Task <List<Bill>?> GetUserBill(Guid userID) => 
             await _dbcontext.Bill
-            .AsNoTracking()
-            .Where (b => b.UserID == userID)
-            .Include (b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
-            .Include (b => b.Store)
-            .ToListAsync();
+                .AsNoTracking()
+                .Where (b => b.UserID == userID)
+                .Include (b => b.BillDetail)
+                    .ThenInclude (bd => bd.ProductVarient)
+                        .ThenInclude (pr => pr.Product)
+                .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
+                .Include (b => b.Store)
+                .ToListAsync();
         public async Task<Bill?> GetBillByID(Guid billID) =>
             await _dbcontext.Bill
             .AsNoTracking()
-            .Where(b => b.BillID == billID)
-            .Include(b => b.BillDetail)
-                .ThenInclude (bd => bd.ProductVarient)
-                    .ThenInclude (pr => pr.Product)
-            .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
-                .ThenInclude (b => b.Employee)
-            .Include (b => b.Store)
-            .FirstOrDefaultAsync();
+                .Where(b => b.BillID == billID)
+                .Include(b => b.BillDetail)
+                    .ThenInclude (bd => bd.ProductVarient)
+                        .ThenInclude (pr => pr.Product)
+                .Include (b => b.BillChange.OrderByDescending(bc => bc.ChangeAt))
+                    .ThenInclude (b => b.Employee)
+                .Include (b => b.Store)
+                .FirstOrDefaultAsync();
         public async Task AddBill(BillCreateRequest request){
             var newBill = new Bill{
                 UserID = request.UserID,

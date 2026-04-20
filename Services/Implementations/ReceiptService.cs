@@ -9,56 +9,64 @@ using Microsoft.EntityFrameworkCore;
  {
     public class ReceiptService : IReceiptService
      {
-         private readonly AppDbContext _dbContext;
+        private readonly AppDbContext _dbContext;
 
-         public ReceiptService(AppDbContext dbContext)
-         {
+        public ReceiptService(AppDbContext dbContext)
+        {
              _dbContext = dbContext;
-     }
+        }
 
         //GET ALL
         public async Task<List<Receipt>?> GetAllReceiptIn(DateOnly start, DateOnly end) =>
             await _dbContext.Receipt
+                .AsNoTracking()
+                .Where (        public DateTime ScheduledTime { get; set; }
+        public int NumberOfGuess {get; set; } 
+        public string? GuestComment {get; set; }
+)
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                 .Include(r => r.Supplier)
-                .Where (b => b.DateReceive > start.ToDateTime(TimeOnly.MinValue) && b.DateReceive < end.ToDateTime(TimeOnly.MaxValue))
                 .ToListAsync();
         
-        public async Task<Receipt?> GetReceiptByID(Guid goodsReceiptID) =>
+        public async Task<Receipt?> GetReceiptByID(Guid receiptID) =>
             await _dbContext.Receipt    
+                .AsNoTracking()
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                     .ThenInclude(c => c.Address)
                 .Include(r => r.PurchaseOrder)
                 .Include(r => r.Supplier)
                     .ThenInclude(c => c.Address)
-                .FirstOrDefaultAsync(r => r.GoodsReceiptID == goodsReceiptID);
+                .FirstOrDefaultAsync(r => r.ReceiptID == receiptID);
         
         public async Task<List<Receipt>?> GetReceiptByPO(Guid pOID) =>
             await _dbContext.Receipt
+                .AsNoTracking()
+                .Where(r => r.POID == pOID)
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                     .ThenInclude(c => c.Address)
                 .Include(r => r.PurchaseOrder)
                 .Include(r => r.Supplier)
                     .ThenInclude(c => c.Address)
-                .Where(r => r.POID == pOID)
                 .ToListAsync();
 
         public async Task<List<Receipt>?> GetReceiptByStore(int storeID) =>
             await _dbContext.Receipt
+                .AsNoTracking()
+                .Where(r => r.StoreID == storeID)
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                     .ThenInclude(c => c.Address)
                 .Include(r => r.PurchaseOrder)
                 .Include(r => r.Supplier)
                     .ThenInclude(c => c.Address)
-                .Where(r => r.StoreID == storeID)
                 .ToListAsync();
 
         public async Task<List<Receipt>?> GetReceiptByEmployee(Guid employeeID) =>
             await _dbContext.Receipt
+                .AsNoTracking()
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                     .ThenInclude(c => c.Address)
@@ -68,8 +76,9 @@ using Microsoft.EntityFrameworkCore;
                 .Where(r => r.EmployeeID == employeeID)
                 .ToListAsync();
 
-        public async Task<List<Receipt>?> GetReceiptBySupplier(Guid supplierID) =>
+        public async Task<List<Receipt>?> GetReceiptBySupplier(int supplierID) =>
             await _dbContext.Receipt
+                .AsNoTracking()
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                     .ThenInclude(c => c.Address)

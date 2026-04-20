@@ -10,6 +10,6 @@ namespace Backend.Services.Interface
         Task<User?> GetUserByID(Guid userID);
         Task AddUser(User User);
         Task UpdateUser(Guid userID, UserUpdateRequest request);
-        // Task DeleteUser(Guid userID); xu li xoa user sau
+        Task DeleteUser(Guid userID); 
     }
 }

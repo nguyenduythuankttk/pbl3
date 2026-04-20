@@ -15,8 +15,9 @@ namespace Backend.Models{
     public class Receipt
     {
         [Key]
-        public Guid GoodsReceiptID { get; set; }
+        public Guid ReceiptID { get; set; }
         public DateTime DateReceive {get; set; }
+        public DateTime? DeletedAt {get; set; }
         public Guid EmployeeID { get; set; }
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; } = null!;
@@ -32,5 +33,12 @@ namespace Backend.Models{
 
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetail { get; set; } = new List<ReceiptDetail>();
+
+        public Receipt()
+        {
+            ReceiptDetail = new List<ReceiptDetail>();
+        }
     }
+
+
 }

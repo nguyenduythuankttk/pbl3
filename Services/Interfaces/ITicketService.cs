@@ -4,8 +4,10 @@ using Backend.Models.DTOs.Reponse;
 
 namespace Backend.Services.Interface{
     public interface ITicketService {
-        Task<List<Ticket>?> GetTicketByUser (Guid user);
-        Task<Ticket> GetTicketByID (int ticketID);
-        Task AddTicket()
+        Task <List<Ticket>?> GetAllTicketIn(DateOnly start, DateOnly end);
+        Task <Ticket?> GetTicketByID(Guid ticketID);
+        // Task AddTicket(TicketCreateRequest createRequest);
+        Task UpdateTicket(Guid ticketID, TicketUpdateRequest request);
+        Task DeleteTicket(Guid ticketID);
     }
 }
