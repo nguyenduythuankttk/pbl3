@@ -18,7 +18,7 @@ namespace Backend.Controller
     [Http("get-all")]
     public async Task<IActionResult> GetAllCategory(){
         try{
-            var res = 
+            var res = _category.Get
         }
         catch (Exception e){
 
