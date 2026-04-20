@@ -80,7 +80,7 @@ namespace Backend.Services.Implementations
             }
         }
 
-        public async Task DeleteUser(Guid userID)
+        public async Task SoftDeleteUser(Guid userID)
         {
             var user = await _dbContext.User    
                 .FirstOrDefaultAsync(u => u.UserID == userID &&

@@ -20,10 +20,8 @@ using Microsoft.EntityFrameworkCore;
         public async Task<List<Receipt>?> GetAllReceiptIn(DateOnly start, DateOnly end) =>
             await _dbContext.Receipt
                 .AsNoTracking()
-                .Where (        public DateTime ScheduledTime { get; set; }
-        public int NumberOfGuess {get; set; } 
-        public string? GuestComment {get; set; }
-)
+                .Where(b => b.DateReceive >= start.ToDateTime(TimeOnly.MinValue) &&
+                            b.DateReceive <= end.ToDateTime(TimeOnly.MinValue))
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                 .Include(r => r.Supplier)

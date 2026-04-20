@@ -24,6 +24,7 @@ namespace Backend.Services.Implementations
 
         public async Task<List<Booking>?> GetBookingByUser() =>
             await _dbcontext.Booking
+            
             .ToListAsync();  
     }
 }
