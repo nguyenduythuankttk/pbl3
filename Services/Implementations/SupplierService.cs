@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Models.DTOs.Reponse;
 using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
@@ -75,7 +76,7 @@ namespace Backend.Services.Implementations
             }
         }
 
-        public async Task DeleteSupplier(int supplierID)
+        public async Task SoftDeleteSupplier(int supplierID)
         {
             var supplier = await _dbcontext.Supplier
                 .FirstOrDefaultAsync(s => s.SupplierID == supplierID &&

@@ -12,8 +12,8 @@ namespace Backend.Services.Interface
         Task <List<Receipt>?> GetReceiptByStore(int storeID);
         Task <List<Receipt>?> GetReceiptByEmployee(Guid employeeID);
         Task <List<Receipt>?> GetReceiptBySupplier(int supplierID);
-        Task AddReceipt(Receipt receipt);
+        //Task AddReceipt(Receipt receipt);
         // Task UpdateReceipt(Guid receiptID, Set request); khong the sua receipt
-        // Task DeleteReceipt(Guid receiptID);
+        Task SoftDeleteReceipt(Guid receiptID);
     }
 }

@@ -10,6 +10,6 @@ namespace Backend.Services.Interface
         Task<Supplier?> GetSupplierByID(int supllierID);
         Task AddSupplier(Supplier supplier);
         Task UpdateSupplier(int supplierID, SupplierUpdateRequest request);
-        Task DeleteSupplier(int supplierID);
+        Task SoftDeleteSupplier(int supplierID);
     }
 }
