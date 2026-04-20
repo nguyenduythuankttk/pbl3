@@ -35,10 +35,24 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteCategory (Category deleteCategory){
+        public async Task UpdateCategory (int categoryID, string img){
             try {
+                var category = await _dbcontext.Category.FirstOrDefaultAsync(c =>c.CategoryID == categoryID);
+                if (category != null){
+                    category.Image = img;
+                    _dbcontext.Category.Update(category);
+                    _dbcontext.SaveChangesAsync(); 
+                }
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async Task DeleteCategory (int deleteCategoryID){
+            try {
+                var cat = _dbcontext.Category.FirstOrDefaultAsync(deleteCategoryID);
+                if (cat != null){
                 _dbcontext.Category.Remove(deleteCategory);
-                await _dbcontext.SaveChangesAsync();
+                await _dbcontext.SaveChangesAsync();}
             }catch (Exception e){
                 Console.WriteLine(e.Message);
             }

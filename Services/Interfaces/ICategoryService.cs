@@ -7,6 +7,7 @@ namespace Backend.Services.Interface{
         Task <List<Product>?> GetProductInCategory(int categoryID);
         Task <Category?> GetCategoryByID(int categoryID);
         Task AddCategory(Category newCategory);
-        Task DeleteCategory (Category deleteCategory);
+        Task UpdateCategory (int categoryID, string img);
+        Task DeleteCategory (int deleteCategoryID);
     }
 }

@@ -10,6 +10,7 @@ namespace Backend.Models{
         public string ComboName {get; set;} = null!;
         [Required]
         public decimal FixedPrice {get; set;}
+        public string? Img {get; set;}
         [Required]
         public bool IsActive{get; set;}
         [JsonIgnore]
