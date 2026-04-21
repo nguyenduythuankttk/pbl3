@@ -21,7 +21,7 @@ namespace Backend.Models{
         public int TotalPoints { get; set; }
         [Required]
         public int SeatingCapacity { get; set; }
-        public bool IsActive {get; set; } = true;
+        public DateTime? DeletedAt {get; set; }
 
         public Guid AddressID { get; set; }
 

@@ -42,6 +42,7 @@ namespace Backend.Services.Implementations
             }catch(Exception ex)
             {
                 Console.WriteLine($"Add Supplier Error: {ex.Message}");
+                throw new Exception($"An error occurred while adding supplier {ex.Message}");
             }
         }
 

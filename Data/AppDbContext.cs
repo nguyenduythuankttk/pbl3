@@ -1,3 +1,4 @@
+//:qa
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure;

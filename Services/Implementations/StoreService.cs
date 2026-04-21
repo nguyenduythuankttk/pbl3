@@ -24,11 +24,10 @@ using Microsoft.EntityFrameworkCore;
                 .Include(s => s.Address)
                 .FirstOrDefaultAsync(s => s.StoreID == storeID);
 
-        public async Task<List<Store>?> GetStoreByAdress(Guid addressID) => 
+        public async Task<Store?> GetStoreByAdress(Guid addressID) => 
             await _dbContext.Store
                 .Include(s => s.Address)
-                .Where(s => s.AddressID == addressID)
-                .ToListAsync();//chuyeren kieu du lieu sang list
+                .FirstOrDefaultAsync(s => s.AddressID == addressID);
 
         public async Task AddStore(Store store)
         {
@@ -64,12 +63,25 @@ using Microsoft.EntityFrameworkCore;
 
         }
 
-        public async Task DeleteStore(int storeID)
+        public async Task SoftDeleteStore(int storeID)
         {
-            var store = await _dbContext.Store.FindAsync(storeID);
-            if(store == null) return;
-            store.IsActive = false;
-            await _dbContext.SaveChangesAsync();
+            var store = await _dbContext.Store
+                .FirstOrDefaultAsync(s => s.StoreID == storeID &&
+                                    s.DeletedAt == null);
+
+            if(store == null)
+                throw new Exception("Store not found!");
+
+            try
+            {
+                store.DeletedAt = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Soft delete store error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting store {ex.Message}");
+            }
+            
         }
 
 

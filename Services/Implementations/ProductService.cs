@@ -16,8 +16,8 @@ namespace Backend.Services.Implementations{
                     .ToListAsync();
         public async Task <Product?> GetProductByID(int productID) =>
             await _dbContext.Product
-                .FirstOrDefaultAsync(p => p.ProductID == productID)
-                .Include(p => p.ProductVarient);
+                .Include(p => p.ProductVarient)
+                .FirstOrDefaultAsync(p => p.ProductID == productID);
         public async Task AddProduct(ProductCreateRequest request){
             try {
                 var newProduct = new Product {
@@ -73,7 +73,7 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteProduct (int productID){
+        public async Task HardDeleteProduct (int productID){
             try {
                 var del = await _dbContext.Product
                                 .FirstOrDefaultAsync(p => p.ProductID == productID);
@@ -85,7 +85,7 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteProductVarient (int productID, ProductSize size){
+        public async Task HardDeleteProductVarient (int productID, ProductSize size){
             try {
                 var del = await _dbContext.ProductVarient
                                     .FirstOrDefaultAsync (p => p.ProductID == productID && p.Size == size);

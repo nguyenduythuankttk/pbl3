@@ -8,9 +8,9 @@ namespace Backend.Services.Interface
     {
         Task<List<Store>?> GetAllStore();
         Task<Store?> GetStoreByID (int storeID);
-        Task<List<Store>?> GetStoreByAdress(Guid addressID);
+        Task<Store?> GetStoreByAdress(Guid addressID);
         Task AddStore(Store store);
         Task UpdateStore (int StoreID, StoreUpdateRequest request);
-        Task DeleteStore(int StoreID);
+        Task SoftDeleteStore(int StoreID);
     }
 }

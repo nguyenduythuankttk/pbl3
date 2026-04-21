@@ -14,9 +14,12 @@ namespace Backend.Services.Implementations{
             await _dbContext.Shift.Where (s => s.TimeIn >= date.ToDateTime(TimeOnly.MinValue) &&  s.TimeIn <= date.ToDateTime(TimeOnly.MinValue))
             .Include(s => s.Employee)
             .ToListAsync();
+
         public async Task<Shift?> GetShiftByID (Guid ID) =>
-            await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == ID)
-                    .Include(s => s.Employee);
+            await _dbContext.Shift
+                .Include(s => s.Employee)
+                .FirstOrDefaultAsync(s => s.ShiftID == ID);
+
         public async Task AddShift (ShiftCreateRequest request) {
             try {
                 if (request.TimeIn > request.TimeOut){
@@ -34,6 +37,7 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine (e.Message);
             }
         }
+
         public async Task UpdateShift (ShiftUpdateRequest request, Shift shiftID){
             try{
                 var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == shiftID);
@@ -47,6 +51,7 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine (e.Message);
             }
         }
+
         public async Task DeleteShift (Guid ID){
             try{
                 var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == shiftID);

@@ -8,8 +8,8 @@ namespace Backend.Services.Interface{
         Task AddProduct(ProductCreateRequest request);
         Task AddProductVarient(ProductVarientCreate request);
         Task ProductUpdate (ProductUpdateRequest request, int productID);
-        Task ProductVarientUpdate (ProductVarientUpdateRequest request, int productID);
-        Task DeleteProduct (int ProductID);
-        Task DeleteProductVarient (int productID, ProductSize size);
+        Task ProductVarientUpdate (ProductVarientUpdateRequest request, int productID, ProductSize productSize);
+        Task HardDeleteProduct (int ProductID);
+        Task HardDeleteProductVarient (int productID, ProductSize size);
     }
 }
