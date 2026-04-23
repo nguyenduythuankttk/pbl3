@@ -25,7 +25,7 @@ namespace Backend.Data {
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<DiningTable> DiningTable { get; set; }
         public DbSet<Booking> Booking { get; set; }
-        public DbSet<BookingApproval> BookingApproval {get; set; }
+        public DbSet<BookingChange> BookingChange {get; set; }
         public DbSet<DeliveryInfo> DeliveryInfo { get; set; }
         public DbSet<DeliveryLog> DeliveryLog { get; set; }
         public DbSet<Supplier> Supplier { get; set; }
@@ -86,7 +86,7 @@ namespace Backend.Data {
                 .HasForeignKey<Receipt> (r => r.POID);
 
             modelBuilder.Entity<Booking>()
-                .HasOne(b => b.BookingApproval)
+                .HasOne(b => b.BookingChange)
                 .WithOne(a => a.Booking)
                 .HasForeignKey<Booking> (b => b.BookingID);
 
@@ -99,16 +99,9 @@ namespace Backend.Data {
             modelBuilder.Entity<Bill>()
                 .Property(x => x.PaymentMethods)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
-            modelBuilder.Entity<DiningTable>()
-                .Property(x => x.Status)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
-
-            modelBuilder.Entity<Booking>()
-                .Property(x => x.BookingStatus)
-                .HasConversion<string>().HasMaxLength(20).IsRequired();
             
-            modelBuilder.Entity<BookingApproval>()
-                .Property(x => x.ApprovalStatus)
+            modelBuilder.Entity<BookingChange>()
+                .Property(x => x.BookingStatus)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
             modelBuilder.Entity<Product>()

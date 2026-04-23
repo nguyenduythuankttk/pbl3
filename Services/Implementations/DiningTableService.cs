@@ -6,82 +6,73 @@ using Backend.Models.DTOs.Request;
 using Backend.Models.DTOs.Reponse;
 namespace Backend.Services.Implementations{
     public class DiningTableService : IDiningTableService{
-        private readonly AppDbContext _dbcontext;
+        private readonly AppDbContext _dbContext;
         public DiningTableService (AppDbContext dbContext){
-            _dbcontext = dbContext;
+            _dbContext = dbContext;
         }
-        public async Task<TableListResponse?> GetAllTablesAtStore(int storeID) {
-            var tables = await _dbcontext.DiningTable
-                    .Include(t => t.Store)
-                    .Include(t => t.Reservation)
-                    .Where(t => t.StoreID == storeID)
+        public async Task <List<DiningTable>?> GetAllTablesInStore(int storeID) 
+            => await _dbContext.DiningTable
+                    .Where(d => d.StoreID == storeID)
                     .ToListAsync();
-
-            if (!tables.Any()) return null;
-
-            return new TableListResponse {
-                StoreID = storeID,
-                TotalTables = tables.Count,
-                AvailableTables  = tables.Count(t => t.Status == TableStatus.Available),
-                Tables = tables.Select(t => new DiningTableResponse {
-                    TableID = t.TableID,
-                    TableNumber = t.TableNumber,
-                    Capacity = t.Capacity,
-                    Status = t.Status.ToString(),
-                    StorePhone = t.Store.Phone,
-                    StoreEmail = t.Store.Email,
-                    PendingReservations = t.Reservation.Count(r => r.Status == ReservationStatus.Pending)
-                }).ToList()
-            };
-        }
-
-        public async Task<DiningTableResponse?> GetTableByID(int tableID) {
-            var table = await _dbcontext.DiningTable
-                    .Include(t => t.Store)
-                    .Include(t => t.Reservation)
-                    .FirstOrDefaultAsync(t => t.TableID == tableID);
-
-            if (table == null) return null;
-
-            return new DiningTableResponse {
-                TableID = table.TableID,
-                TableNumber = table.TableNumber,
-                Capacity = table.Capacity,
-                Status = table.Status.ToString(),
-                StorePhone = table.Store.Phone,
-                StoreEmail = table.Store.Email,
-                PendingReservations = table.Reservation.Count(r => r.Status == ReservationStatus.Pending)
-            };
-        }
-        public async Task AddTable (DiningTable table){
-            try {
-                _dbcontext.DiningTable.Add(table);
-                await _dbcontext.SaveChangesAsync();
-            }catch (Exception e){
-                Console.WriteLine(e.Message);
-            }
-        }
-        public async Task UpdateTable (int tableID, int capacity){
+        public async Task <DiningTable?> GetTableByID (int ID)
+            => await _dbContext.DiningTable
+                    .FirstOrDefaultAsync(t => t.TableID ==ID);
+        public async Task UpdateTable(int tableID, TableUpdateRequest request){
             try{
-                var table = await _dbcontext.DiningTable.FirstOrDefaultAsync(t => t.TableID == tableID);
-                if (table!=null){
-                    table.Capacity = capacity;
-                    _dbcontext.DiningTable.Update(table);
-                    await _dbcontext.SaveChangesAsync();
-                }
-            }catch (Exception e){
-                Console.WriteLine(e.Message);
-            }
-        }
-        public async Task DeleteTable (int tableID){
-            try {
-                var table = await _dbcontext.DiningTable.FirstOrDefaultAsync(t => t.TableID == tableID);
+                var table = await _dbContext.DiningTable
+                            .FirstOrDefaultAsync(t => t.TableID ==tableID);
                 if (table != null){
-                    _dbcontext.DiningTable.Remove(table);
-                    await _dbcontext.SaveChangesAsync();
+                    table.Capacity = request.Capacity;
+                    table.IsBooking = request.IsBooking;
+                }
+                else{
+                    throw new Exception("Not Found Table");
                 }
             } catch (Exception e){
                 Console.WriteLine(e.Message);
+            }
+        }
+        public async Task SetISBooking(int tableID, bool status){
+            try{
+                var table =await _dbContext.DiningTable
+                            .FirstOrDefaultAsync(t => t.TableID ==tableID);
+                if (table != null){
+                    table.IsBooking = status;
+                }
+                else{
+                    throw new Exception("Not Found Table");
+                }
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async Task AddTable (TableCreateRequest newTable){
+            try {
+                var a = await _dbContext.DiningTable.FirstOrDefaultAsync(t => t.TableNumber == newTable.TableNumber && t.StoreID == newTable.StoreID);
+                    if (a!= null){
+                    var table = new DiningTable{
+                        StoreID = newTable.StoreID,
+                        Capacity = newTable.Capacity,
+                        IsBooking = newTable.IsBooking,
+                        TableNumber = newTable.TableNumber
+                    };
+                    _dbContext.DiningTable.Add(table);
+                    await _dbContext.SaveChangesAsync();
+                } else throw new Exception("TableNumber is avaiable in this Store");
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async Task DeleteTable (int tableID ){
+            try{
+                var table = await _dbContext.DiningTable
+                                .FirstOrDefaultAsync( t => t.TableID ==tableID);
+                if (table != null){
+                    _dbContext.DiningTable.Remove(table);
+                    await _dbContext.SaveChangesAsync();
+                } else throw new Exception ("Not Found Table");
+            } catch (Exception e){
+                Console.WriteLine (e.Message);
             }
         }
     }

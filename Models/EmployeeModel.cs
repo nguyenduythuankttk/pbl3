@@ -31,7 +31,7 @@ namespace Backend.Models{
         [JsonIgnore]
         public virtual ICollection<StockMovement> StockMovement { get; set; } = new List<StockMovement>();
         [JsonIgnore]
-        public virtual ICollection<BookingApproval> BookingApproval {get; set; } = new List<BookingApproval>();
+        public virtual ICollection<BookingChange> BookingChange {get; set; } = new List<BookingChange>();
         [Required]
         public decimal BasicSalary { get; set; }
     }

@@ -1,22 +1,23 @@
 using Backend.Models;
 using Backend.Models.DTOs.Reponse;
 using Backend.Models.DTOs.Request;
+using Microsoft.AspNetCore.Mvc;
 namespace Backend.Services.Interface{
     [ApiController]
     [Route("api/pbl3/[controller]")]
     public class diningTableController : ControllerBase{
         private readonly IDiningTableService _diningTable;
         public diningTableController (IDiningTableService diningTable){
-            _diningTable = diningTableService;
+            _diningTable = diningTable;
         }
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll(int storeID){
             try{
-                var tables = await _diningTable.GetAllTablesAtStore(storeID);
+                var tables = await _diningTable.GetAllTablesInStore(storeID);
                 if (tables == null) {
                     return NotFound("Not found table in " + storeID);
                 }
-                return OK(tables);
+                return Ok(tables);
             } catch (Exception e){
                 return StatusCode(500, "Error in diningtableController.GetAll: "+ e.Message);
             }
@@ -26,25 +27,25 @@ namespace Backend.Services.Interface{
             try {
                 var table = await _diningTable.GetTableByID(tableID);
                 if (table == null) return NotFound("Not found Table");
-                return OK(table);
+                return Ok(table);
             } catch (Exception e){
                 return StatusCode(500, "Error in diningtableController.GetByID: " +e.Message );
             }
         }
         [HttpPost("create")]
-        public async Task<IActionResult> Add(DiningTable newTable){
+        public async Task<IActionResult> Add(TableCreateRequest newTable){
             try {
                 await _diningTable.AddTable(newTable);
-                return OK("Create Table Successfully");
+                return Ok("Create Table Successfully");
             } catch (Exception e){
                 return StatusCode(500, "Error in diningtableController.Add: " +e.Message);
             }
         }
         [HttpPut("update")]
-        public async Task<IActionResult> Update(int tableID, int capacity){
+        public async Task<IActionResult> Update(int tableID, TableUpdateRequest request){
             try{
-                await _diningTable.UpdateTable(tableID, capacity);
-                return OK("Update Table Successfully");
+                await _diningTable.UpdateTable(tableID, request);
+                return Ok("Update Table Successfully");
             } catch (Exception e){
                 return StatusCode(500, "Error in diningtableController.Update" + e.Message);
             }
@@ -53,7 +54,7 @@ namespace Backend.Services.Interface{
         public async Task<IActionResult> Delete(int tableID){
             try {
                 await _diningTable.DeleteTable(tableID);
-                return OK("Delete Table Successfully");
+                return Ok("Delete Table Successfully");
             } catch (Exception e){
                 return StatusCode(500, "Error in diningtableController.Delete" + e.Message);
             }

@@ -30,7 +30,7 @@ namespace Backend.Models {
         public virtual ICollection<UserAddress> UserAddress { get; set; } = new List<UserAddress>();
         [JsonIgnore]
         public virtual ICollection<Ticket> Ticket { get; set; } = new List<Ticket>();
-        [JsonIgnore]
-        public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();
+        //[JsonIgnore]
+        //public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();
     }       
 }

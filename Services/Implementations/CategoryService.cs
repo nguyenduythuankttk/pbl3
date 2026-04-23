@@ -41,7 +41,7 @@ namespace Backend.Services.Implementations{
                 if (category != null){
                     category.Image = img;
                     _dbcontext.Category.Update(category);
-                    _dbcontext.SaveChangesAsync(); 
+                    await _dbcontext.SaveChangesAsync(); 
                 }
             } catch (Exception e){
                 Console.WriteLine(e.Message);
@@ -49,9 +49,9 @@ namespace Backend.Services.Implementations{
         }
         public async Task DeleteCategory (int deleteCategoryID){
             try {
-                var cat = _dbcontext.Category.FirstOrDefaultAsync(deleteCategoryID);
+                var cat = await _dbcontext.Category.FirstOrDefaultAsync(c => c.CategoryID == deleteCategoryID);
                 if (cat != null){
-                _dbcontext.Category.Remove(deleteCategory);
+                _dbcontext.Category.Remove(cat);
                 await _dbcontext.SaveChangesAsync();}
             }catch (Exception e){
                 Console.WriteLine(e.Message);

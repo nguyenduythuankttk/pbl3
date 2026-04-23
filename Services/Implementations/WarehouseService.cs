@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services.Implementations
 {
-    public class WarehouseService : IAddressService
+    public class WarehouseService : IWareHouseService
     {
         private readonly AppDbContext _dbcontext;
 
@@ -27,13 +27,46 @@ namespace Backend.Services.Implementations
                 .Include(w => w.Store)
                 .FirstOrDefaultAsync(w => w.WarehouseID == warehouseID);
                 
-        public async Task<List<Warehouse>?> GetWarehouseByStore(int storeID) =>
+        public async Task<List<Warehouse>?> GetWarehousesByStore(int storeID) =>
             await _dbcontext.Warehouse
                 .AsNoTracking()
                 .Where(w => w.StoreID == storeID)
                 .Include(w => w.Store)
                 .ToListAsync();
-
-        
+        public async Task AddWarehouse(WarehouseCreateRequest createRequest){
+            Warehouse w = new Warehouse {
+                StoreID = createRequest.StoreID,
+                Capacity = createRequest.Capacity
+            };
+            try{
+                _dbcontext.Warehouse.Add(w);
+                await _dbcontext.SaveChangesAsync();
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async Task UpdateWarehouse(int warehouseID, WarehouseUpdateRequest updateRequest){
+            try {
+                var w = await _dbcontext.Warehouse.FirstOrDefaultAsync(wh => wh.WarehouseID == warehouseID);
+                if (w != null){
+                    w.Capacity = updateRequest.Capacity;
+                    _dbcontext.Warehouse.Update(w);
+                    await _dbcontext.SaveChangesAsync();
+                }
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async Task DeleteWarehouse(int warehouseID){
+            try{
+                var wh =await _dbcontext.Warehouse.FirstOrDefaultAsync(w => w.WarehouseID == warehouseID);
+                if (wh != null){
+                    _dbcontext.Warehouse.Remove(wh);
+                    await _dbcontext.SaveChangesAsync();
+                }
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
     }
 }
