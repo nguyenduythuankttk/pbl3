@@ -9,6 +9,6 @@ namespace Backend.Services.Interface
         Task<List<Booking>?> GetBookingByUser(Guid user);
         Task<Booking?> GetBookingByID(Guid bookingID);
         Task AddBooking(Booking booking);
-        Task DeleteBooking(Guid bookingID);
+        Task SoftDeleteBooking(Guid bookingID);
     }
 }

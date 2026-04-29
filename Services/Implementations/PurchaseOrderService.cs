@@ -105,5 +105,23 @@ namespace Backend.Services.Implementations{
                             .Select(poA => poA.Status)
                             .FirstOrDefault() == status)
                 .ToListAsync();
+        
+        public async Task SoftDeletePO(Guid id){
+            var po = await _dbContext.PurchaseOrder
+                .FirstOrDefaultAsync(p => p.POID == id &&
+                                    p.DeletedAt == null);
+            
+            if(po == null){
+                throw new Exception("Purchase Order not found");
+            }
+
+            try{
+                po.DeletedAt = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete purchase order error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting purchase order: {ex.Message}");
+            }
+        }
     }
 }

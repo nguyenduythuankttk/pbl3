@@ -97,5 +97,22 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine (e.Message);
             }
         }
+        public async Task SoftDeleteProduct(int productID){
+            var product = await _dbContext.Product
+                .FirstOrDefaultAsync(p => p.ProductID == productID &&
+                                    p.DeletedAt == null);
+            
+            if(product == null){
+                throw new Exception("Product not found");
+            }
+
+            try{
+                product.DeletedAt = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete product error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting product: {ex.Message}");
+            }
+        }
     } 
 }

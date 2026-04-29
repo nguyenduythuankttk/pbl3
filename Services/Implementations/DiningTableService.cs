@@ -73,15 +73,21 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteTable (int tableID){
-            try {
-                var table = await _dbcontext.DiningTable.FirstOrDefaultAsync(t => t.TableID == tableID);
-                if (table != null){
-                    _dbcontext.DiningTable.Remove(table);
-                    await _dbcontext.SaveChangesAsync();
-                }
-            } catch (Exception e){
-                Console.WriteLine(e.Message);
+        public async Task SoftDeleteTable (int tableID){
+            var table = await _dbcontext.DiningTable
+                .FirstOrDefaultAsync(t => t.TableID == tableID &&
+                                    t.DeletedAt == null);
+            
+            if(table == null){
+                throw new Exception("Table not found");
+            }
+
+            try{
+                table.DeletedAt = DateTime.Now;
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete table error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting table: {ex.Message}");
             }
         }
     }

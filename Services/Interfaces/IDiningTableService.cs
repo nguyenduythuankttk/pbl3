@@ -7,6 +7,6 @@ namespace Backend.Services.Interface{
         Task<DiningTableResponse?> GetTableByID(int tableID);
         Task AddTable (DiningTable newTable);
         Task UpdateTable (int tableID, int capacity);
-        Task DeleteTable (int tableID);
+        Task SoftDeleteTable (int tableID);
     }
 }

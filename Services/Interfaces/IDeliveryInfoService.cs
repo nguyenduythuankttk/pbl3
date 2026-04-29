@@ -7,5 +7,6 @@ namespace Backend.Services.Interface{
         Task <List<DeliveryInfo>?> GetAllDeliveryByUser(Guid userID);
         Task AddDeliveryInfo(DeliveryInfoCreateRequest request);
         Task UpdateDelivery(Guid deliveryID, DeliveryUpdateRequest updateRequest);
+        Task SoftDeleteDeliveryInfo(Guid deliveryID);
     }
 }

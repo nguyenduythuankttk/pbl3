@@ -10,7 +10,6 @@ namespace Backend.Services.Interface{
         Task<List<PurchaseOrder>?> GetPOByStatus(PO_Status status);
         Task CreatePO(POCreateRequest createRequest);
         Task UpdatePO(Guid id, POUpdateRequest updateRequest);
-        //thieu ham delete nhe
-
+        Task SoftDeletePO(Guid id);
     }
 }

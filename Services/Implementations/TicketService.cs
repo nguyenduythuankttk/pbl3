@@ -77,7 +77,7 @@ namespace Backend.Services.Implementations
             }
         }
 
-        public async Task DeleteTicket(Guid ticketID)
+        public async Task SoftDeleteTicket(Guid ticketID)
         {
             var ticket = await _dbcontext.Ticket
                 .FirstOrDefaultAsync(t => t.TicketID == ticketID &&

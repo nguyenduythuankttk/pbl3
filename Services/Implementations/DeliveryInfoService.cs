@@ -73,5 +73,22 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
+        public async Task SoftDeleteDeliveryInfo(Guid deliveryID){
+            var delivery = await _dbcontext.DeliveryInfo
+                .FirstOrDefaultAsync(d => d.DeliveryID == deliveryID &&
+                                    d.DeletedAt == null);
+            
+            if(delivery == null){
+                throw new Exception("Delivery not found");
+            }
+
+            try{
+                delivery.DeletedAt = DateTime.Now;
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete delivery error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting delivery: {ex.Message}");
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace Backend.Services.Interface{
         Task <Ingredient?> GetIngredientByID(int id);
         Task AddIngredient (Ingredient ing);
         Task UpdateIngredient (IngredientUpdateRequest request, int id);
-        Task DeleteIngredient (int id);
+        Task SoftDeleteIngredient (int id);
         Task <List<IngredientReponse>?> GetQtyAllIngredientInStore(int storeID);
     }
 }

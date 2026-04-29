@@ -10,6 +10,7 @@ namespace Backend.Services.Interface{
         Task ProductUpdate (ProductUpdateRequest request, int productID);
         Task ProductVarientUpdate (ProductVarientUpdateRequest request, int productID, ProductSize productSize);
         Task HardDeleteProduct (int ProductID);
+        Task SoftDeleteProduct(int productID);
         Task HardDeleteProductVarient (int productID, ProductSize size);
     }
 }

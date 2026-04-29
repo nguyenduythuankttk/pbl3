@@ -26,5 +26,23 @@ namespace Backend.Services.Implementations
             await _dbcontext.Booking
             
             .ToListAsync();  
+        }
+        public async Task SoftDeleteBooking(Guid bookingID){
+            var booking = await _dbcontext.Booking
+                .FirstOrDefaultAsync(b => b.BookingID == bookingID &&
+                                    b.DeletedAt == null);
+            
+            if(booking == null){
+                throw new Exception("Booking not found");
+            }
+
+            try{
+                booking.DeletedAt = DateTime.Now;
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete booking error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting booking: {ex.Message}");
+            }
+        }
     }
 }

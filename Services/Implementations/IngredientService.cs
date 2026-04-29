@@ -23,15 +23,21 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteIngredient (int id){
+        public async Task SoftDeleteIngredient (int id){
+            var ingredient = await _dbcontext.Ingredient
+                .FirstOrDefaultAsync(i => i.IngredientID == id &&
+                                    i.DeletedAt == null);
+            
+            if(ingredient == null){
+                throw new Exception("Ingredient not found");
+            }
+
             try{
-                var ing = await _dbcontext.Ingredient.FirstOrDefaultAsync(i => i.IngredientID == id);
-                if (ing != null){
-                    _dbcontext.Ingredient.Remove(ing);
-                    await _dbcontext.SaveChangesAsync();
-                }
-            }catch (Exception e){
-                Console.WriteLine(e.Message);
+                ingredient.DeletedAt = DateTime.Now;
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete ingredient error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting ingredient: {ex.Message}");
             }
         }
         public async Task UpdateIngredient (IngredientUpdateRequest request, int id){

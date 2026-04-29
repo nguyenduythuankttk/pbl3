@@ -52,15 +52,21 @@ namespace Backend.Services.Implementations{
             }
         }
 
-        public async Task DeleteShift (Guid ID){
+        public async Task SoftDeleteShift (Guid ID){
+            var shift = await _dbContext.Shift
+                .FirstOrDefaultAsync(s => s.ShiftID == ID &&
+                                    s.DeletedAt == null);
+            
+            if(shift == null){
+                throw new Exception("Shift not found");
+            }
+
             try{
-                var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == shiftID);
-                if (shift != null){
-                    _dbContext.Shift.Remove(shift);
-                    await _dbContext.SaveChangesAsync();
-                } 
-            }catch (Exception e){
-                Console.WriteLine(e.Message);        
+                shift.DeletedAt = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete shift error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting shift: {ex.Message}");
             }
         }
             

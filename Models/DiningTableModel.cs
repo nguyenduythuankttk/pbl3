@@ -20,6 +20,7 @@ namespace Backend.Models {
         public int Capacity { get; set; }
         [Required]
         public TableStatus Status { get; set; } = TableStatus.Available;
+        public DateTime? DeletedAt { get; set; }
         [JsonIgnore]
         public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();
     }
