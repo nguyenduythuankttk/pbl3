@@ -78,7 +78,8 @@ namespace Backend.Services.Implementations{
             var newChange = new BillChange {
                 BillID = changeRequest.BillID,
                 Status = changeRequest.Status,
-                ChangeAt = changeRequest.ChangeAt
+                ChangeAt = changeRequest.ChangeAt,
+                EmployeeID = changeRequest.EmployeeID
             };
             _dbcontext.BillChange.Add(newChange);
             await _dbcontext.SaveChangesAsync();

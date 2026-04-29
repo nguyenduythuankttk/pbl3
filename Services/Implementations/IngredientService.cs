@@ -51,6 +51,7 @@ namespace Backend.Services.Implementations{
             try {
                 var ingList = await _dbcontext.Ingredient
                                 .Include(i => i.InventoryBatch)
+                                    .ThenInclude (i => i.Warehouse)
                                     .Where(i=> i.InventoryBatch.Any((ib => ib.Warehouse.StoreID == storeID)))
                                 .ToListAsync();
                 if (!ingList.Any()) return null;

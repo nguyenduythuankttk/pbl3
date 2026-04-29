@@ -8,6 +8,7 @@ namespace Backend.Services.Interface{
         Task <Category?> GetCategoryByID(int categoryID);
         Task AddCategory(Category newCategory);
         Task UpdateCategory (int categoryID, string img);
+        Task DelCat(int catID);
         Task DeleteCategory (int deleteCategoryID);
     }
 }

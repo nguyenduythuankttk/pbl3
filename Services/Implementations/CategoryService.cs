@@ -57,5 +57,22 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
+        public async Task SoftDeletedCategory(int catID){
+                var category = await _dbcontext.Category.FirstOrDefaultAsync(c => c.CategoryID == catID
+                                                                        && c.DeletedAt == null);
+                if (category == null)
+                {
+                    throw new Exception("Category not found!");
+                }
+
+                try {
+                    category.DeletedAt = DateTime.UtcNow;
+                    await _dbcontext.SaveChangesAsync();
+                }catch(Exception ex)
+                {
+                    Console.WriteLine($"Soft delete category error {ex.Message}");
+                    throw new Exception($"An error occurred whie soft deleting Category {ex.Message}");
+                }
+        }
     }
 }

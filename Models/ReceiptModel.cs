@@ -33,11 +33,6 @@ namespace Backend.Models{
 
         [JsonIgnore]
         public virtual ICollection<ReceiptDetail> ReceiptDetail { get; set; } = new List<ReceiptDetail>();
-
-        public Receipt()
-        {
-            ReceiptDetail = new List<ReceiptDetail>();
-        }
     }
 
 

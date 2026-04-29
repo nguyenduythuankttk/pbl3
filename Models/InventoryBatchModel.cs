@@ -45,5 +45,6 @@ namespace Backend.Models{
         public virtual ReceiptDetail ReceiptDetail { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<StockMovement> StockMovement { get; set; } = new List<StockMovement>();
+        
     }
 }

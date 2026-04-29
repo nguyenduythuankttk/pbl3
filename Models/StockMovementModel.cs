@@ -45,5 +45,6 @@ namespace Backend.Models{
         public DateTime TimeStamp { get; set; }
         public string? Reason { get; set; }
         public string? Note { get; set; }
+        public DateTime? DeleteAt {get; set;}
     }
 }

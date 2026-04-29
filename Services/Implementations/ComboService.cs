@@ -48,5 +48,28 @@ namespace Backend.Services.Implementations{
             }
         }
         public async Task <Combo?> GetComboByID(int comboID) => await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
+        public async Task DelCombo(int comboID){
+            try{
+                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
+                if (combo != null){
+                    combo.DeleteAt =  DateTime.UtcNow;
+                    _dbcontext.Combo.Update(combo);
+                    await _dbcontext.SaveChangesAsync();
+                }
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async Task DeleteCombo(int comboID){
+            try {
+                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
+                if (combo != null){
+                    _dbcontext.Combo.Remove(combo);
+                    await _dbcontext.SaveChangesAsync();
+                }
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }
+        }
     }
 }

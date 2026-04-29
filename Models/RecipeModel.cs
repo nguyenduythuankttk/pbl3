@@ -6,7 +6,6 @@ namespace Backend.Models{
     public class Receipe
     {
         public int IngredientID { get; set; }
-
         [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient { get; set; } = null!;
         public int ProductVarientID { get; set; }

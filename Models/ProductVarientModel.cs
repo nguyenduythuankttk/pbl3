@@ -16,6 +16,7 @@ namespace Backend.Models{
         public ProductSize Size {get; set;} = ProductSize.Default;
         [Required]
         public decimal Price {get; set;}
+        public DateTime? DeleteAt {get; set;}
         
         [JsonIgnore]
         public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();

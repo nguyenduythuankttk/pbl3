@@ -20,6 +20,7 @@ namespace Backend.Models {
         public int Capacity { get; set; }
         [Required]
         public bool IsBooking {get; set;} 
+        public DateTime? DeleteAt {get; set;}
         [JsonIgnore]
         public virtual ICollection<Booking> Booking { get; set; } = new List<Booking>();
     }

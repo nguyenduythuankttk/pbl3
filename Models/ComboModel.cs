@@ -13,6 +13,7 @@ namespace Backend.Models{
         public string? Img {get; set;}
         [Required]
         public bool IsActive{get; set;}
+        public DateTime? DeleteAt {get; set;}
         [JsonIgnore]
         public virtual ICollection<ComboProduct> ComboProduct {get; set;} = new List<ComboProduct>();
     }
