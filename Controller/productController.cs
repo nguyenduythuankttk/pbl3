@@ -86,7 +86,7 @@ namespace Backend.Controller
             }
         }
 
-        [HttpPut("update-varient/{productID} {productSize}")]
+        [HttpPut("update-varient/{productID}/{productSize}")]
         public async Task<IActionResult> ProductVarientUpdate(ProductVarientUpdateRequest request, int productID, ProductSize productSize)
         {
             try
@@ -99,7 +99,7 @@ namespace Backend.Controller
             }
         }
 
-        [HttpDelete("hard-delete-product/{prductID}")]
+        [HttpDelete("hard-delete-product/{productID}")]
         public async Task<IActionResult> HardDeleteProduct(int productID)
         {
             try
@@ -112,7 +112,7 @@ namespace Backend.Controller
             }
         }
 
-        [HttpDelete("hard-delete-varient/{prductID} {productSize}")]
+        [HttpDelete("hard-delete-varient/{productID}/{productSize}")]
         public async Task<IActionResult> HardDeleteProductVarient(int productID, ProductSize productSize)
         {
             try

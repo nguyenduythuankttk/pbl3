@@ -22,7 +22,7 @@ namespace Backend.Services.Implementations
             await _dbContext.Receipt
                 .AsNoTracking()
                 .Where(b => b.DateReceive >= start.ToDateTime(TimeOnly.MinValue) &&
-                            b.DateReceive <= end.ToDateTime(TimeOnly.MinValue))
+                            b.DateReceive <= end.ToDateTime(TimeOnly.MaxValue))
                 .Include(r => r.Employee)
                 .Include(r => r.Store)
                 .Include(r => r.Supplier)

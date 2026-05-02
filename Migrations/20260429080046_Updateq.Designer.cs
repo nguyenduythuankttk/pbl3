@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260429080046_Updateq")]
+    partial class Updateq
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,7 +170,6 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Booking", b =>
                 {
                     b.Property<Guid>("BookingID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -221,9 +223,6 @@ namespace BackEnd.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("ChangeID");
-
-                    b.HasIndex("BookingID")
-                        .IsUnique();
 
                     b.HasIndex("EmployeeID");
 
@@ -464,10 +463,10 @@ namespace BackEnd.Migrations
                     b.Property<decimal>("QuantityOriginal")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid?>("ReceiptDetailGoodsReceiptID")
+                    b.Property<Guid>("ReceiptDetailGoodsReceiptID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int?>("ReceiptDetailIngredientID")
+                    b.Property<int>("ReceiptDetailIngredientID")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -1158,6 +1157,12 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Booking", b =>
                 {
+                    b.HasOne("Backend.Models.BookingChange", "BookingChange")
+                        .WithOne("Booking")
+                        .HasForeignKey("Backend.Models.Booking", "BookingID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.DiningTable", "Table")
                         .WithMany("Booking")
                         .HasForeignKey("TableID")
@@ -1170,6 +1175,8 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("BookingChange");
+
                     b.Navigation("Table");
 
                     b.Navigation("User");
@@ -1177,19 +1184,11 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.BookingChange", b =>
                 {
-                    b.HasOne("Backend.Models.Booking", "Booking")
-                        .WithOne("BookingChange")
-                        .HasForeignKey("Backend.Models.BookingChange", "BookingID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.Employee", "Employee")
                         .WithMany("BookingChange")
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("Employee");
                 });
@@ -1284,11 +1283,15 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.ReceiptDetail", null)
+                    b.HasOne("Backend.Models.ReceiptDetail", "ReceiptDetail")
                         .WithMany("InventoryBatch")
-                        .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID");
+                        .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Ingredient");
+
+                    b.Navigation("ReceiptDetail");
 
                     b.Navigation("Warehouse");
                 });
@@ -1626,9 +1629,9 @@ namespace BackEnd.Migrations
                     b.Navigation("BillDetail");
                 });
 
-            modelBuilder.Entity("Backend.Models.Booking", b =>
+            modelBuilder.Entity("Backend.Models.BookingChange", b =>
                 {
-                    b.Navigation("BookingChange")
+                    b.Navigation("Booking")
                         .IsRequired();
                 });
 

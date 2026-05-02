@@ -20,7 +20,7 @@ namespace Backend.Services.Implementations{
                     .ThenInclude(bc => bc.Employee)
                     .Where( b => b.BillChange.Any() &&
                             b.BillChange.Max(b => b.ChangeAt) >= start.ToDateTime(TimeOnly.MinValue) &&
-                            b.BillChange.Max(b => b.ChangeAt) <= end.ToDateTime(TimeOnly.MinValue))
+                            b.BillChange.Max(b => b.ChangeAt) <= end.ToDateTime(TimeOnly.MaxValue))
                     .Include(b => b.BillDetail)
                         .ThenInclude(bd => bd.ProductVarient)
                             .ThenInclude(pr => pr.Product)

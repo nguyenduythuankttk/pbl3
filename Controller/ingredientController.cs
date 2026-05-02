@@ -1,8 +1,9 @@
 using Backend.Models;
 using Backend.Models.DTOs.Reponse;
 using Backend.Models.DTOs.Request;
+using Backend.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-namespace Backend.Services.Interface{
+namespace Backend.Controller{
     [ApiController]
     [Route("api/pbl3/[controller]")]
     public class ingredientController : ControllerBase {

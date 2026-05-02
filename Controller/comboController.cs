@@ -25,23 +25,23 @@ namespace Backend.Controller{
         public async Task <IActionResult> GetAllComboIsActive(){
             try {
                 var combos = await _comboService.GetAllComboIsActive();
-                if (combos != null) return NotFound("No combo is active");
+                if (combos == null) return NotFound("No combo is active");
                 return Ok(combos);
             } catch (Exception e){
                 return StatusCode(500, "Error in comboController.GetAllComboIsActive: " +e.Message);
             }
         }
-        [HttpGet("combo/{id}")]
+        [HttpGet("get/{id}")]
         public async Task <IActionResult> GetByID (int id){
             try {
                 var combo = await _comboService.GetComboByID(id);
-                if (combo != null) return NotFound("Not Found");
+                if (combo == null) return NotFound("Not Found");
                 return Ok(combo);
             } catch (Exception e){
                 return StatusCode(500, "Error in comboController.GetByID: "+ e.Message);
             }
         }
-        [HttpPut("update")]
+        [HttpPut("update/{comboID}")]
         public async Task <IActionResult> Update([FromBody] ComboChangeRequest request, int comboID){
             try {
                 await _comboService.UpdateCombo(request, comboID);

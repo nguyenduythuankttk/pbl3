@@ -42,9 +42,7 @@ namespace Backend.Models{
         [ForeignKey("IngredientID")]
         public virtual Ingredient Ingredient { get; set; } = null!;
         public Guid GoodsReceiptID { get; set; }
-        public virtual ReceiptDetail ReceiptDetail { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<StockMovement> StockMovement { get; set; } = new List<StockMovement>();
-        
     }
 }

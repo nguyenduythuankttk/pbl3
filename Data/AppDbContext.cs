@@ -88,13 +88,17 @@ namespace Backend.Data {
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.BookingChange)
                 .WithOne(a => a.Booking)
-                .HasForeignKey<Booking> (b => b.BookingID);
+                .HasForeignKey<BookingChange>("BookingID");
 
 
             // convert string
             modelBuilder.Entity<Employee>()
                 .Property(x => x.Role)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
+
+            modelBuilder.Entity<DiningTable>()
+                .Property(x=> x.Status)
+                .HasConversion<string>().HasMaxLength(30).IsRequired();
 
             modelBuilder.Entity<Bill>()
                 .Property(x => x.PaymentMethods)
@@ -134,6 +138,18 @@ namespace Backend.Data {
 
             modelBuilder.Entity<Ingredient>()
                 .Property(x => x.IngredientUnit)
+                .HasConversion<string>().HasMaxLength(20).IsRequired();
+
+            modelBuilder.Entity<User>()
+                .Property(x => x.Gender)
+                .HasConversion<string>().HasMaxLength(10);
+
+            modelBuilder.Entity<BillChange>()
+                .Property(x => x.Status)
+                .HasConversion<string>().HasMaxLength(20).IsRequired();
+
+            modelBuilder.Entity<DeliveryLog>()
+                .Property(x => x.Status)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
         }
     }

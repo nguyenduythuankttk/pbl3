@@ -10,7 +10,7 @@ namespace Backend.Models {
         public string Name { get; set; } = null!;
 
         public string? Image { get; set; }
-        public DateTime? DeletedAt {get; set;}
+        public DateTime? DeletedAt { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Product> Product { get; set; } = new List<Product>();

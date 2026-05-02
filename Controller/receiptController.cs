@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controller
 {
     [ApiController]
-    [Route("api/pbl3/{controller}")]
+    [Route("api/pbl3/[controller]")]
 
     public class receiptController : ControllerBase
     {
@@ -18,7 +18,7 @@ namespace Backend.Controller
             _receiptService = receiptService;
         }
 
-        [HttpGet("get-all/{start} {end}")]
+        [HttpGet("get-all/{start}/{end}")]
         public async Task<IActionResult> GetAllReceiptIn(DateOnly start, DateOnly end)
         {
             try

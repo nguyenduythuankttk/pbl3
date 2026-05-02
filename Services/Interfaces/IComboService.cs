@@ -9,8 +9,7 @@ namespace Backend.Services.Interface{
         Task <Combo?> GetComboByID(int comboID);
         Task UpdateCombo (ComboChangeRequest combo, int comboID);
         Task AddCombo(Combo newCombo);
-        Task DeleteCombo(int comboID);
-        Task DelCombo(int comboID);
+        Task SoftDeleteCombo(int comboID);
         
     }
 }

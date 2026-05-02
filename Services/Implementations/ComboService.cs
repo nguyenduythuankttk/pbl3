@@ -48,27 +48,22 @@ namespace Backend.Services.Implementations{
             }
         }
         public async Task <Combo?> GetComboByID(int comboID) => await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
-        public async Task DelCombo(int comboID){
-            try{
-                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
-                if (combo != null){
-                    combo.DeleteAt =  DateTime.UtcNow;
-                    _dbcontext.Combo.Update(combo);
-                    await _dbcontext.SaveChangesAsync();
-                }
-            } catch (Exception e){
-                Console.WriteLine(e.Message);
+        
+        public async Task SoftDeleteCombo(int comboID){
+            var combo = await _dbcontext.Combo
+                .FirstOrDefaultAsync(c => c.ComboID == comboID &&
+                                    c.DeletedAt == null);
+            
+            if(combo == null){
+                throw new Exception("Combo not found");
             }
-        }
-        public async Task DeleteCombo(int comboID){
-            try {
-                var combo = await _dbcontext.Combo.FirstOrDefaultAsync( c => c.ComboID == comboID);
-                if (combo != null){
-                    _dbcontext.Combo.Remove(combo);
-                    await _dbcontext.SaveChangesAsync();
-                }
-            } catch (Exception e){
-                Console.WriteLine(e.Message);
+
+            try{
+                combo.DeletedAt = DateTime.UtcNow;
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete combo error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting combo: {ex.Message}");
             }
         }
     }

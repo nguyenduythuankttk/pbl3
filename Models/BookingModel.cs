@@ -21,5 +21,6 @@ namespace Backend.Models {
         [ForeignKey("TableID")]
         public virtual DiningTable Table { get; set; } = null!;
         public virtual BookingChange BookingChange {get; set; } = null!;
+        public DateTime? DeletedAt {get; set;}
     }
 }

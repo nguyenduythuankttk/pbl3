@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260429082117_fix")]
+    partial class fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -464,10 +467,10 @@ namespace BackEnd.Migrations
                     b.Property<decimal>("QuantityOriginal")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid?>("ReceiptDetailGoodsReceiptID")
+                    b.Property<Guid>("ReceiptDetailGoodsReceiptID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int?>("ReceiptDetailIngredientID")
+                    b.Property<int>("ReceiptDetailIngredientID")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -1284,11 +1287,15 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.ReceiptDetail", null)
+                    b.HasOne("Backend.Models.ReceiptDetail", "ReceiptDetail")
                         .WithMany("InventoryBatch")
-                        .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID");
+                        .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Ingredient");
+
+                    b.Navigation("ReceiptDetail");
 
                     b.Navigation("Warehouse");
                 });

@@ -53,15 +53,33 @@ namespace Backend.Services.Implementations{
             }
         }
 
-        public async Task DeleteShift (Guid ID){
+        public async Task DeleteShift(Guid ID){
+            var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == ID);
+            if(shift == null) throw new Exception("Shift not found");
             try{
-                var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == ID);
-                if (shift != null){
-                    _dbContext.Shift.Remove(shift);
-                    await _dbContext.SaveChangesAsync();
-                } 
+                _dbContext.Shift.Remove(shift);
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception($"An error occurred while deleting shift: {e.Message}");
+            }
+        }
+
+        public async Task SoftDeleteShift (Guid ID){
+            var shift = await _dbContext.Shift
+                .FirstOrDefaultAsync(s => s.ShiftID == ID &&
+                                    s.DeletedAt == null);
+
+            if(shift == null){
+                throw new Exception("Shift not found");
+            }
+
+            try{
+                shift.DeletedAt = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
             }catch (Exception e){
-                Console.WriteLine(e.Message);        
+                Console.WriteLine(e.Message);
+                throw new Exception($"An error occurred while soft deleting shift: {e.Message}");
             }
         }
             

@@ -54,7 +54,7 @@ namespace Backend.Services.Implementations{
         }
         public async Task UpdateDelivery(Guid deliveryID, DeliveryUpdateRequest updateRequest){
             try{
-                var delivery = _dbcontext.DeliveryInfo
+                var delivery = await _dbcontext.DeliveryInfo
                                 .FirstOrDefaultAsync(d =>d.DeliveryID == deliveryID);
                 if (delivery != null){
                     var Log = new DeliveryLog {
@@ -71,6 +71,23 @@ namespace Backend.Services.Implementations{
 
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
+            }
+        }
+        public async Task SoftDeleteDeliveryInfo(Guid deliveryID){
+            var delivery = await _dbcontext.DeliveryInfo
+                .FirstOrDefaultAsync(d => d.DeliveryID == deliveryID &&
+                                    d.DeletedAt == null);
+            
+            if(delivery == null){
+                throw new Exception("Delivery not found");
+            }
+
+            try{
+                delivery.DeletedAt = DateTime.Now;
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex){
+                Console.WriteLine($"Soft delete delivery error {ex.Message}");
+                throw new Exception($"An error occurred while soft deleting delivery: {ex.Message}");
             }
         }
     }

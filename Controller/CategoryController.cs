@@ -35,7 +35,7 @@ namespace Backend.Controller
                 return StatusCode(500, "error in CategoryController.GetCategoryByID: "+ e.Message);
             }
         }
-        [HttpGet("get-all-product in cate {categoryID}")]
+        [HttpGet("get-all-product/{categoryID}")]
         public async Task<IActionResult> GetProductInCategory(int categoryID){
             try {
                 var products = await _category.GetProductInCategory(categoryID);

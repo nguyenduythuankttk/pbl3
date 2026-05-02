@@ -23,7 +23,7 @@ namespace Backend.Models{
         public IngredientUnit IngredientUnit { get; set; }
         [Required]
         public decimal CostPerUnit { get; set; }
-        public DateTime? DeleteAt {get; set;}
+        public DateTime? DeletedAt { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<PODetail> PODetail { get; set; } = new List<PODetail>();
