@@ -2,10 +2,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace CinemaAPI.Models
+namespace Backend.Models
 {
     [Index(nameof(Token), IsUnique = true)]
-    [Index(nameof(ExpiryDate))]
     public class BlacklistedToken
     {
         [Key]

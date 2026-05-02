@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Models.DTOs;
 using Backend.Models.DTOs.Reponse;
 using Backend.Services.Interface;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services.Implementations
@@ -11,10 +12,12 @@ namespace Backend.Services.Implementations
     public class UserService : IUserService
     {
         private readonly AppDbContext _dbContext;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(AppDbContext dbContext)
+        public UserService(AppDbContext dbContext, IPasswordHasher<User> passwordHasher)
         {
             _dbContext = dbContext;
+            _passwordHasher = passwordHasher;
         }
 
         //Get all User
@@ -35,6 +38,7 @@ namespace Backend.Services.Implementations
         {
             try
             {
+                user.HashPassword = _passwordHasher.HashPassword(user, user.HashPassword);
                 _dbContext.User.Add(user);
                 await _dbContext.SaveChangesAsync();
             }catch (Exception e)
@@ -59,7 +63,7 @@ namespace Backend.Services.Implementations
                     user.UserName = request.UserName;
                 
                 if(request.HashPassword != null)
-                    user.HashPassword = request.HashPassword;
+                    user.HashPassword = _passwordHasher.HashPassword(user, request.HashPassword);
 
                 if(request.Email != null)
                     user.Email = request.Email;
