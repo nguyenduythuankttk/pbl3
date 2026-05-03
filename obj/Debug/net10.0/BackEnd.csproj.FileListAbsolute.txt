@@ -120,3 +120,15 @@
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.pdb
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/BackEnd.genruntimeconfig.cache
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/Debug/net10.0/ref/BackEnd.dll
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.csproj.AssemblyReference.cache
+D:\Wang\pbl3\obj\Debug\net10.0\rpswa.dswa.cache.json
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.GeneratedMSBuildEditorConfig.editorconfig
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.AssemblyInfoInputs.cache
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.AssemblyInfo.cs
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.csproj.CoreCompileInputs.cache
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.MvcApplicationPartsAssemblyInfo.cs
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.MvcApplicationPartsAssemblyInfo.cache
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.sourcelink.json
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.dll
+D:\Wang\pbl3\obj\Debug\net10.0\refint\BackEnd.dll
+D:\Wang\pbl3\obj\Debug\net10.0\BackEnd.pdb
