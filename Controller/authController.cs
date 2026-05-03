@@ -68,6 +68,18 @@ namespace Backend.Controller
                 return StatusCode(500,"Error in authController.getcurrentuser");
             }
         }
+        [Authorize]
+        [HttpGet("me/employee")]
+        public async Task<IActionResult> GetCurrentEmployee(){
+            try{
+                var empID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrWhiteSpace(empID)) return Unauthorized();
+                var emp = await _EmployeeSevice.GetEmployeeByID();
+                return Ok(emp);
+            }catch(Exception e){
+                return StatusCode(500,"Error in authController.GetCurrentEmployee");
+            }
+        }
 
     }
 }

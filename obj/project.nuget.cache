@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "aED761/vwuc=",
+  "dgSpecHash": "qAxMGlWc9cM=",
   "success": true,
-  "projectFilePath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/backend.csproj",
+  "projectFilePath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj",
   "expectedPackageFiles": [
     "/Users/nguyenduythuan/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/nguyenduythuan/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.6/microsoft.aspnetcore.authentication.jwtbearer.10.0.6.nupkg.sha512",
