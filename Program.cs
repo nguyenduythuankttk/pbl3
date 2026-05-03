@@ -1,5 +1,10 @@
 using Backend.Data;
+using Backend.Models;
+using Backend.Services.Interface;
+using Backend.Services.Implementations;
+using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,6 +49,28 @@ if (!string.IsNullOrWhiteSpace(connectionString))
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 }
 
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+// Register services
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IComboService, ComboService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<IWareHouseService, WarehouseService>();
+builder.Services.AddScoped<IBillService, BillService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IDiningTableService, DiningTableService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IDeliveryInfoService, DeliveryService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
+builder.Services.AddScoped<IReceiptService, ReceiptService>();
+builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
@@ -79,10 +106,26 @@ if (!string.IsNullOrWhiteSpace(connectionString))
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.Use(async(context, next)=>{
+        var token = context.Request.Headers["Authorization"]
+                    .ToString().Replace("Bear ", "");
+        if (!string.IsNullOrEmpty(token)){
+            var db = context.RequestServices.GetRequiredService<AppDbContext>();
+            var isBlocked = await db.BlackListedToken.AnyAsync(b => b.Token == token && b.ExpiryDate > DateTime.UtcNow);
+            if (isBlocked){
+                    context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("Token đã bị vô hiệu hóa");
+                return;
+            }
+        }
+        await next();
+    }   
+);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

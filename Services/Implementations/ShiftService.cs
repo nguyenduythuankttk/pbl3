@@ -11,7 +11,7 @@ namespace Backend.Services.Implementations{
             _dbContext = dbContext;
         }
         public async Task<List<Shift>?> GetAllShiftIn(DateOnly date) =>
-            await _dbContext.Shift.Where (s => s.TimeIn >= date.ToDateTime(TimeOnly.MinValue) &&  s.TimeIn <= date.ToDateTime(TimeOnly.MinValue))
+            await _dbContext.Shift.Where (s => s.TimeIn >= date.ToDateTime(TimeOnly.MinValue) &&  s.TimeIn <= date.ToDateTime(TimeOnly.MaxValue))
             .Include(s => s.Employee)
             .ToListAsync();
 
@@ -22,23 +22,24 @@ namespace Backend.Services.Implementations{
 
         public async Task AddShift (ShiftCreateRequest request) {
             try {
-                if (request.TimeIn > request.TimeOut){
+                /*if (request.TimeIn > request.TimeOut){
                     DateTime x = request.TimeIn;
                     request.TimeIn = request.TimeOut;
                     request.TimeOut = x;
-                }
+                }*/
                 var newShift = new Shift {
                     TimeIn = request.TimeIn,
-                    TimeOut = request.TimeOut  
+                    TimeOut = request.TimeOut,
+                    EmployeeID = request.EmployeeID
                 };
                 _dbContext.Shift.Add(newShift);
-                _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
             } catch (Exception e){
                 Console.WriteLine (e.Message);
             }
         }
 
-        public async Task UpdateShift (ShiftUpdateRequest request, Shift shiftID){
+        public async Task UpdateShift (ShiftUpdateRequest request, Guid shiftID){
             try{
                 var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == shiftID);
                 if (shift != null){
@@ -52,11 +53,23 @@ namespace Backend.Services.Implementations{
             }
         }
 
+        public async Task DeleteShift(Guid ID){
+            var shift = await _dbContext.Shift.FirstOrDefaultAsync(s => s.ShiftID == ID);
+            if(shift == null) throw new Exception("Shift not found");
+            try{
+                _dbContext.Shift.Remove(shift);
+                await _dbContext.SaveChangesAsync();
+            }catch(Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception($"An error occurred while deleting shift: {e.Message}");
+            }
+        }
+
         public async Task SoftDeleteShift (Guid ID){
             var shift = await _dbContext.Shift
                 .FirstOrDefaultAsync(s => s.ShiftID == ID &&
                                     s.DeletedAt == null);
-            
+
             if(shift == null){
                 throw new Exception("Shift not found");
             }
@@ -64,9 +77,9 @@ namespace Backend.Services.Implementations{
             try{
                 shift.DeletedAt = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
-            }catch(Exception ex){
-                Console.WriteLine($"Soft delete shift error {ex.Message}");
-                throw new Exception($"An error occurred while soft deleting shift: {ex.Message}");
+            }catch (Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception($"An error occurred while soft deleting shift: {e.Message}");
             }
         }
             

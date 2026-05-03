@@ -10,6 +10,7 @@ namespace Backend.Services.Interface{
         Task<Shift?> GetShiftByID (Guid ID);
         Task AddShift (ShiftCreateRequest request);
         Task UpdateShift (ShiftUpdateRequest request, Guid shiftID);
+        Task SoftDeleteShift(Guid ID);
         Task DeleteShift (Guid ID);
     }
 }

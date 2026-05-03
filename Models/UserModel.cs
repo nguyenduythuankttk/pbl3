@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-
+using Microsoft.EntityFrameworkCore; 
 namespace Backend.Models {
     public enum Gender
     {
@@ -9,7 +9,10 @@ namespace Backend.Models {
         Female,
         Others
     }
-
+    
+    [Index("UserName",IsUnique = true)]
+    [Index("Email",IsUnique = true)]
+    [Index("Phone", IsUnique = true)]
     public class User{
         [Key]
         public Guid UserID {get; set;}
@@ -30,7 +33,5 @@ namespace Backend.Models {
         public virtual ICollection<UserAddress> UserAddress { get; set; } = new List<UserAddress>();
         [JsonIgnore]
         public virtual ICollection<Ticket> Ticket { get; set; } = new List<Ticket>();
-        [JsonIgnore]
-        public virtual ICollection<Reservation> Reservation { get; set; } = new List<Reservation>();
     }       
 }

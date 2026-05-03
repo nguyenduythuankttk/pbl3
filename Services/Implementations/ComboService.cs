@@ -59,7 +59,7 @@ namespace Backend.Services.Implementations{
             }
 
             try{
-                combo.DeletedAt = DateTime.Now;
+                combo.DeletedAt = DateTime.UtcNow;
                 await _dbcontext.SaveChangesAsync();
             }catch(Exception ex){
                 Console.WriteLine($"Soft delete combo error {ex.Message}");

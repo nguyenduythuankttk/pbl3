@@ -64,7 +64,7 @@ namespace Backend.Controller
         {
             try
             {
-                await _ticketService.DeleteTicket(ticketID);
+                await _ticketService.SoftDeleteTicket(ticketID);
                 return Ok("Ticket delete successfully!");
             }catch(Exception ex)
             {

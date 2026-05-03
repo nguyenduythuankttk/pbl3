@@ -13,7 +13,7 @@ namespace Backend.Models {
         public DateTime TimeIn {get; set;}
         [Required]
         public DateTime TimeOut {get; set;}
-        public DateTime? ChechIn {get; set;} 
+        public DateTime? CheckIn {get; set;} 
         public DateTime? CheckOut {get; set;}
         public DateTime? DeletedAt { get; set; }
 

@@ -8,9 +8,9 @@ namespace Backend.Services.Interface
     {
         Task<List<Warehouse>?> GetAllWarehouse();
         Task<Warehouse?> GetWarehouseByID(int warehouseID);
-        Task<List<Warehouse>?> GetWarehousesByStore(int store);
+        Task<List<Warehouse>?> GetWarehousesByStore(int storeID);
         Task AddWarehouse(WarehouseCreateRequest createRequest);
         Task UpdateWarehouse(int warehouseID, WarehouseUpdateRequest updateRequest);
-        // Task DeleteWarehouse(int warehouseID);
+        Task DeleteWarehouse(int warehouseID);
     }
 }

@@ -17,7 +17,7 @@ namespace BackEnd.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.14")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -46,7 +46,7 @@ namespace BackEnd.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<int>("StoreID")
+                    b.Property<int?>("StoreID")
                         .HasColumnType("int");
 
                     b.Property<string>("Street")
@@ -54,7 +54,7 @@ namespace BackEnd.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<int>("SupplierID")
+                    b.Property<int?>("SupplierID")
                         .HasColumnType("int");
 
                     b.Property<string>("Ward")
@@ -126,8 +126,10 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("BillChangeID");
 
@@ -162,6 +164,94 @@ namespace BackEnd.Migrations
                     b.ToTable("BillDetail");
                 });
 
+            modelBuilder.Entity("Backend.Models.BlacklistedToken", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.ToTable("BlackListedToken");
+                });
+
+            modelBuilder.Entity("Backend.Models.Booking", b =>
+                {
+                    b.Property<Guid>("BookingID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("GuestComment")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("NumberOfGuess")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScheduledTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("TableID")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("BookingID");
+
+                    b.HasIndex("TableID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Booking");
+                });
+
+            modelBuilder.Entity("Backend.Models.BookingChange", b =>
+                {
+                    b.Property<Guid>("ChangeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("BookingID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("BookingStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("ChangeAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("EmployeeID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("comment")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ChangeID");
+
+                    b.HasIndex("BookingID")
+                        .IsUnique();
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("BookingChange");
+                });
+
             modelBuilder.Entity("Backend.Models.Category", b =>
                 {
                     b.Property<int>("CategoryID")
@@ -169,6 +259,9 @@ namespace BackEnd.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CategoryID"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
@@ -195,8 +288,14 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<decimal>("FixedPrice")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Img")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -236,6 +335,9 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("BillID")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
@@ -274,8 +376,10 @@ namespace BackEnd.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("LogID");
 
@@ -297,10 +401,16 @@ namespace BackEnd.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsBooking")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
                     b.Property<int>("StoreID")
                         .HasColumnType("int");
@@ -325,6 +435,9 @@ namespace BackEnd.Migrations
 
                     b.Property<decimal>("CostPerUnit")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("IngredientName")
                         .IsRequired()
@@ -373,10 +486,10 @@ namespace BackEnd.Migrations
                     b.Property<decimal>("QuantityOriginal")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("ReceiptDetailGoodsReceiptID")
+                    b.Property<Guid?>("ReceiptDetailGoodsReceiptID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("ReceiptDetailIngredientID")
+                    b.Property<int?>("ReceiptDetailIngredientID")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -406,19 +519,20 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.POApproval", b =>
                 {
-                    b.Property<Guid>("POID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("EmployeeID")
+                    b.Property<Guid>("POApprovalID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Comment")
                         .HasColumnType("longtext");
 
+                    b.Property<Guid>("EmployeeID")
+                        .HasColumnType("char(36)");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("POApprovalID")
+                    b.Property<Guid>("POID")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Status")
@@ -426,9 +540,11 @@ namespace BackEnd.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.HasKey("POID", "EmployeeID");
+                    b.HasKey("POApprovalID");
 
                     b.HasIndex("EmployeeID");
+
+                    b.HasIndex("POID");
 
                     b.ToTable("POApproval");
                 });
@@ -441,8 +557,8 @@ namespace BackEnd.Migrations
                     b.Property<int>("IngredientID")
                         .HasColumnType("int");
 
-                    b.Property<float>("Quantity")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("UnitPriceExpected")
                         .HasColumnType("decimal(65,30)");
@@ -465,11 +581,11 @@ namespace BackEnd.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -479,9 +595,6 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
-
-                    b.Property<DateTime>("ProductionTime")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("ProductID");
 
@@ -497,6 +610,9 @@ namespace BackEnd.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductVarientID"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
@@ -521,6 +637,9 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("POID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("StoreID")
                         .HasColumnType("int");
@@ -566,9 +685,15 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Receipt", b =>
                 {
-                    b.Property<Guid>("GoodsReceiptID")
+                    b.Property<Guid>("ReceiptID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DateReceive")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
@@ -582,7 +707,7 @@ namespace BackEnd.Migrations
                     b.Property<int>("SupplierID")
                         .HasColumnType("int");
 
-                    b.HasKey("GoodsReceiptID");
+                    b.HasKey("ReceiptID");
 
                     b.HasIndex("EmployeeID");
 
@@ -649,48 +774,19 @@ namespace BackEnd.Migrations
                     b.ToTable("ReceiptDetail");
                 });
 
-            modelBuilder.Entity("Backend.Models.Reservation", b =>
-                {
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("TableID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("GuestCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("ScheduledTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.HasKey("UserID", "TableID");
-
-                    b.HasIndex("TableID");
-
-                    b.ToTable("Reservation");
-                });
-
             modelBuilder.Entity("Backend.Models.Shift", b =>
                 {
                     b.Property<Guid>("ShiftID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("ChechIn")
+                    b.Property<DateTime?>("CheckIn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("EmployeeID")
@@ -717,6 +813,9 @@ namespace BackEnd.Migrations
 
                     b.Property<Guid>("BatchID")
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("DeleteAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("EmployeeID")
                         .HasColumnType("char(36)");
@@ -768,16 +867,26 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("AddressID")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("SeatingCapacity")
                         .HasColumnType("int");
+
+                    b.Property<string>("StoreName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("TotalPoints")
                         .HasColumnType("int");
@@ -804,21 +913,28 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("AddressID")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)");
 
                     b.Property<string>("SupplierName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("TaxCode")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
 
                     b.HasKey("SupplierID");
 
@@ -833,6 +949,9 @@ namespace BackEnd.Migrations
                     b.Property<Guid>("TicketID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(65,30)");
@@ -895,32 +1014,52 @@ namespace BackEnd.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("varchar(8)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Gender")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<string>("HashPassword")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("User");
 
@@ -974,6 +1113,9 @@ namespace BackEnd.Migrations
 
                     b.Property<decimal>("BasicSalary")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime?>("DeleteAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -1043,6 +1185,44 @@ namespace BackEnd.Migrations
                     b.Navigation("Bill");
 
                     b.Navigation("ProductVarient");
+                });
+
+            modelBuilder.Entity("Backend.Models.Booking", b =>
+                {
+                    b.HasOne("Backend.Models.DiningTable", "Table")
+                        .WithMany("Booking")
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.BookingChange", b =>
+                {
+                    b.HasOne("Backend.Models.Booking", "Booking")
+                        .WithOne("BookingChange")
+                        .HasForeignKey("Backend.Models.BookingChange", "BookingID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Employee", "Employee")
+                        .WithMany("BookingChange")
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Backend.Models.ComboProduct", b =>
@@ -1135,15 +1315,11 @@ namespace BackEnd.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.ReceiptDetail", "ReceiptDetail")
+                    b.HasOne("Backend.Models.ReceiptDetail", null)
                         .WithMany("InventoryBatch")
-                        .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID");
 
                     b.Navigation("Ingredient");
-
-                    b.Navigation("ReceiptDetail");
 
                     b.Navigation("Warehouse");
                 });
@@ -1317,25 +1493,6 @@ namespace BackEnd.Migrations
                     b.Navigation("Receipt");
                 });
 
-            modelBuilder.Entity("Backend.Models.Reservation", b =>
-                {
-                    b.HasOne("Backend.Models.DiningTable", "Table")
-                        .WithMany("Reservation")
-                        .HasForeignKey("TableID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.User", "User")
-                        .WithMany("Reservation")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Table");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Backend.Models.Shift", b =>
                 {
                     b.HasOne("Backend.Models.Employee", "Employee")
@@ -1431,7 +1588,7 @@ namespace BackEnd.Migrations
                         .IsRequired();
 
                     b.HasOne("Backend.Models.Ticket", "Ticket")
-                        .WithMany()
+                        .WithMany("TicketProduct")
                         .HasForeignKey("TicketID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1500,6 +1657,12 @@ namespace BackEnd.Migrations
                     b.Navigation("BillDetail");
                 });
 
+            modelBuilder.Entity("Backend.Models.Booking", b =>
+                {
+                    b.Navigation("BookingChange")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Backend.Models.Category", b =>
                 {
                     b.Navigation("Product");
@@ -1517,7 +1680,7 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.DiningTable", b =>
                 {
-                    b.Navigation("Reservation");
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("Backend.Models.Ingredient", b =>
@@ -1580,10 +1743,13 @@ namespace BackEnd.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("Backend.Models.Ticket", b =>
+                {
+                    b.Navigation("TicketProduct");
+                });
+
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
-                    b.Navigation("Reservation");
-
                     b.Navigation("Ticket");
 
                     b.Navigation("UserAddress");
@@ -1596,6 +1762,8 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Employee", b =>
                 {
+                    b.Navigation("BookingChange");
+
                     b.Navigation("DeliveryLog");
 
                     b.Navigation("POApproval");

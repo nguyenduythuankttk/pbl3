@@ -20,7 +20,7 @@ namespace Backend.Services.Implementations{
                     .ThenInclude(bc => bc.Employee)
                     .Where( b => b.BillChange.Any() &&
                             b.BillChange.Max(b => b.ChangeAt) >= start.ToDateTime(TimeOnly.MinValue) &&
-                            b.BillChange.Max(b => b.ChangeAt) <= end.ToDateTime(TimeOnly.MinValue))
+                            b.BillChange.Max(b => b.ChangeAt) <= end.ToDateTime(TimeOnly.MaxValue))
                     .Include(b => b.BillDetail)
                         .ThenInclude(bd => bd.ProductVarient)
                             .ThenInclude(pr => pr.Product)
@@ -78,7 +78,8 @@ namespace Backend.Services.Implementations{
             var newChange = new BillChange {
                 BillID = changeRequest.BillID,
                 Status = changeRequest.Status,
-                ChangeAt = changeRequest.ChangeAt
+                ChangeAt = changeRequest.ChangeAt,
+                EmployeeID = changeRequest.EmployeeID
             };
             _dbcontext.BillChange.Add(newChange);
             await _dbcontext.SaveChangesAsync();

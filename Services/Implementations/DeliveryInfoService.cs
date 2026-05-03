@@ -54,7 +54,7 @@ namespace Backend.Services.Implementations{
         }
         public async Task UpdateDelivery(Guid deliveryID, DeliveryUpdateRequest updateRequest){
             try{
-                var delivery = _dbcontext.DeliveryInfo
+                var delivery = await _dbcontext.DeliveryInfo
                                 .FirstOrDefaultAsync(d =>d.DeliveryID == deliveryID);
                 if (delivery != null){
                     var Log = new DeliveryLog {

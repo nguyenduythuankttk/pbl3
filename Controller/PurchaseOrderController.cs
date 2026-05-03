@@ -16,7 +16,7 @@ namespace Backend.Controller
             _purchaseOrderService = purchaseOrderService;
         }
 
-        [HttpGet("Get-all/ {start} / {end}")]
+        [HttpGet("Get-all/{start}/{end}")]
         public async Task<IActionResult> GetAllPOIn(DateOnly start, DateOnly end)
         {
             try

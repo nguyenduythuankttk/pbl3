@@ -15,18 +15,35 @@ namespace Backend.Services.Implementations
             _dbcontext = dbContext;
         }
 
-        public async Task<List<Booking>?> GetAllBookingIn() => 
+        public async Task<List<Booking>?> GetAllBooking(DateOnly end) =>
             await _dbcontext.Booking
-            .Where(b => b.ScheduledTime >= DateTime.Now.Add(TimeSpan.FromMinutes(-14)))
+            .Where(b => b.ScheduledTime <= end.ToDateTime(TimeOnly.MaxValue))
             .Include(b => b.User)
             .Include(b => b.Table)
-            .ToListAsync();    
+            .ToListAsync();
 
-        public async Task<List<Booking>?> GetBookingByUser() =>
+        public async Task<List<Booking>?> GetBookingByUser(Guid user) =>
             await _dbcontext.Booking
-            
-            .ToListAsync();  
+            .Where(b => b.UserID == user)
+            .Include(b => b.User)
+            .Include(b => b.Table)
+            .ToListAsync();
+
+        public async Task<Booking?> GetBookingByID(Guid bookingID) =>
+            await _dbcontext.Booking
+            .Include(b => b.User)
+            .Include(b => b.Table)
+            .FirstOrDefaultAsync(b => b.BookingID == bookingID);
+
+        public async Task AddBooking(Booking booking){
+            try{
+                _dbcontext.Booking.Add(booking);
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception e){
+                Console.WriteLine(e.Message);
+            }
         }
+
         public async Task SoftDeleteBooking(Guid bookingID){
             var booking = await _dbcontext.Booking
                 .FirstOrDefaultAsync(b => b.BookingID == bookingID &&
