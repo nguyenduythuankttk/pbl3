@@ -141,12 +141,8 @@ namespace Backend.Services.Implementations{
             }
         }
         
-        public async Task Logout(Guid userID, string accessToken){
+        public async Task Logout(string accessToken){
             try{
-                var user = await _dbContext.User.FirstOrDefaultAsync(u => u.UserID == userID);
-                if (user == null)
-                    throw new Exception("Không tìm thấy user");
-
                 if (!string.IsNullOrEmpty(accessToken)){
                     _dbContext.BlackListedToken.Add(new BlacklistedToken{
                         Token = accessToken,

@@ -12,7 +12,4 @@ namespace Backend.Models.DTOs.Request{
         public string Email {get; set;} = null!;
         public Gender Gender {get; set;} 
     }
-    public class RefreshRequest{
-        public string RefreshToken { get; set; } = null!;
-    }
 }

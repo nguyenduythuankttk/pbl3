@@ -69,6 +69,7 @@ builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddResponseCompression(options =>
 {
@@ -110,6 +111,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.Use(async(context, next)=>{
+        var token = context.Request.Headers["Authorization"]
+                    .ToString().Replace("Bear ", "");
+        if (!string.IsNullOrEmpty(token)){
+            var db = context.RequestServices.GetRequiredService<AppDbContext>();
+            var isBlocked = await db.BlackListedToken.AnyAsync(b => b.Token == token && b.ExpiryDate > DateTime.UtcNow);
+            if (isBlocked){
+                    context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("Token đã bị vô hiệu hóa");
+                return;
+            }
+        }
+        await next();
+    }   
+);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

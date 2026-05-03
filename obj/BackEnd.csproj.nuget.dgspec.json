@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj": {}
+    "/Users/nguyenduythuan/vscode/PBL3/BackEnd/backend.csproj": {}
   },
   "projects": {
-    "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj": {
+    "/Users/nguyenduythuan/vscode/PBL3/BackEnd/backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj",
-        "projectName": "BackEnd",
-        "projectPath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/BackEnd.csproj",
+        "projectUniqueName": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/backend.csproj",
+        "projectName": "backend",
+        "projectPath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/backend.csproj",
         "packagesPath": "/Users/nguyenduythuan/.nuget/packages/",
         "outputPath": "/Users/nguyenduythuan/vscode/PBL3/BackEnd/obj/",
         "projectStyle": "PackageReference",
