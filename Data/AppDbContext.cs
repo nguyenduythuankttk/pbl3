@@ -41,6 +41,7 @@ namespace Backend.Data {
         public DbSet<ReceiptChange> ReceiptChange {get; set;}
         public DbSet<TicketCombo> TicketCombo {get; set;}
         public DbSet<TicketProduct> TicketProduct {get; set;}
+        public DbSet<BlacklistedToken> BlackListedToken {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);

@@ -29,8 +29,6 @@ namespace Backend.Models {
         public string FullName {get; set;} = null!;
         public Gender Gender {get; set;} 
         public DateTime? DeletedAt {get; set; }
-        public string? RefeshToken {get; set;}
-        public DateTime ExpiryRefeshToken {get; set;}
         [JsonIgnore]
         public virtual ICollection<UserAddress> UserAddress { get; set; } = new List<UserAddress>();
         [JsonIgnore]

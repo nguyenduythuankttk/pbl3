@@ -5,8 +5,7 @@ namespace Backend.Services.Interface{
     public interface IAuthService{
         Task Register (RegisterRequest request);
         Task<EmployeeAuthReponse> EmployeeLogin (LoginRequest request);
-        //Task <UserAuthReponse> CustomerLogin (LoginRequest request);
-        //Task <AuthReponse> Refesh (RefreshRequest request);
-       // Task Logout (Guid userID, string accessToken); 
+        Task <UserAuthReponse> UserLogin (LoginRequest request);
+        Task Logout (Guid userID, string accessToken); 
     }
 }

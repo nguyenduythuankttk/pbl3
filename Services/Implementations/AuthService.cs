@@ -51,11 +51,6 @@ namespace Backend.Services.Implementations{
             }
         }
 
-        private string GenerateRefreshToken(){
-            var bytes = RandomNumberGenerator.GetBytes(64);
-            return Convert.ToBase64String(bytes);
-        }
-
         public async Task Register(RegisterRequest request){
             try{
                 bool isExisted = await _dbContext.User.AnyAsync(u => request.Email == u.Email ||
@@ -97,14 +92,10 @@ namespace Backend.Services.Implementations{
                     throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
 
                 var accessToken = GenerateAcessToken(emp);
-                emp.RefeshToken = GenerateRefreshToken();
-                emp.ExpiryRefeshToken = DateTime.UtcNow.AddDays(7);
                 await _dbContext.SaveChangesAsync();
 
                 return new EmployeeAuthReponse{
                     AcessToken = accessToken,
-                    RefeshToken = emp.RefeshToken,
-                    ExpiryTokenTime = emp.ExpiryRefeshToken,
                     EmployeeID = emp.UserID,
                     EmployeeName = emp.FullName,
                     Phone = emp.Phone,
@@ -118,6 +109,54 @@ namespace Backend.Services.Implementations{
             } catch (Exception e){
                 Console.WriteLine(e.Message);
                 throw new Exception("Error in EmployeeLogin");
+            }
+        }
+
+        public async Task<UserAuthReponse> UserLogin(LoginRequest request){
+            try{
+                var usr = await _dbContext.User
+                    .FirstOrDefaultAsync(e => e.UserName == request.UserName);
+                if (usr == null)
+                    throw new Exception("Không tìm thấy người dùng");
+
+                var verify = _passwordHasher.VerifyHashedPassword(usr, usr.HashPassword, request.HashPassword);
+                if (verify == PasswordVerificationResult.Failed)
+                    throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
+
+                var accessToken = GenerateAcessToken(usr);
+                await _dbContext.SaveChangesAsync();
+
+                return new UserAuthReponse{
+                    AcessToken = accessToken,
+                    UserID = usr.UserID,
+                    UserName = usr.UserName,
+                    Phone = usr.Phone,
+                    Email = usr.Email,
+                    FullName = usr.FullName,
+                    BirthDate = usr.BirthDate
+                };
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception("Error in UserLogin");
+            }
+        }
+        
+        public async Task Logout(Guid userID, string accessToken){
+            try{
+                var user = await _dbContext.User.FirstOrDefaultAsync(u => u.UserID == userID);
+                if (user == null)
+                    throw new Exception("Không tìm thấy user");
+
+                if (!string.IsNullOrEmpty(accessToken)){
+                    _dbContext.BlackListedToken.Add(new BlacklistedToken{
+                        Token = accessToken,
+                        ExpiryDate = DateTime.UtcNow.AddMinutes(15)
+                    });
+                }
+                await _dbContext.SaveChangesAsync();
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception("Error in Logout");
             }
         }
 
