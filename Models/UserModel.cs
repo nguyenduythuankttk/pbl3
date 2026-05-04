@@ -18,7 +18,7 @@ namespace Backend.Models {
         public Guid UserID {get; set;}
         [Required, MaxLength(50)]
         public string UserName {get; set;}  = null!;
-        [Required,MaxLength(50)]
+        [Required,MaxLength(255)]
         public string HashPassword {get; set;} = null!;
         public DateOnly BirthDate {get; set;} 
         public DateTime CreateAt {get; set;} = DateTime.UtcNow;

@@ -6,6 +6,7 @@ namespace Backend.Services.Interface{
         Task Register (RegisterRequest request);
         Task<EmployeeAuthReponse> EmployeeLogin (LoginRequest request);
         Task <UserAuthReponse> UserLogin (LoginRequest request);
-        Task Logout ( string accessToken); 
+        Task Logout (string accessToken); 
+        Task<UserAuthReponse> ChangePassword(PasswordRequest request, Guid userID);
     }
 }

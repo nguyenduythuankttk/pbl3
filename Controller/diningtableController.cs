@@ -51,13 +51,13 @@ namespace Backend.Controller{
                 return StatusCode(500, "Error in diningtableController.Update" + e.Message);
             }
         }
-        [HttpDelete("delete")]
-        public async Task<IActionResult> Delete(int tableID){
+        [HttpDelete("delete/{tableID}")]
+        public async Task<IActionResult> SoftDelete(int tableID){
             try {
-                await _diningTable.DeleteTable(tableID);
-                return Ok("Delete Table Successfully");
+                await _diningTable.SoftDeleteTable(tableID);
+                return Ok("Xóa bàn thành công");
             } catch (Exception e){
-                return StatusCode(500, "Error in diningtableController.Delete" + e.Message);
+                return StatusCode(500, "Error in diningtableController.SoftDelete: " + e.Message);
             }
         }
     }

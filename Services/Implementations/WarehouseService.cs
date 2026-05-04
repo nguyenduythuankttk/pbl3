@@ -57,13 +57,13 @@ namespace Backend.Services.Implementations
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteWarehouse(int warehouseID){
+        public async Task SoftDeleteWarehouse(int warehouseID){
             try{
-                var wh =await _dbcontext.Warehouse.FirstOrDefaultAsync(w => w.WarehouseID == warehouseID);
-                if (wh != null){
-                    _dbcontext.Warehouse.Remove(wh);
-                    await _dbcontext.SaveChangesAsync();
-                }
+                var wh = await _dbcontext.Warehouse.FirstOrDefaultAsync(w => w.WarehouseID == warehouseID);
+                if (wh == null) throw new Exception("Không tìm thấy kho");
+                wh.DeletedAt = DateTime.UtcNow;
+                _dbcontext.Warehouse.Update(wh);
+                await _dbcontext.SaveChangesAsync();
             } catch (Exception e){
                 Console.WriteLine(e.Message);
             }

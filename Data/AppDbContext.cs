@@ -93,6 +93,9 @@ namespace Backend.Data {
 
 
             // convert string
+            modelBuilder.Entity<User>()
+                .Property(x=> x.Gender)
+                .HasConversion<string>().HasMaxLength(10).IsRequired();
             modelBuilder.Entity<Employee>()
                 .Property(x => x.Role)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();

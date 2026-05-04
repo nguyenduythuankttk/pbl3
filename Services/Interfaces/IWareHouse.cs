@@ -11,6 +11,6 @@ namespace Backend.Services.Interface
         Task<List<Warehouse>?> GetWarehousesByStore(int storeID);
         Task AddWarehouse(WarehouseCreateRequest createRequest);
         Task UpdateWarehouse(int warehouseID, WarehouseUpdateRequest updateRequest);
-        Task DeleteWarehouse(int warehouseID);
+        Task SoftDeleteWarehouse(int warehouseID);
     }
 }

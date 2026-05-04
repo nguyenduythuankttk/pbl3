@@ -129,3 +129,5 @@
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/bin/Debug/net10.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/bin/Debug/net10.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/nguyenduythuan/vscode/PBL3/BackEnd/bin/Debug/net10.0/Scalar.AspNetCore.dll
+/Users/nguyenduythuan/vscode/PBL3/BackEnd/bin/Debug/net10.0/BCrypt.Net-Next.dll
+/Users/nguyenduythuan/vscode/PBL3/BackEnd/bin/Debug/net10.0/Resend.dll

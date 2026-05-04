@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Backend.Services.Implementations{
@@ -52,31 +51,30 @@ namespace Backend.Services.Implementations{
         }
 
         public async Task Register(RegisterRequest request){
+            bool isExisted = await _dbContext.User.AnyAsync(u => request.Email == u.Email ||
+                                                                 request.Phone == u.Phone);
+            if (isExisted)
+                throw new InvalidOperationException("Email hoặc số điện thoại đã tồn tại");
+
+            isExisted = await _dbContext.User.AnyAsync(u => u.UserName == request.UserName);
+            if (isExisted)
+                throw new InvalidOperationException("Đã tồn tại UserName");
+
             try{
-                bool isExisted = await _dbContext.User.AnyAsync(u => request.Email == u.Email ||
-                                                                     request.Phone == u.Phone);
-                if (isExisted)
-                    throw new Exception("Email hoặc số điện thoại đã tồn tại");
-
-                isExisted = await _dbContext.User.AnyAsync(u => u.UserName == request.UserName);
-                if (isExisted)
-                    throw new Exception("Đã tồn tại UserName");
-
                 var newCustomer = new User{
                     UserName = request.UserName,
-                    HashPassword = request.HashPassword,
                     FullName = request.FullName,
                     BirthDate = request.BirthDate,
                     Phone = request.Phone,
                     Email = request.Email,
                     Gender = request.Gender
                 };
-                newCustomer.HashPassword = _passwordHasher.HashPassword(newCustomer, request.HashPassword);
+                newCustomer.HashPassword = BCrypt.Net.BCrypt.HashPassword(request.HashPassword);
                 _dbContext.User.Add(newCustomer);
                 await _dbContext.SaveChangesAsync();
             } catch (Exception e){
-                Console.WriteLine(e.Message);
-                throw new Exception("Can't Register");
+                Console.WriteLine(e.InnerException?.Message ?? e.Message);
+                throw new Exception(e.InnerException?.Message ?? e.Message);
             }
         }
 
@@ -84,15 +82,11 @@ namespace Backend.Services.Implementations{
             try{
                 var emp = await _dbContext.Employee
                     .FirstOrDefaultAsync(e => e.UserName == request.UserName);
-                if (emp == null)
-                    throw new Exception("Không tìm thấy nhân viên");
 
-                var verify = _passwordHasher.VerifyHashedPassword(emp, emp.HashPassword, request.HashPassword);
-                if (verify == PasswordVerificationResult.Failed)
+                if (emp == null || !BCrypt.Net.BCrypt.Verify(request.HashPassword, emp.HashPassword))
                     throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
 
                 var accessToken = GenerateAcessToken(emp);
-                await _dbContext.SaveChangesAsync();
 
                 return new EmployeeAuthReponse{
                     AcessToken = accessToken,
@@ -116,15 +110,11 @@ namespace Backend.Services.Implementations{
             try{
                 var usr = await _dbContext.User
                     .FirstOrDefaultAsync(e => e.UserName == request.UserName);
-                if (usr == null)
-                    throw new Exception("Không tìm thấy người dùng");
 
-                var verify = _passwordHasher.VerifyHashedPassword(usr, usr.HashPassword, request.HashPassword);
-                if (verify == PasswordVerificationResult.Failed)
+                if (usr == null || !BCrypt.Net.BCrypt.Verify(request.HashPassword, usr.HashPassword))
                     throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
 
                 var accessToken = GenerateAcessToken(usr);
-                await _dbContext.SaveChangesAsync();
 
                 return new UserAuthReponse{
                     AcessToken = accessToken,
@@ -140,7 +130,7 @@ namespace Backend.Services.Implementations{
                 throw new Exception("Error in UserLogin");
             }
         }
-        
+
         public async Task Logout(string accessToken){
             try{
                 if (!string.IsNullOrEmpty(accessToken)){
@@ -156,5 +146,32 @@ namespace Backend.Services.Implementations{
             }
         }
 
+        public async Task<UserAuthReponse> ChangePassword(PasswordRequest request, Guid userID){
+            try{
+                var user = await _dbContext.User.FirstOrDefaultAsync(u => u.UserID == userID);
+                if (user == null) throw new Exception("Không tìm thấy người dùng");
+
+                if (!BCrypt.Net.BCrypt.Verify(request.currentPass, user.HashPassword))
+                    throw new Exception("Sai mật khẩu hiện tại");
+
+                user.HashPassword = BCrypt.Net.BCrypt.HashPassword(request.newPass);
+                _dbContext.User.Update(user);
+                await _dbContext.SaveChangesAsync();
+
+                var accessToken = GenerateAcessToken(user);
+                return new UserAuthReponse{
+                    AcessToken = accessToken,
+                    UserID = user.UserID,
+                    UserName = user.UserName,
+                    Phone = user.Phone,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    BirthDate = user.BirthDate
+                };
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception("Error in ChangePassword");
+            }
+        }
     }
 }

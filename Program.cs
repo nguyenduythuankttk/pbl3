@@ -2,6 +2,7 @@ using Backend.Data;
 using Backend.Models;
 using Backend.Services.Interface;
 using Backend.Services.Implementations;
+using Resend;
 using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.Converters.Add(new Backend.Converters.DateOnlyJsonConverter());
+    });
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -69,7 +73,17 @@ builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddHostedService<Backend.Services.HardDeleteWorker>();
+
+builder.Services.AddOptions();
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>(o => {
+    o.ApiToken = builder.Configuration["Resend:ApiKey"] ?? throw new Exception("Resend:ApiKey is not configured");
+});
+builder.Services.AddTransient<IResend, ResendClient>();
 
 builder.Services.AddResponseCompression(options =>
 {

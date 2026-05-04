@@ -74,10 +74,21 @@ namespace Backend.Controller
             try{
                 var empID = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrWhiteSpace(empID)) return Unauthorized();
-                var emp = await _EmployeeSevice.GetEmployeeByID();
+                var emp = await _EmployeeSevice.GetEmployeeByID(Guid.Parse(empID));
                 return Ok(emp);
             }catch(Exception e){
                 return StatusCode(500,"Error in authController.GetCurrentEmployee");
+            }
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request ){
+            try{
+                await _AuthService.Register(request);
+                return Ok("Đăng ký thành công");
+            } catch (InvalidOperationException e){
+                return Conflict(e.Message);
+            } catch (Exception e){
+                return StatusCode(500, "Error in authController.Register: " + e.Message);
             }
         }
 
