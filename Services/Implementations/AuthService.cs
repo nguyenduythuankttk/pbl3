@@ -15,13 +15,19 @@ namespace Backend.Services.Implementations{
         private readonly AppDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        private readonly bool _isDevelopment;
 
         public AuthService(AppDbContext dbContext,
                            IPasswordHasher<User> passwordHasher,
-                           IConfiguration configuration){
+                           IConfiguration configuration,
+                           IEmailService emailService,
+                           IWebHostEnvironment env){
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _configuration = configuration;
+            _emailService = emailService;
+            _isDevelopment = env.IsDevelopment();
         }
 
         private string GenerateAcessToken(User user){
@@ -50,7 +56,9 @@ namespace Backend.Services.Implementations{
             }
         }
 
-        public async Task Register(RegisterRequest request){
+        private string GenerateSecureToken() => Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+
+        public async Task<(bool emailSent, string? devToken)> Register(RegisterRequest request){
             bool isExisted = await _dbContext.User.AnyAsync(u => request.Email == u.Email ||
                                                                  request.Phone == u.Phone);
             if (isExisted)
@@ -67,15 +75,130 @@ namespace Backend.Services.Implementations{
                     BirthDate = request.BirthDate,
                     Phone = request.Phone,
                     Email = request.Email,
-                    Gender = request.Gender
+                    Gender = request.Gender,
+                    IsEmailVerified = false
                 };
                 newCustomer.HashPassword = BCrypt.Net.BCrypt.HashPassword(request.HashPassword);
                 _dbContext.User.Add(newCustomer);
+
+                var token = GenerateSecureToken();
+                _dbContext.EmailVerificationToken.Add(new EmailVerificationToken {
+                    UserID = newCustomer.UserID,
+                    Token = token,
+                    Type = TokenType.EmailVerification,
+                    ExpiryDate = DateTime.UtcNow.AddHours(24)
+                });
+
                 await _dbContext.SaveChangesAsync();
+
+                bool sent = false;
+                try {
+                    await _emailService.SendVerifyEmail(request.Email, token);
+                    sent = true;
+                } catch (Exception emailEx) {
+                    Console.WriteLine($"[EmailService] Không thể gửi email xác thực: {emailEx.Message}");
+                }
+
+                // Trả token về khi môi trường Development để test không cần email thật
+                return (sent, _isDevelopment ? token : null);
             } catch (Exception e){
                 Console.WriteLine(e.InnerException?.Message ?? e.Message);
                 throw new Exception(e.InnerException?.Message ?? e.Message);
             }
+        }
+
+        public async Task<(bool emailSent, string? devToken)> ResendVerificationEmail(string email) {
+            var user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                throw new InvalidOperationException("Email không tồn tại trong hệ thống");
+            if (user.IsEmailVerified)
+                throw new InvalidOperationException("Email đã được xác thực");
+
+            var oldTokens = await _dbContext.EmailVerificationToken
+                .Where(t => t.UserID == user.UserID && t.Type == TokenType.EmailVerification && !t.IsUsed)
+                .ToListAsync();
+            oldTokens.ForEach(t => t.IsUsed = true);
+
+            var token = GenerateSecureToken();
+            _dbContext.EmailVerificationToken.Add(new EmailVerificationToken {
+                UserID = user.UserID,
+                Token = token,
+                Type = TokenType.EmailVerification,
+                ExpiryDate = DateTime.UtcNow.AddHours(24)
+            });
+            await _dbContext.SaveChangesAsync();
+
+            bool sent = false;
+            try {
+                await _emailService.SendVerifyEmail(email, token);
+                sent = true;
+            } catch (Exception emailEx) {
+                Console.WriteLine($"[EmailService] Không thể gửi lại email xác thực: {emailEx.Message}");
+            }
+            return (sent, _isDevelopment ? token : null);
+        }
+
+        public async Task VerifyEmail(string token) {
+            var record = await _dbContext.EmailVerificationToken
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Token == token
+                                       && t.Type == TokenType.EmailVerification
+                                       && !t.IsUsed);
+
+            if (record == null)
+                throw new InvalidOperationException("Token xác thực không hợp lệ");
+            if (record.ExpiryDate < DateTime.UtcNow)
+                throw new InvalidOperationException("Token xác thực đã hết hạn");
+
+            record.IsUsed = true;
+            record.User.IsEmailVerified = true;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<(bool emailSent, string? devToken)> ForgotPassword(string email) {
+            var user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                throw new InvalidOperationException("Email không tồn tại trong hệ thống");
+
+            var oldTokens = await _dbContext.EmailVerificationToken
+                .Where(t => t.UserID == user.UserID && t.Type == TokenType.PasswordReset && !t.IsUsed)
+                .ToListAsync();
+            oldTokens.ForEach(t => t.IsUsed = true);
+
+            var token = GenerateSecureToken();
+            _dbContext.EmailVerificationToken.Add(new EmailVerificationToken {
+                UserID = user.UserID,
+                Token = token,
+                Type = TokenType.PasswordReset,
+                ExpiryDate = DateTime.UtcNow.AddHours(1)
+            });
+            await _dbContext.SaveChangesAsync();
+
+            bool sent = false;
+            try {
+                await _emailService.SendChangePasswordEmail(email, token);
+                sent = true;
+            } catch (Exception emailEx) {
+                Console.WriteLine($"[EmailService] Không thể gửi email reset mật khẩu: {emailEx.Message}");
+            }
+            return (sent, _isDevelopment ? token : null);
+        }
+
+        public async Task ResetPassword(ResetPasswordRequest request) {
+            var record = await _dbContext.EmailVerificationToken
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Token == request.Token
+                                       && t.Type == TokenType.PasswordReset
+                                       && !t.IsUsed);
+
+            if (record == null)
+                throw new InvalidOperationException("Token đặt lại mật khẩu không hợp lệ");
+            if (record.ExpiryDate < DateTime.UtcNow)
+                throw new InvalidOperationException("Token đặt lại mật khẩu đã hết hạn");
+
+            record.User.HashPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            record.IsUsed = true;
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<EmployeeAuthReponse> EmployeeLogin(LoginRequest request){
@@ -107,28 +230,25 @@ namespace Backend.Services.Implementations{
         }
 
         public async Task<UserAuthReponse> UserLogin(LoginRequest request){
-            try{
-                var usr = await _dbContext.User
-                    .FirstOrDefaultAsync(e => e.UserName == request.UserName);
+            var usr = await _dbContext.User
+                .FirstOrDefaultAsync(e => e.UserName == request.UserName);
 
-                if (usr == null || !BCrypt.Net.BCrypt.Verify(request.HashPassword, usr.HashPassword))
-                    throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
+            if (usr == null || !BCrypt.Net.BCrypt.Verify(request.HashPassword, usr.HashPassword))
+                throw new InvalidOperationException("Sai tên đăng nhập hoặc mật khẩu");
 
-                var accessToken = GenerateAcessToken(usr);
+            if (!usr.IsEmailVerified)
+                throw new InvalidOperationException("Email chưa được xác thực. Vui lòng kiểm tra hộp thư của bạn.");
 
-                return new UserAuthReponse{
-                    AcessToken = accessToken,
-                    UserID = usr.UserID,
-                    UserName = usr.UserName,
-                    Phone = usr.Phone,
-                    Email = usr.Email,
-                    FullName = usr.FullName,
-                    BirthDate = usr.BirthDate
-                };
-            } catch (Exception e){
-                Console.WriteLine(e.Message);
-                throw new Exception("Error in UserLogin");
-            }
+            var accessToken = GenerateAcessToken(usr);
+            return new UserAuthReponse{
+                AcessToken = accessToken,
+                UserID = usr.UserID,
+                UserName = usr.UserName,
+                Phone = usr.Phone,
+                Email = usr.Email,
+                FullName = usr.FullName,
+                BirthDate = usr.BirthDate
+            };
         }
 
         public async Task Logout(string accessToken){

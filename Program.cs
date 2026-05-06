@@ -76,7 +76,7 @@ builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddHostedService<Backend.Services.HardDeleteWorker>();
+builder.Services.AddHostedService<HardDeleteService>();
 
 builder.Services.AddOptions();
 builder.Services.AddHttpClient<ResendClient>();
@@ -127,7 +127,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.Use(async(context, next)=>{
         var token = context.Request.Headers["Authorization"]
-                    .ToString().Replace("Bear ", "");
+                    .ToString().Replace("Bearer ", "");
         if (!string.IsNullOrEmpty(token)){
             var db = context.RequestServices.GetRequiredService<AppDbContext>();
             var isBlocked = await db.BlackListedToken.AnyAsync(b => b.Token == token && b.ExpiryDate > DateTime.UtcNow);

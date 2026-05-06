@@ -37,6 +37,8 @@ namespace Backend.Models{
         [Required]
         public decimal MoneyGiveBack {get; set; }
 
+        public DateTime? DeletedAt { get; set; }
+
         [JsonIgnore]
         public virtual ICollection<BillDetail> BillDetail { get; set; } = new List<BillDetail>();
 

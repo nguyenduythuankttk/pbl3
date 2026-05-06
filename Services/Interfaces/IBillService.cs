@@ -8,5 +8,6 @@ namespace Backend.Services.Interface{
         Task <Bill?> GetBillByID(Guid billID);
         Task AddBill(BillCreateRequest request);
         Task ChangeBill(BillChangeRequest changeRequest);
+        Task SoftDeleteBill(Guid billID);
     }
 }
