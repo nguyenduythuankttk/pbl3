@@ -237,24 +237,15 @@ namespace Backend.Data {
             modelBuilder.Entity<Store>()
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Store)
-<<<<<<< HEAD
                 .HasForeignKey<Address>(s => s.StoreID);
-=======
-                .HasForeignKey<Store>(s => s.AddressID)
                 .OnDelete(DeleteBehavior.Cascade);
->>>>>>> 99e58fcf963daa960fd706b1e07a4488f470eeb3
 
             modelBuilder.Entity<Supplier>()
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Supplier)
-<<<<<<< HEAD
                 .HasForeignKey<Address>(a => a.SupplierID);
-                
-=======
-                .HasForeignKey<Supplier>(s => s.AddressID)
                 .OnDelete(DeleteBehavior.Cascade);
 
->>>>>>> 99e58fcf963daa960fd706b1e07a4488f470eeb3
             modelBuilder.Entity<Receipt>()
                 .HasOne(r => r.PurchaseOrder)
                 .WithOne(p => p.Receipt)

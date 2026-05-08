@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508052857_afk")]
+    partial class afk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +71,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("SupplierID");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Backend.Models.Bill", b =>
@@ -115,7 +118,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Bill", (string)null);
+                    b.ToTable("Bill");
                 });
 
             modelBuilder.Entity("Backend.Models.BillChange", b =>
@@ -144,7 +147,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("BillChange", (string)null);
+                    b.ToTable("BillChange");
                 });
 
             modelBuilder.Entity("Backend.Models.BillDetail", b =>
@@ -168,7 +171,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ProductVarientID");
 
-                    b.ToTable("BillDetail", (string)null);
+                    b.ToTable("BillDetail");
                 });
 
             modelBuilder.Entity("Backend.Models.BlacklistedToken", b =>
@@ -182,14 +185,15 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.HasKey("id");
 
                     b.HasIndex("Token")
                         .IsUnique();
 
-                    b.ToTable("BlackListedToken", (string)null);
+                    b.ToTable("BlackListedToken");
                 });
 
             modelBuilder.Entity("Backend.Models.Booking", b =>
@@ -222,7 +226,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Booking", (string)null);
+                    b.ToTable("Booking");
                 });
 
             modelBuilder.Entity("Backend.Models.BookingChange", b =>
@@ -255,7 +259,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("BookingChange", (string)null);
+                    b.ToTable("BookingChange");
                 });
 
             modelBuilder.Entity("Backend.Models.Category", b =>
@@ -279,7 +283,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("CategoryID");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Backend.Models.Combo", b =>
@@ -308,7 +312,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("ComboID");
 
-                    b.ToTable("Combo", (string)null);
+                    b.ToTable("Combo");
                 });
 
             modelBuilder.Entity("Backend.Models.ComboProduct", b =>
@@ -326,7 +330,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ProductVarientID");
 
-                    b.ToTable("ComboProduct", (string)null);
+                    b.ToTable("ComboProduct");
                 });
 
             modelBuilder.Entity("Backend.Models.DeliveryInfo", b =>
@@ -361,7 +365,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("DeliveryInfo", (string)null);
+                    b.ToTable("DeliveryInfo");
                 });
 
             modelBuilder.Entity("Backend.Models.DeliveryLog", b =>
@@ -393,7 +397,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("DeliveryLog", (string)null);
+                    b.ToTable("DeliveryLog");
                 });
 
             modelBuilder.Entity("Backend.Models.DiningTable", b =>
@@ -428,7 +432,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("StoreID");
 
-                    b.ToTable("DiningTable", (string)null);
+                    b.ToTable("DiningTable");
                 });
 
             modelBuilder.Entity("Backend.Models.EmailVerificationToken", b =>
@@ -460,7 +464,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("EmailVerificationToken", (string)null);
+                    b.ToTable("EmailVerificationToken");
                 });
 
             modelBuilder.Entity("Backend.Models.Ingredient", b =>
@@ -488,7 +492,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("IngredientID");
 
-                    b.ToTable("Ingredient", (string)null);
+                    b.ToTable("Ingredient");
                 });
 
             modelBuilder.Entity("Backend.Models.InventoryBatch", b =>
@@ -552,7 +556,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ReceiptDetailGoodsReceiptID", "ReceiptDetailIngredientID");
 
-                    b.ToTable("InventoryBatch", (string)null);
+                    b.ToTable("InventoryBatch");
                 });
 
             modelBuilder.Entity("Backend.Models.POApproval", b =>
@@ -584,7 +588,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("POID");
 
-                    b.ToTable("POApproval", (string)null);
+                    b.ToTable("POApproval");
                 });
 
             modelBuilder.Entity("Backend.Models.PODetail", b =>
@@ -605,7 +609,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("IngredientID");
 
-                    b.ToTable("PODetail", (string)null);
+                    b.ToTable("PODetail");
                 });
 
             modelBuilder.Entity("Backend.Models.Product", b =>
@@ -638,7 +642,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("Backend.Models.ProductVarient", b =>
@@ -667,7 +671,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("ProductVarient", (string)null);
+                    b.ToTable("ProductVarient");
                 });
 
             modelBuilder.Entity("Backend.Models.PurchaseOrder", b =>
@@ -697,7 +701,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("SupplierID");
 
-                    b.ToTable("PurchaseOrder", (string)null);
+                    b.ToTable("PurchaseOrder");
                 });
 
             modelBuilder.Entity("Backend.Models.Receipe", b =>
@@ -718,7 +722,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ProductVarientID");
 
-                    b.ToTable("Receipe", (string)null);
+                    b.ToTable("Receipe");
                 });
 
             modelBuilder.Entity("Backend.Models.Receipt", b =>
@@ -756,7 +760,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("SupplierID");
 
-                    b.ToTable("Receipt", (string)null);
+                    b.ToTable("Receipt");
                 });
 
             modelBuilder.Entity("Backend.Models.ReceiptChange", b =>
@@ -785,7 +789,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ReceiptID");
 
-                    b.ToTable("ReceiptChange", (string)null);
+                    b.ToTable("ReceiptChange");
                 });
 
             modelBuilder.Entity("Backend.Models.ReceiptDetail", b =>
@@ -809,7 +813,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("IngredientID");
 
-                    b.ToTable("ReceiptDetail", (string)null);
+                    b.ToTable("ReceiptDetail");
                 });
 
             modelBuilder.Entity("Backend.Models.Shift", b =>
@@ -840,7 +844,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("Shift", (string)null);
+                    b.ToTable("Shift");
                 });
 
             modelBuilder.Entity("Backend.Models.StockMovement", b =>
@@ -891,7 +895,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("IngredientID");
 
-                    b.ToTable("StockMovement", (string)null);
+                    b.ToTable("StockMovement");
                 });
 
             modelBuilder.Entity("Backend.Models.Store", b =>
@@ -936,7 +940,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("AddressID");
 
-                    b.ToTable("Store", (string)null);
+                    b.ToTable("Store");
                 });
 
             modelBuilder.Entity("Backend.Models.Supplier", b =>
@@ -977,7 +981,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("AddressID");
 
-                    b.ToTable("Supplier", (string)null);
+                    b.ToTable("Supplier");
                 });
 
             modelBuilder.Entity("Backend.Models.Ticket", b =>
@@ -998,49 +1002,24 @@ namespace BackEnd.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
+                    b.HasKey("TicketID");
+
+                    b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("Backend.Models.TicketUser", b =>
+                {
+                    b.Property<Guid>("TicketID")
+                        .HasColumnType("char(36)");
+
                     b.Property<Guid>("UserID")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("TicketID");
+                    b.HasKey("TicketID", "UserID");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Ticket", (string)null);
-                });
-
-            modelBuilder.Entity("Backend.Models.TicketCombo", b =>
-                {
-                    b.Property<Guid>("TicketID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("ComboID")
-                        .HasColumnType("int");
-
-                    b.HasKey("TicketID", "ComboID");
-
-                    b.HasIndex("ComboID");
-
-                    b.ToTable("TicketCombo", (string)null);
-                });
-
-            modelBuilder.Entity("Backend.Models.TicketProduct", b =>
-                {
-                    b.Property<Guid>("TicketID")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("ProductVarientID")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("TicketID1")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("TicketID", "ProductVarientID");
-
-                    b.HasIndex("ProductVarientID");
-
-                    b.HasIndex("TicketID1");
-
-                    b.ToTable("TicketProduct", (string)null);
+                    b.ToTable("TicketUser");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -1117,7 +1096,7 @@ namespace BackEnd.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
 
                     b.HasDiscriminator().HasValue("User");
 
@@ -1139,7 +1118,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("AddressID");
 
-                    b.ToTable("UserAddress", (string)null);
+                    b.ToTable("UserAddress");
                 });
 
             modelBuilder.Entity("Backend.Models.Warehouse", b =>
@@ -1163,7 +1142,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("StoreID");
 
-                    b.ToTable("Warehouse", (string)null);
+                    b.ToTable("Warehouse");
                 });
 
             modelBuilder.Entity("Backend.Models.Employee", b =>
@@ -1634,57 +1613,23 @@ namespace BackEnd.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("Backend.Models.Ticket", b =>
+            modelBuilder.Entity("Backend.Models.TicketUser", b =>
                 {
+                    b.HasOne("Backend.Models.Ticket", "Ticket")
+                        .WithMany("TicketUser")
+                        .HasForeignKey("TicketID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.User", "User")
-                        .WithMany("Ticket")
+                        .WithMany("TicketUser")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Ticket");
+
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Backend.Models.TicketCombo", b =>
-                {
-                    b.HasOne("Backend.Models.Combo", "Combo")
-                        .WithMany()
-                        .HasForeignKey("ComboID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Combo");
-
-                    b.Navigation("Ticket");
-                });
-
-            modelBuilder.Entity("Backend.Models.TicketProduct", b =>
-                {
-                    b.HasOne("Backend.Models.ProductVarient", "ProductVarient")
-                        .WithMany()
-                        .HasForeignKey("ProductVarientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Models.Ticket", null)
-                        .WithMany("TicketProduct")
-                        .HasForeignKey("TicketID1");
-
-                    b.Navigation("ProductVarient");
-
-                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("Backend.Models.UserAddress", b =>
@@ -1830,12 +1775,12 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Ticket", b =>
                 {
-                    b.Navigation("TicketProduct");
+                    b.Navigation("TicketUser");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
-                    b.Navigation("Ticket");
+                    b.Navigation("TicketUser");
 
                     b.Navigation("UserAddress");
                 });

@@ -34,10 +34,11 @@ namespace Backend.Models{
         [Required]
         public decimal Total { get; set; }
         [Required]
+        public decimal Paid {get; set;}
+        [Required]
         public decimal MoneyReceived {get; set; }
         [Required]
         public decimal MoneyGiveBack {get; set; }
-        public decimal Paid {get; set; }
 
         public DateTime? DeletedAt { get; set; }
 
