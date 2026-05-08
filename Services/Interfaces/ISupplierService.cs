@@ -6,10 +6,10 @@ namespace Backend.Services.Interface
 {
     public interface ISupplierService
     {
-        Task<List<Supplier>?> GetAllSuppliers();
-        Task<Supplier?> GetSupplierByID(int supllierID);
-        Task AddSupplier(Supplier supplier);
-        Task UpdateSupplier(int supplierID, SupplierUpdateRequest request);
+        Task<List<SupplierResponse>?> GetAllSuppliers();
+        Task<SupplierResponse?> GetSupplierByID(int supllierID);
+        Task AddSupplier(SupplierCreateRequest createRequest);
+        Task UpdateSupplier(int supplierID, SupplierUpdateRequest updateRequest);
         Task SoftDeleteSupplier(int supplierID);
     }
 }

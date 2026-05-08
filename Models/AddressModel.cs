@@ -27,10 +27,13 @@ namespace Backend.Models{
         public string Country { get; set; } = "Viet Nam";
         public int? StoreID{get; set;}
         [ForeignKey("StoreID")]
+        [JsonIgnore]
         public virtual Store? Store { get; set; }
 
+        [JsonIgnore]
         public int? SupplierID{get; set; }
         [ForeignKey("SupplierID")]
+        
         public virtual Supplier? Supplier { get; set; }
 
         [JsonIgnore]

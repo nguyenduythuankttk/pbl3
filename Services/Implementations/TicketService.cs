@@ -1,3 +1,5 @@
+// add thẳng vào bill
+// chỉnh lại hàm get endDate và startDate, nếu end > start thì đổi chỗ 2 biến
 using Backend.Services.Interface;
 using Backend.Models.DTOs.Request;
 using Backend.Models;
@@ -16,8 +18,8 @@ namespace Backend.Services.Implementations
         public async Task <List<Ticket>?> GetAllTicketIn(DateOnly start, DateOnly end) =>
             await _dbcontext.Ticket
             .AsNoTracking()
-            .Where( b => b.StartDate >= start.ToDateTime(TimeOnly.MinValue) &&
-                    b.EndDate <= end.ToDateTime(TimeOnly.MaxValue) &&
+            .Where( b => b.EndDate >= start.ToDateTime(TimeOnly.MinValue) &&
+                    b.StartDate <= end.ToDateTime(TimeOnly.MaxValue) &&
                     b.DeletedAt == null
                 )
             .Include(t => t.TicketProduct)
@@ -31,23 +33,29 @@ namespace Backend.Services.Implementations
                 .ThenInclude(tp => tp.ProductVarient)
             .FirstOrDefaultAsync(t => t.TicketID == ticketID && t.DeletedAt == null);
 
-        // public async async AddTicket(TicketCreateRequest createRequest)
-        // {
-        //     using var transaction = await _dbcontext.Database.BeginTransactionAsync();
-        //     try
-        //     {
-        //         var newticket = new Ticket
-        //         {
-        //             StartDate = createRequest.StartDate,
-        //             EndDate = createRequest.EndDate,
-        //             Discount = createRequest.Discount
-        //             IsActive = true
-        //         };
-
-        //         foreach(var product in createRequest)
-        //     }
-        //     await transaction.CommitAsync();
-        // }
+        public async Task AddTicket(TicketCreateRequest createRequest)
+        {
+            try
+            {
+                var startDate  = createRequest.StartDate.Date;  
+                var endDate = createRequest.EndDate.Date;       
+                var newticket = new Ticket
+                {
+                    TicketID = Guid.NewGuid(),
+                    StartDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, 0, 0, 0),  // 00:00:00
+                    EndDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, 23, 59, 59),      // 23:59:59
+                    Discount = createRequest.Discount,
+                    DeletedAt = null
+                };
+                _dbcontext.Ticket.Add(newticket);
+                await _dbcontext.SaveChangesAsync();
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Add Ticket error {ex.Message}");
+                throw new Exception($"An error occurred while adding ticket {ex.Message}");
+            }
+            
+        }
 
         public async Task UpdateTicket(Guid ticketID, TicketUpdateRequest request)
         {

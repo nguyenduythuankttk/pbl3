@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260506074513_FixSupplierAddressRelationship")]
+    partial class FixSupplierAddressRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +66,6 @@ namespace BackEnd.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.HasKey("AddressID");
-
-                    b.HasIndex("StoreID")
-                        .IsUnique();
 
                     b.HasIndex("SupplierID")
                         .IsUnique();
@@ -870,6 +870,9 @@ namespace BackEnd.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("StoreID"));
 
+                    b.Property<Guid>("AddressID")
+                        .HasColumnType("char(36)");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
@@ -898,6 +901,9 @@ namespace BackEnd.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("StoreID");
+
+                    b.HasIndex("AddressID")
+                        .IsUnique();
 
                     b.ToTable("Store");
                 });
@@ -956,7 +962,7 @@ namespace BackEnd.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("char(36)");
 
                     b.HasKey("TicketID");
@@ -1126,15 +1132,9 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Address", b =>
                 {
-                    b.HasOne("Backend.Models.Store", "Store")
-                        .WithOne("Address")
-                        .HasForeignKey("Backend.Models.Address", "StoreID");
-
                     b.HasOne("Backend.Models.Supplier", "Supplier")
                         .WithOne("Address")
                         .HasForeignKey("Backend.Models.Address", "SupplierID");
-
-                    b.Navigation("Store");
 
                     b.Navigation("Supplier");
                 });
@@ -1536,11 +1536,24 @@ namespace BackEnd.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("Backend.Models.Store", b =>
+                {
+                    b.HasOne("Backend.Models.Address", "Address")
+                        .WithOne("Store")
+                        .HasForeignKey("Backend.Models.Store", "AddressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("Backend.Models.Ticket", b =>
                 {
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany("Ticket")
-                        .HasForeignKey("UserID");
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1627,6 +1640,8 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("Backend.Models.Address", b =>
                 {
                     b.Navigation("DeliveryInfos");
+
+                    b.Navigation("Store");
 
                     b.Navigation("UserAddresses");
                 });
@@ -1717,9 +1732,6 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Backend.Models.Store", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
-
                     b.Navigation("DiningTable");
 
                     b.Navigation("Employee");

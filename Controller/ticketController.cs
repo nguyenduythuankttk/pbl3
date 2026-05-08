@@ -46,6 +46,19 @@ namespace Backend.Controller
             }
         }
 
+        [HttpPost("create")]
+        public async Task<IActionResult> AddTicket([FromBody]TicketCreateRequest createRequest)
+        {
+            try
+            {
+                await _ticketService.AddTicket(createRequest);
+                return Ok("Add ticket sucessfully!");
+            }catch(Exception ex)
+            {
+                return StatusCode(500, $"An error occurred in ticketController.AddTicket {ex.Message}");
+            }
+        }
+
         [HttpPut("update/{ticketID}")]
         public async Task<IActionResult> UpdateTicket(Guid ticketID, TicketUpdateRequest request)
         {

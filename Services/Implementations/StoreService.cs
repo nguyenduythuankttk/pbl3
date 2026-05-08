@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.Models;
+using Backend.Models.DTOs.Reponse;
 using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -14,20 +15,63 @@ using Microsoft.EntityFrameworkCore;
              _dbContext = dbContext;
          }
 
-         public async Task<List<Store>?> GetAllStore() =>
+         public async Task<List<StoreResponse>?> GetAllStore() =>
             await _dbContext.Store
-                 .Include(s => s.Address)
+                .Where(s => s.DeletedAt == null)
+                .Include(s => s.Address)
+                .Select(s => new StoreResponse
+                {
+                    StoreID = s.StoreID,
+                    StoreName = s.StoreName,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    TotalReviews = s.TotalReviews,
+                    TotalPoints = s.TotalPoints,
+                    SeatingCapacity = s.SeatingCapacity,
+                    Address = new AddressResponse
+                    {
+                        AddressID = s.Address.AddressID,
+                        HouseNumber = s.Address.HouseNumber,
+                        Street = s.Address.Street,
+                        Ward = s.Address.Ward,
+                        District = s.Address.District,
+                        Province = s.Address.Province,
+                        Country = s.Address.Country
+                    }
+                })
                 .ToListAsync();
 
-        public async Task<Store?> GetStoreByID (int storeID) => 
+        public async Task<StoreResponse?> GetStoreByID (int storeID) => 
             await _dbContext.Store
+                .Where(s => s.StoreID == storeID && s.DeletedAt == null)
+                .AsNoTracking()
                 .Include(s => s.Address)
-                .FirstOrDefaultAsync(s => s.StoreID == storeID);
+                .Select(s => new StoreResponse
+                {
+                    StoreID = s.StoreID,
+                    StoreName = s.StoreName,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    TotalReviews = s.TotalReviews,
+                    TotalPoints = s.TotalPoints,
+                    SeatingCapacity = s.SeatingCapacity,
+                    Address = new AddressResponse
+                    {
+                        AddressID = s.Address.AddressID,
+                        HouseNumber = s.Address.HouseNumber,
+                        Street = s.Address.Street,
+                        Ward = s.Address.Ward,
+                        District = s.Address.District,
+                        Province = s.Address.Province,
+                        Country = s.Address.Country
+                    }
+                })
+                .FirstOrDefaultAsync();
 
         public async Task<Store?> GetStoreByAdress(Guid addressID) => 
             await _dbContext.Store
                 .Include(s => s.Address)
-                .FirstOrDefaultAsync(s => s.AddressID == addressID);
+                .FirstOrDefaultAsync(s => s.Address.AddressID == addressID);
 
         public async Task AddStore(Store store)
         {

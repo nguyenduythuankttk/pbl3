@@ -15,5 +15,6 @@ namespace Backend.Models{
         public decimal QtyBeforeProcess { get; set; }
         [Required]
         public decimal QtyAfterProcess { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }

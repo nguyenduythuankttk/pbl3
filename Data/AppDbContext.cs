@@ -75,12 +75,13 @@ namespace Backend.Data {
             modelBuilder.Entity<Store>()
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Store)
-                .HasForeignKey<Store>(s => s.AddressID);
+                .HasForeignKey<Address>(s => s.StoreID);
 
             modelBuilder.Entity<Supplier>()
                 .HasOne(s => s.Address)
                 .WithOne(a => a.Supplier)
-                .HasForeignKey<Supplier>(s => s.AddressID);
+                .HasForeignKey<Address>(a => a.SupplierID);
+                
             modelBuilder.Entity<Receipt>()
                 .HasOne(r => r.PurchaseOrder)
                 .WithOne(p => p.Receipt)

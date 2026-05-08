@@ -47,11 +47,11 @@ namespace Backend.Controller
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> AddSupplier([FromBody] Supplier supplier)
+        public async Task<IActionResult> AddSupplier([FromBody] SupplierCreateRequest createRequest)
         {
             try
             {
-                await _supplierService.AddSupplier(supplier);
+                await _supplierService.AddSupplier(createRequest);
                 return Ok("Supplier created supplier successfully");
             }catch(Exception ex)
             {
@@ -72,7 +72,7 @@ namespace Backend.Controller
             }
         }
 
-        [HttpDelete("delete/{supplierID}")]
+        [HttpDelete("soft-delete/{supplierID}")]
         public async Task<IActionResult> SoftDeleteSupplier(int supplierID)
         {
             try

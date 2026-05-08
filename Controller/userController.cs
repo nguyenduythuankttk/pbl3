@@ -14,7 +14,7 @@ namespace Backend.Controller
     {
         private readonly IUserService _userService;
 
-        public userController(UserService userService)
+        public userController(IUserService userService)
         {
             _userService = userService;
         }

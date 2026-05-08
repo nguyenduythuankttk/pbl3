@@ -3,6 +3,7 @@ using Backend.Models;
 using Backend.Models.DTOs.Reponse;
 using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
+using BackEnd.Migrations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
@@ -16,26 +17,70 @@ namespace Backend.Services.Implementations
         {
             _dbcontext = dbContext;
         }
-        public async Task<List<Supplier>?> GetAllSuppliers() =>
+        public async Task<List<SupplierResponse>?> GetAllSuppliers() =>
             await _dbcontext.Supplier
                 .Where(s => s.DeletedAt == null)
                 .AsNoTracking()
                 .Include(s => s.Address)
-                    .ThenInclude(sa => sa.Store)
-            .ToListAsync();
+                .Select(s => new SupplierResponse
+                {
+                    SupplierID = s.SupplierID,
+                    SupplierName = s.SupplierName,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    TaxCode = s.TaxCode,
+                    Address = new AddressResponse
+                    {
+                        AddressID = s.Address.AddressID,
+                        HouseNumber = s.Address.HouseNumber,
+                        Street = s.Address.Street,
+                        Ward = s.Address.Ward,
+                        District = s.Address.District,
+                        Province = s.Address.Province,
+                        Country = s.Address.Country
+                    }
+                })
+                .ToListAsync();
 
-        public async Task <Supplier?> GetSupplierByID(int supplierID) =>
+        public async Task<SupplierResponse?> GetSupplierByID(int supplierID) =>
             await _dbcontext.Supplier
+                .Where(s => s.SupplierID == supplierID && s.DeletedAt == null)
                 .AsNoTracking()
-                    .Include(s => s.Address)
-                        .ThenInclude(sa => sa.Store)
-            .FirstOrDefaultAsync(s => s.SupplierID == supplierID && s.DeletedAt == null);
+                .Include(s => s.Address)
+                .Select(s => new SupplierResponse
+                {
+                    SupplierID = s.SupplierID,
+                    SupplierName = s.SupplierName,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    TaxCode = s.TaxCode,
+                    Address = new AddressResponse
+                    {
+                        AddressID = s.Address.AddressID,
+                        HouseNumber = s.Address.HouseNumber,
+                        Street = s.Address.Street,
+                        Ward = s.Address.Ward,
+                        District = s.Address.District,
+                        Province = s.Address.Province,
+                        Country = s.Address.Country
+                    }
+                })
+                .FirstOrDefaultAsync();
 
 
-        public async Task AddSupplier(Supplier supplier)
+        public async Task AddSupplier(SupplierCreateRequest createRequest)
         {
             try
             {
+                var supplier = new Supplier
+                {
+                    SupplierName = createRequest.SupplierName,
+                    Phone = createRequest.Phone,
+                    Email = createRequest.Email,
+                    TaxCode = createRequest.TaxCode,
+                    DeletedAt = null
+
+                };
                 _dbcontext.Supplier.Add(supplier);
                 await _dbcontext.SaveChangesAsync();
             }catch(Exception ex)
@@ -45,7 +90,7 @@ namespace Backend.Services.Implementations
             }
         }
 
-        public async Task UpdateSupplier(int supplierID, SupplierUpdateRequest request)
+        public async Task UpdateSupplier(int supplierID, SupplierUpdateRequest updateRequest)
         {
             var supplier = await _dbcontext.Supplier.FindAsync(supplierID);
 
@@ -56,17 +101,17 @@ namespace Backend.Services.Implementations
 
             try
             {
-                if(request.SupplierName != null)
-                    supplier.SupplierName = request.SupplierName;
+                if(updateRequest.SupplierName != null)
+                    supplier.SupplierName = updateRequest.SupplierName;
                 
-                if(request.Phone != null)
-                    supplier.Phone = request.Phone;
+                if(updateRequest.Phone != null)
+                    supplier.Phone = updateRequest.Phone;
 
-                if(request.Email != null)
-                    supplier.Email = request.Email;
+                if(updateRequest.Email != null)
+                    supplier.Email = updateRequest.Email;
 
-                if(request.TaxCode != null)
-                    supplier.TaxCode = request.TaxCode;
+                if(updateRequest.TaxCode != null)
+                    supplier.TaxCode = updateRequest.TaxCode;
 
                 await _dbcontext.SaveChangesAsync();
             }catch(Exception ex)

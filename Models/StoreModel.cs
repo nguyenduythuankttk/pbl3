@@ -23,9 +23,6 @@ namespace Backend.Models{
         public int SeatingCapacity { get; set; }
         public DateTime? DeletedAt {get; set; }
 
-        public Guid AddressID { get; set; }
-
-        [ForeignKey("AddressID")]
         public virtual Address Address { get; set; } = null!;
 
         [JsonIgnore]

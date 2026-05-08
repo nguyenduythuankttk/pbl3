@@ -7,9 +7,7 @@ namespace Backend.Models {
         public int SupplierID{get; set;}
         [Required, MaxLength(100)]
         public string SupplierName{get; set;} = null!;
-        public Guid AddressID {get; set;}
-        [ForeignKey("AddressID")]
-        public virtual Address Address {get; set;} = null!;
+        
         [Required, Phone, MaxLength(11)]
         public string Phone{get; set;} = null!;
         [Required, MaxLength(100)]
@@ -18,5 +16,6 @@ namespace Backend.Models {
         public string TaxCode{get; set;} = null!;
         public DateTime? DeletedAt {get; set; }
 
+        public virtual Address? Address { get; set; }
     }
 }

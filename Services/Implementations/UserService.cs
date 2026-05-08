@@ -21,18 +21,39 @@ namespace Backend.Services.Implementations
         }
 
         //Get all User
-        public async Task<List<User>?> GetAllUsers() => 
+        public async Task<List<UserResponse>?> GetAllUsers() => 
             await _dbContext.User
                 .Where(u => u.DeletedAt == null)
                 .AsNoTracking()
                 .Include(u => u.UserAddress)
+                .Select(u => new UserResponse
+                {
+                    UserID = u.UserID,
+                    UserName = u.UserName,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    FullName = u.FullName,
+                    Gender = u.Gender,
+                    Birthday = u.BirthDate,
+                })
                 .ToListAsync();
 
-        public async Task<User?> GetUserByID(Guid userID) =>
-            await _dbContext.User //lay du lieu raa
+        public async Task<UserResponse?> GetUserByID(Guid userID) =>
+            await _dbContext.User
                 .AsNoTracking()
                 .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.UserID == userID && u.DeletedAt == null);
+                .Where(u => u.UserID == userID && u.DeletedAt == null)
+                .Select(u => new UserResponse
+                {
+                    UserID = u.UserID,
+                    UserName = u.UserName,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    FullName = u.FullName,
+                    Gender = u.Gender,
+                    Birthday = u.BirthDate,
+                })
+                .FirstOrDefaultAsync();
 
         public async Task AddUser(User user)
         {
