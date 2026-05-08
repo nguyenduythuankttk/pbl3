@@ -4,8 +4,9 @@ using Backend.Services.Interface;
 using Backend.Models.DTOs.Request;
 using Backend.Models;
 using Backend.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 namespace Backend.Services.Implementations
 {
     public class TicketService : ITicketService

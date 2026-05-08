@@ -1,7 +1,8 @@
 using Backend.Models.DTOs.Request;
 using Backend.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 namespace Backend.Controller {
     [ApiController]
     [Route("api/pbl3/[controller]")]
@@ -22,11 +23,12 @@ namespace Backend.Controller {
                 return StatusCode(500, $"Error in billController.GetAllBillIn: {e.Message}");
             }
         }
-
+        [Authorize]
         [HttpGet("get-by-user/{userID}")]
-        public async Task<IActionResult> GetUserBill(Guid userID) {
+        public async Task<IActionResult> GetUserBill() {
             try {
-                var bills = await _billService.GetUserBill(userID);
+                var userID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value?? User.FindFirst("user_id")?.Value;
+                var bills = await _billService.GetUserBill(Guid.Parse(userID));
                 if (bills == null || bills.Count == 0) return NotFound("Không có hóa đơn nào của người dùng này");
                 return Ok(bills);
             } catch (Exception e) {
@@ -34,9 +36,11 @@ namespace Backend.Controller {
             }
         }
 
+        
         [HttpGet("get/{billID}")]
         public async Task<IActionResult> GetBillByID(Guid billID) {
             try {
+
                 var bill = await _billService.GetBillByID(billID);
                 if (bill == null) return NotFound("Không tìm thấy hóa đơn");
                 return Ok(bill);
