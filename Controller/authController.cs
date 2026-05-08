@@ -66,7 +66,7 @@ namespace Backend.Controller
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser(){
             try{
-                var userID = User.FindFirstValue("sub") ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrWhiteSpace(userID)) return Unauthorized(new {Message = "Invalid token claims"});
                 var user = await _UserService.GetUserByID(Guid.Parse(userID));
                 return Ok(user);
@@ -79,7 +79,7 @@ namespace Backend.Controller
         [HttpGet("me/employee")]
         public async Task<IActionResult> GetCurrentEmployee(){
             try{
-                var empID = User.FindFirstValue("sub");
+                var empID = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrWhiteSpace(empID)) return Unauthorized();
                 var emp = await _EmployeeSevice.GetEmployeeByID(Guid.Parse(empID));
                 return Ok(emp);

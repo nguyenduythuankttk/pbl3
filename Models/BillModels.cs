@@ -27,12 +27,11 @@ namespace Backend.Models{
         public decimal VAT { get; set; }
         [Required]
         public PaymentMethods PaymentMethods { get; set; }
-        public string? Note { get; set; }
-        public int? TicketID {get; set;} 
-        [ForeignKey("TicketID")]
-        public virtual Ticket? Ticket {get; set;}
         [Required]
         public decimal Total { get; set; }
+        [Required]
+        public decimal Paid {get; set;}
+        public string? Note { get; set; }
         [Required]
         public decimal MoneyReceived {get; set; }
         [Required]

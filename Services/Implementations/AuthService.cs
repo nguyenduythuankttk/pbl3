@@ -36,7 +36,7 @@ namespace Backend.Services.Implementations{
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
                 var claims = new List<Claim>{
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserID.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Role, user is Employee emp ? emp.Role.ToString() : "Customer")
                 };
