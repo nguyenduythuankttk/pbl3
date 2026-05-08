@@ -20,34 +20,13 @@ namespace Backend.Services.Implementations
                     b.EndDate <= end.ToDateTime(TimeOnly.MaxValue) &&
                     b.DeletedAt == null
                 )
-            .Include(t => t.TicketProduct)
-                .ThenInclude(tp => tp.ProductVarient)
             .ToListAsync();
 
         public async Task <Ticket?> GetTicketByID(Guid ticketID) =>
             await _dbcontext.Ticket
             .AsNoTracking()
-            .Include(t => t.TicketProduct)
-                .ThenInclude(tp => tp.ProductVarient)
             .FirstOrDefaultAsync(t => t.TicketID == ticketID && t.DeletedAt == null);
 
-        // public async async AddTicket(TicketCreateRequest createRequest)
-        // {
-        //     using var transaction = await _dbcontext.Database.BeginTransactionAsync();
-        //     try
-        //     {
-        //         var newticket = new Ticket
-        //         {
-        //             StartDate = createRequest.StartDate,
-        //             EndDate = createRequest.EndDate,
-        //             Discount = createRequest.Discount
-        //             IsActive = true
-        //         };
-
-        //         foreach(var product in createRequest)
-        //     }
-        //     await transaction.CommitAsync();
-        // }
 
         public async Task UpdateTicket(Guid ticketID, TicketUpdateRequest request)
         {

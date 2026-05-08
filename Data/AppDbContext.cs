@@ -39,8 +39,7 @@ namespace Backend.Data {
         public DbSet<InventoryBatch> InventoryBatch { get; set; }
         public DbSet<StockMovement> StockMovement { get; set; }
         public DbSet<ReceiptChange> ReceiptChange {get; set;}
-        public DbSet<TicketCombo> TicketCombo {get; set;}
-        public DbSet<TicketProduct> TicketProduct {get; set;}
+        public DbSet<TicketUser> TicketUser {get; set;}
         public DbSet<BlacklistedToken> BlackListedToken {get; set;}
         public DbSet<EmailVerificationToken> EmailVerificationToken {get; set;}
 
@@ -90,19 +89,12 @@ namespace Backend.Data {
             modelBuilder.Entity<ReceiptDetail>()
                 .HasOne(x => x.Ingredient).WithMany(i => i.ReceiptDetail).HasForeignKey(x => x.IngredientID).OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<TicketCombo>()
-                .HasKey(x => new {x.TicketID, x.ComboID});
-            modelBuilder.Entity<TicketCombo>()
-                .HasOne(x => x.Ticket).WithMany().HasForeignKey(x => x.TicketID).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TicketCombo>()
-                .HasOne(x => x.Combo).WithMany().HasForeignKey(x => x.ComboID).OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<TicketProduct>()
-                .HasKey(x => new {x.TicketID, x.ProductVarientID});
-            modelBuilder.Entity<TicketProduct>()
-                .HasOne(x => x.Ticket).WithMany().HasForeignKey(x => x.TicketID).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TicketProduct>()
-                .HasOne(x => x.ProductVarient).WithMany().HasForeignKey(x => x.ProductVarientID).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TicketUser>()
+                .HasKey(x => new { x.TicketID, x.UserID });
+            modelBuilder.Entity<TicketUser>()
+                .HasOne(x => x.Ticket).WithMany(t => t.TicketUser).HasForeignKey(x => x.TicketID).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TicketUser>()
+                .HasOne(x => x.User).WithMany(u => u.TicketUser).HasForeignKey(x => x.UserID).OnDelete(DeleteBehavior.Cascade);
 
 
             // one to many

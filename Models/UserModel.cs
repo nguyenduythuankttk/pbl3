@@ -37,6 +37,6 @@ namespace Backend.Models {
         [JsonIgnore]
         public virtual ICollection<UserAddress> UserAddress { get; set; } = new List<UserAddress>();
         [JsonIgnore]
-        public virtual ICollection<Ticket> Ticket { get; set; } = new List<Ticket>();
+        public virtual ICollection<TicketUser> TicketUser { get; set; } = new List<TicketUser>();
     }       
 }
