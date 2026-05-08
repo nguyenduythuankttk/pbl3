@@ -42,10 +42,9 @@ namespace Backend.Controller
         public async Task<IActionResult> EmployeeLogin([FromBody] LoginRequest request){
             try{
                 var reponse = await _AuthService.EmployeeLogin(request);
-                if (reponse == null) {
-                    return Unauthorized("Sai tên đăng nhập hoặc mật khẩu");
-                }
                 return Ok(new { message = "Đăng nhập thành công!", data = reponse });
+            } catch (InvalidOperationException e){
+                return BadRequest(new { message = e.Message });
             } catch (Exception){
                 return StatusCode(500, "Error in authController.Login");
             }
@@ -55,7 +54,7 @@ namespace Backend.Controller
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(){
             try{
-                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
                 await _AuthService.Logout(token);
                 return Ok("Đăng xuất thành công");
             }catch (Exception){
@@ -67,8 +66,8 @@ namespace Backend.Controller
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser(){
             try{
-                var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrWhiteSpace(userID)) return Unauthorized();
+                var userID = User.FindFirstValue("sub") ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrWhiteSpace(userID)) return Unauthorized(new {Message = "Invalid token claims"});
                 var user = await _UserService.GetUserByID(Guid.Parse(userID));
                 return Ok(user);
             }catch(Exception){
@@ -80,7 +79,7 @@ namespace Backend.Controller
         [HttpGet("me/employee")]
         public async Task<IActionResult> GetCurrentEmployee(){
             try{
-                var empID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var empID = User.FindFirstValue("sub");
                 if (string.IsNullOrWhiteSpace(empID)) return Unauthorized();
                 var emp = await _EmployeeSevice.GetEmployeeByID(Guid.Parse(empID));
                 return Ok(emp);
@@ -93,14 +92,8 @@ namespace Backend.Controller
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request){
             try{
-                var (emailSent, devToken) = await _AuthService.Register(request);
-                return Ok(new {
-                    message = emailSent
-                        ? "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản."
-                        : "Đăng ký thành công nhưng không thể gửi email. Hãy dùng endpoint /resend-verify-email.",
-                    emailSent,
-                    devToken  // null ở production, có giá trị ở Development để test
-                });
+                await _AuthService.Register(request);
+                return Ok(new { message = "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản." });
             } catch (InvalidOperationException e){
                 return Conflict(new { message = e.Message });
             } catch (Exception e){
@@ -112,11 +105,11 @@ namespace Backend.Controller
         [HttpPost("resend-verify-email")]
         public async Task<IActionResult> ResendVerifyEmail([FromBody] ForgotPasswordRequest request){
             try{
-                var (emailSent, devToken) = await _AuthService.ResendVerificationEmail(request.Email);
+                var emailSent = await _AuthService.ResendVerificationEmail(request.Email);
                 return Ok(new {
-                    message = emailSent ? "Email xác thực đã được gửi lại." : "Không thể gửi email. Vui lòng kiểm tra cấu hình Resend.",
-                    emailSent,
-                    devToken
+                    message = emailSent
+                        ? "Email xác thực đã được gửi lại."
+                        : "Không thể gửi email. Vui lòng kiểm tra cấu hình email."
                 });
             } catch (InvalidOperationException e){
                 return BadRequest(new { message = e.Message });
@@ -142,13 +135,11 @@ namespace Backend.Controller
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request){
             try{
-                var (emailSent, devToken) = await _AuthService.ForgotPassword(request.Email);
+                var emailSent = await _AuthService.ForgotPassword(request.Email);
                 return Ok(new {
                     message = emailSent
                         ? "Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư."
-                        : "Không thể gửi email. Vui lòng kiểm tra cấu hình Resend.",
-                    emailSent,
-                    devToken
+                        : "Không thể gửi email. Vui lòng kiểm tra cấu hình email."
                 });
             } catch (InvalidOperationException e){
                 return BadRequest(new { message = e.Message });
@@ -170,17 +161,16 @@ namespace Backend.Controller
             }
         }
 
-        /// <summary>Đổi mật khẩu khi đã đăng nhập</summary>
         [Authorize]
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] PasswordRequest request){
             try{
-                var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userID = User.FindFirstValue("sub");
                 if (string.IsNullOrWhiteSpace(userID)) return Unauthorized();
-                var result = await _AuthService.ChangePassword(request, Guid.Parse(userID));
-                return Ok(new { message = "Đổi mật khẩu thành công.", data = result });
+                await _AuthService.ChangePassword(request, Guid.Parse(userID));
+                return Ok(new { message = "Đổi mật khẩu thành công." });
             } catch (Exception e){
-                return StatusCode(500, new { message = "Error in authController.ChangePassword: " + e.Message });
+                return BadRequest(new { message = e.Message });
             }
         }
     }

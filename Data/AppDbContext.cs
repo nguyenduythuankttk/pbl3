@@ -319,10 +319,6 @@ namespace Backend.Data {
                 .Property(x => x.IngredientUnit)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();
 
-            modelBuilder.Entity<User>()
-                .Property(x => x.Gender)
-                .HasConversion<string>().HasMaxLength(10);
-
             modelBuilder.Entity<EmailVerificationToken>()
                 .Property(x => x.Type)
                 .HasConversion<string>().HasMaxLength(20).IsRequired();

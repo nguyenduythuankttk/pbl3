@@ -1067,6 +1067,9 @@ namespace BackEnd.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("EmailVerified")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1082,8 +1085,14 @@ namespace BackEnd.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<bool>("IsEmailVerified")
+                    b.Property<bool>("IsVerified")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("PasswordEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("PasswordEmailExp")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -1094,6 +1103,9 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("VerifiedExp")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("UserID");
 

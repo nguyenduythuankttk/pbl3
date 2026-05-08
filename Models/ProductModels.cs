@@ -23,7 +23,7 @@ namespace Backend.Models{
         public ProductType ProductType { get; set; }
         public string? Image { get; set; }
         public DateTime? DeletedAt { get; set; }
-        [JsonIgnore]
+        // Bỏ JsonIgnore để variants được trả về trong response (ReferenceHandler.IgnoreCycles xử lý vòng lặp)
         public virtual ICollection<ProductVarient> ProductVarient { get; set; } = new List<ProductVarient>();
 
 

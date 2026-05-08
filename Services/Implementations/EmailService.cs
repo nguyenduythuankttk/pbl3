@@ -12,52 +12,46 @@ namespace Backend.Services.Implementations {
         }
 
         public async Task SendVerifyEmail(string email, string verifyToken) {
-            var recipient = _devOverrideEmail ?? email;
-            var verifyUrl = $"{_frontendUrl}/verify-email?token={verifyToken}";
-            var devNote = _devOverrideEmail != null
-                ? $"<p style=\"background:#fff3cd;padding:8px;border-radius:4px;font-size:13px;\">" +
-                  $"[DEV] Email goc gui den: <strong>{email}</strong></p>"
-                : "";
+            var frontendUrl = _configuration["FrontendUrl"];
+            var verifyUrl = $"{frontendUrl}/verify-email?token={verifyToken}";
 
             var html = BuildEmailHtml(
-                devNote: devNote,
-                heading: "Xac thuc Email cua ban",
-                body: "Cam on ban da dang ky tai khoan tai <strong>Jolibi</strong>.<br/>Nhan vao nut ben duoi de xac thuc dia chi email:",
+                devNote: "",
+                heading: "Xac minh dia chi email cua ban",
+                body: "Cam on ban da dang ky tai khoan Jolibi. Vui long nhan vao nut ben duoi de xac minh dia chi email cua ban. Lien ket nay se het han sau 24 gio.",
                 buttonUrl: verifyUrl,
-                buttonText: "Xac thuc Email",
-                note: "Link nay co hieu luc trong <strong>24 gio</strong>. Neu ban khong thuc hien dang ky, hay bo qua email nay."
+                buttonText: "Xac minh Email",
+                note: "Neu ban khong tao tai khoan nay, hay bo qua email nay."
             );
-            var message = new EmailMessage {
-                From = _fromEmail,
-                Subject = "Xac thuc email dang ky - Jolibi",
-                HtmlBody = html
-            };
-            message.To.Add(recipient);
+
+            var message = new EmailMessage();
+            message.From = "Jolibi <onboarding@resend.dev>";
+            message.To.Add(email);
+            message.Subject = "Xac minh dia chi email cua ban";
+            message.HtmlBody = html;
+
             await _resend.EmailSendAsync(message);
         }
 
         public async Task SendChangePasswordEmail(string email, string resetToken) {
-            var recipient = _devOverrideEmail ?? email;
-            var resetUrl = $"{_frontendUrl}/reset-password?token={resetToken}";
-            var devNote = _devOverrideEmail != null
-                ? $"<p style=\"background:#fff3cd;padding:8px;border-radius:4px;font-size:13px;\">" +
-                  $"[DEV] Email goc gui den: <strong>{email}</strong></p>"
-                : "";
+            var frontendUrl = _configuration["FrontendUrl"];
+            var resetUrl = $"{frontendUrl}/reset-password?token={resetToken}";
 
             var html = BuildEmailHtml(
-                devNote: devNote,
-                heading: "Dat lai mat khau",
-                body: "Chung toi nhan duoc yeu cau dat lai mat khau cho tai khoan <strong>Jolibi</strong> cua ban.<br/>Nhan vao nut ben duoi de dat lai mat khau:",
+                devNote: "",
+                heading: "Dat lai mat khau cua ban",
+                body: "Chung toi nhan duoc yeu cau dat lai mat khau cho tai khoan cua ban. Nhan vao nut ben duoi de tiep tuc. Lien ket nay se het han sau 1 gio.",
                 buttonUrl: resetUrl,
                 buttonText: "Dat lai mat khau",
-                note: "Link nay co hieu luc trong <strong>1 gio</strong>. Neu ban khong yeu cau dat lai mat khau, hay bo qua email nay."
+                note: "Neu ban khong yeu cau dat lai mat khau, hay bo qua email nay."
             );
-            var message = new EmailMessage {
-                From = _fromEmail,
-                Subject = "Dat lai mat khau - Jolibi",
-                HtmlBody = html
-            };
-            message.To.Add(recipient);
+
+            var message = new EmailMessage();
+            message.From = "Jolibi <onboarding@resend.dev>";
+            message.To.Add(email);
+            message.Subject = "Yeu cau dat lai mat khau";
+            message.HtmlBody = html;
+
             await _resend.EmailSendAsync(message);
         }
 
