@@ -9,7 +9,6 @@ namespace Backend.Models
     {
         [Key]
         public Guid id {get; set;} = Guid.NewGuid();
-
         [MaxLength(500)]
         public string Token {get; set;} = null!;
 

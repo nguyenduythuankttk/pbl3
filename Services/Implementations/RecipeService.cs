@@ -1,7 +1,7 @@
 using Backend.Data;
 using Backend.Models;
 using Backend.Models.DTOs.Request;
-using Backend.Services.Interfaces;
+using Backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services.Implementations

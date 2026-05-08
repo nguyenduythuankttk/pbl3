@@ -27,15 +27,19 @@ namespace Backend.Models{
         public decimal VAT { get; set; }
         [Required]
         public PaymentMethods PaymentMethods { get; set; }
+        public string? Note { get; set; }
+        public Guid? TicketID {get; set;} 
+        [ForeignKey("TicketID")]
+        public virtual Ticket? Ticket {get; set;}
         [Required]
         public decimal Total { get; set; }
-        [Required]
-        public decimal Paid {get; set;}
-        public string? Note { get; set; }
         [Required]
         public decimal MoneyReceived {get; set; }
         [Required]
         public decimal MoneyGiveBack {get; set; }
+        public decimal Paid {get; set; }
+
+        public DateTime? DeletedAt { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<BillDetail> BillDetail { get; set; } = new List<BillDetail>();

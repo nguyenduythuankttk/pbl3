@@ -28,7 +28,7 @@ namespace Backend.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred  in employeeController.GetAllEmployees: {ex.Message}");
+                return StatusCode(500, $"An error occurred in employeeController.GetAllEmployees: {ex.Message}");
             }
         }
 
@@ -76,7 +76,7 @@ namespace Backend.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred in employeeController.AddEmployee {ex.Message}");
+                return StatusCode(500, $"An error occurred in employeeController.AddEmployee: {ex.Message}");
             }
         }
 
@@ -90,7 +90,7 @@ namespace Backend.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred in employeeController.UpdateEmployee {ex.Message}");
+                return StatusCode(500, $"An error occurred in employeeController.UpdateEmployee: {ex.Message}");
             }
         }
 
@@ -104,7 +104,7 @@ namespace Backend.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred in employeeController.SoftDeleteEmployee {ex.Message}");
+                return StatusCode(500, $"An error occurred in employeeController.SoftDeleteEmployee: {ex.Message}");
             }
         }
     }

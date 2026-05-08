@@ -14,7 +14,6 @@ namespace Backend.Models {
         [JsonIgnore]
         public virtual User? User {get; set;}
         [JsonIgnore]
-        public virtual ICollection<TicketProduct> TicketProduct {get;set;} = null!;
-        
+        public virtual ICollection<TicketUser> TicketUser {get;set;} = new List<TicketUser>();
     }
 }

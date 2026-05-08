@@ -1,7 +1,7 @@
 using Backend.Models;
 using Backend.Models.DTOs.Request;
 
-namespace Backend.Services.Interfaces
+namespace Backend.Services.Interface
 {
     public interface IRecipeService
     {

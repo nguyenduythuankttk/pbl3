@@ -2,6 +2,7 @@ using Backend.Data;
 using Backend.Models;
 using Backend.Services.Interface;
 using Backend.Services.Implementations;
+using Resend;
 using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -9,16 +10,26 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.Converters.Add(new Backend.Converters.DateOnlyJsonConverter());
+        // Cho phép frontend gửi/nhận enum dưới dạng string ("Cash", "Male", "Create"...)
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // Tránh lỗi vòng lặp tuần hoàn (Product → ProductVarient → Product → ...)
+        // Giúp product variants được trả về trong response
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -30,13 +41,38 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+                
+                if (context.SecurityToken is System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken)
+                {
+                    var tokenString = jwtToken.RawData;
+                    var isBlacklisted = await dbContext.BlackListedToken
+                        .AnyAsync(bt => bt.Token == tokenString);
+
+                    if (isBlacklisted)
+                    {
+                        context.Fail("This token has been blacklisted.");
+                    }
+                }
+            }
+        };
     });
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5000")
+        policy.SetIsOriginAllowed(origin =>
+            {
+                if (string.IsNullOrEmpty(origin)) return false;
+                var uri = new Uri(origin);
+                return uri.Host == "localhost" || uri.Host == "127.0.0.1";
+            })
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -71,7 +107,17 @@ builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddHostedService<HardDeleteService>();
+
+builder.Services.AddOptions();
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>(o => {
+    o.ApiToken = builder.Configuration["Resend:ApiKey"] ?? throw new Exception("Resend:ApiKey is not configured");
+});
+builder.Services.AddTransient<IResend, ResendClient>();
 
 builder.Services.AddResponseCompression(options =>
 {
@@ -111,23 +157,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Tắt redirect HTTPS khi dev với frontend HTTP
 app.UseCors("AllowFrontend");
-app.Use(async(context, next)=>{
-        var token = context.Request.Headers["Authorization"]
-                    .ToString().Replace("Bear ", "");
-        if (!string.IsNullOrEmpty(token)){
-            var db = context.RequestServices.GetRequiredService<AppDbContext>();
-            var isBlocked = await db.BlackListedToken.AnyAsync(b => b.Token == token && b.ExpiryDate > DateTime.UtcNow);
-            if (isBlocked){
-                    context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Token đã bị vô hiệu hóa");
-                return;
-            }
-        }
-        await next();
-    }   
-);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

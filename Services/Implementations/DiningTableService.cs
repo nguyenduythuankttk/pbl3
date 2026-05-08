@@ -65,16 +65,16 @@ namespace Backend.Services.Implementations{
                 Console.WriteLine(e.Message);
             }
         }
-        public async Task DeleteTable (int tableID ){
+        public async Task SoftDeleteTable(int tableID){
             try{
                 var table = await _dbContext.DiningTable
-                                .FirstOrDefaultAsync( t => t.TableID ==tableID);
-                if (table != null){
-                    _dbContext.DiningTable.Remove(table);
-                    await _dbContext.SaveChangesAsync();
-                } else throw new Exception ("Not Found Table");
+                                .FirstOrDefaultAsync(t => t.TableID == tableID);
+                if (table == null) throw new Exception("Not Found Table");
+                table.DeletedAt = DateTime.UtcNow;
+                _dbContext.DiningTable.Update(table);
+                await _dbContext.SaveChangesAsync();
             } catch (Exception e){
-                Console.WriteLine (e.Message);
+                Console.WriteLine(e.Message);
             }
         }
     }

@@ -2,8 +2,6 @@ using Backend.Models;
 namespace Backend.Models.DTOs.Reponse{
     public class AuthReponse{
         public string AcessToken {get; set;} = null!;
-        public string RefeshToken {get; set;} = null!;
-        public DateTime ExpiryTokenTime {get; set;} = DateTime.MinValue;
     }
     public class EmployeeAuthReponse : AuthReponse {
         public Guid EmployeeID {get; set;}

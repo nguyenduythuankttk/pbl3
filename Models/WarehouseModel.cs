@@ -18,5 +18,6 @@ namespace Backend.Models{
 
         [JsonIgnore]
         public virtual ICollection<InventoryBatch> InventoryBatch { get; set; } = new List<InventoryBatch>();
+        public DateTime? DeletedAt { get; set; }
     }
 }

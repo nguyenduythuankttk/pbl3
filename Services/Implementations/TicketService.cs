@@ -22,15 +22,11 @@ namespace Backend.Services.Implementations
                     b.StartDate <= end.ToDateTime(TimeOnly.MaxValue) &&
                     b.DeletedAt == null
                 )
-            .Include(t => t.TicketProduct)
-                .ThenInclude(tp => tp.ProductVarient)
             .ToListAsync();
 
         public async Task <Ticket?> GetTicketByID(Guid ticketID) =>
             await _dbcontext.Ticket
             .AsNoTracking()
-            .Include(t => t.TicketProduct)
-                .ThenInclude(tp => tp.ProductVarient)
             .FirstOrDefaultAsync(t => t.TicketID == ticketID && t.DeletedAt == null);
 
         public async Task AddTicket(TicketCreateRequest createRequest)

@@ -8,6 +8,6 @@ namespace Backend.Services.Interface{
         Task UpdateTable(int tableID, TableUpdateRequest request);
         Task SetISBooking(int tableID, bool status);
         Task AddTable (TableCreateRequest newTable);
-        Task DeleteTable (int tableID );
+        Task SoftDeleteTable(int tableID);
     }
 }

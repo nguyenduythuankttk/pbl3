@@ -18,7 +18,7 @@ namespace Backend.Models {
         public Guid UserID {get; set;}
         [Required, MaxLength(50)]
         public string UserName {get; set;}  = null!;
-        [Required,MaxLength(50)]
+        [Required,MaxLength(255)]
         public string HashPassword {get; set;} = null!;
         public DateOnly BirthDate {get; set;} 
         public DateTime CreateAt {get; set;} = DateTime.UtcNow;
@@ -29,9 +29,14 @@ namespace Backend.Models {
         public string FullName {get; set;} = null!;
         public Gender Gender {get; set;} 
         public DateTime? DeletedAt {get; set; }
+        public bool IsVerified {get; set;} = false;
+        public string? EmailVerified { get; set; }
+        public DateTime? VerifiedExp {get; set;}
+        public string? PasswordEmail {get; set;}
+        public DateTime?  PasswordEmailExp {get; set;}
         [JsonIgnore]
         public virtual ICollection<UserAddress> UserAddress { get; set; } = new List<UserAddress>();
         [JsonIgnore]
-        public virtual ICollection<Ticket> Ticket { get; set; } = new List<Ticket>();
+        public virtual ICollection<TicketUser> TicketUser { get; set; } = new List<TicketUser>();
     }       
 }

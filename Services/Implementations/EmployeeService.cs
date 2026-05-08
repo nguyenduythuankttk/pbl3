@@ -221,7 +221,6 @@ namespace Backend.Services.Implementations
             }
         }
 
-        // Soft delete employee
         public async Task SoftDeleteEmployee(Guid employeeID)
         {
             var employee = await _dbContext.Employee.FindAsync(employeeID);
