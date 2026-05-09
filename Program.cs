@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using MongoDB.Driver;
+using Backend.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,7 +85,12 @@ if (!string.IsNullOrWhiteSpace(connectionString))
 {
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+    builder.Services.AddSingleton<MongoDbContext>();
+    
 }
+
+
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
@@ -110,8 +117,12 @@ builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddHostedService<HardDeleteService>();
 
+
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddOptions();
 builder.Services.AddHttpClient<ResendClient>();
 builder.Services.Configure<ResendClientOptions>(o => {
@@ -163,3 +174,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
+

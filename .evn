@@ -1,0 +1,15 @@
+# Database
+ConnectionStrings__JolibiDatabase=Server=localhost;Port=3306;Database=DBjolibi;User=root;Password=123456
+
+# JWT
+Jwt__Key=SuperSecretKey_ChangeThisInProduction_32chars!
+Jwt__Issuer=PBL3API
+Jwt__Audience=PBL3Client
+Jwt__ExpiryMinutes=480
+
+# Resend Email API
+Resend__ApiKey=
+
+# Frontend URL (dùng cho link trong email)
+FrontendUrl=http://localhost:5173
+localhost

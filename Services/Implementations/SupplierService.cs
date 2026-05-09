@@ -79,7 +79,6 @@ namespace Backend.Services.Implementations
                     Email = createRequest.Email,
                     TaxCode = createRequest.TaxCode,
                     DeletedAt = null
-
                 };
                 _dbcontext.Supplier.Add(supplier);
                 await _dbcontext.SaveChangesAsync();
