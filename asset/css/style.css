@@ -8,7 +8,7 @@ html {
 }
 
 #header {
-    height: 46px;
+    height: 55px;
     background-color: rgb(220, 77, 11);
     z-index: 1;
     position: fixed;
@@ -16,6 +16,7 @@ html {
     left: 0;
     right: 0;
     z-index: 100;
+    
 }
 
 .swiper {
@@ -316,7 +317,7 @@ html {
 .delivery-btn:hover { background-color: #e6a600; }
 .delivery-btn .ti-truck { font-size: 16px; }
 
-/* ── Search bar ── */
+/* ── Search  ── */
 .search-bar {
     float: right;
     display: flex;
