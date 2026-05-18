@@ -7,6 +7,14 @@ html {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Allow <a> tags to inherit card/item styles */
+a.category-item,
+a.product-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 #header {
     height: 55px;
     background-color: rgb(220, 77, 11);
@@ -383,6 +391,18 @@ html {
      font-size: 14px;
      }
 
+.logout-divider {
+    opacity: 0.5;
+    margin: 0 4px;
+}
+.logout-text {
+    font-size: 12px;
+    opacity: 0.85;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.logout-text:hover { opacity: 1; }
+
 /* ── Modal overlay ── */
 .modal-overlay {
     display: none;
@@ -536,7 +556,16 @@ html {
     border-color: #aaa;
     background: #f9f9f9;
 }
-/*Footer*/
+.map-section {
+    width: 100%;
+    height:300px;
+    line-height:0;
+}
+.map-section iframe {
+    filter: grayscale(10%) contrast(1.1); /* Chỉnh nhẹ màu sắc để hợp với style web */
+}
+
+/*Footer*/ 
 #footer {
     background: #1a1a1a;
     color: #ccc;
@@ -555,6 +584,7 @@ html {
 .footer-col {
     flex: 1;
     min-width: 220px;
+    gap:20px;
 }
 .footer-col-title {
     font-size: 13px;
